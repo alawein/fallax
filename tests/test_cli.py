@@ -90,6 +90,50 @@ class TestTrainSubcommand:
         assert code == 1
 
 
+class TestEvolveSubcommand:
+    def test_evolve_returns_zero(self, results_file, tmp_path):
+        output = tmp_path / "evolved.jsonl"
+        mock = MockClient(default="A harder evolved prompt.")
+        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+            code = main([
+                "evolve", str(results_file),
+                "--model", "m",
+                "--output", str(output),
+            ])
+        assert code == 0
+
+    def test_evolve_missing_file_returns_error(self, tmp_path):
+        mock = MockClient(default="evolved")
+        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+            code = main([
+                "evolve", str(tmp_path / "nonexistent.jsonl"),
+                "--model", "m",
+            ])
+        assert code == 1
+
+
+class TestRepairSubcommand:
+    def test_repair_returns_zero(self, results_file, tmp_path):
+        output = tmp_path / "repairs.jsonl"
+        mock = MockClient(default="I was wrong. The correct answer is X.")
+        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+            code = main([
+                "repair", str(results_file),
+                "--model", "m",
+                "--output", str(output),
+            ])
+        assert code == 0
+
+    def test_repair_missing_file_returns_error(self, tmp_path):
+        mock = MockClient(default="fixed")
+        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+            code = main([
+                "repair", str(tmp_path / "nonexistent.jsonl"),
+                "--model", "m",
+            ])
+        assert code == 1
+
+
 class TestNoSubcommand:
     def test_no_args_returns_one(self):
         code = main([])

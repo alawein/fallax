@@ -123,6 +123,83 @@ def _cmd_train(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_evolve(args: argparse.Namespace) -> int:
+    """Evolve hard-case prompts into harder versions."""
+    from .evolver import PromptEvolver
+    from .storage import JsonlStore
+
+    path = Path(args.results)
+    if not path.exists():
+        print(f"Error: file not found: {path}", file=sys.stderr)
+        return 1
+
+    store = JsonlStore(path)
+    results = store.read_all()
+    if not results:
+        print("No results found.")
+        return 1
+
+    client = AnthropicClient()
+    evolver = PromptEvolver(client=client, model=args.model)
+    evolved = evolver.evolve_batch(results, min_score=args.min_score)
+
+    if not evolved:
+        print("No hard cases found to evolve.")
+        return 0
+
+    output = Path(args.output)
+    with open(output, "w", encoding="utf-8") as f:
+        for p in evolved:
+            f.write(p.model_dump_json() + "\n")
+
+    print(f"\nEvolved {len(evolved)} prompts")
+    print(f"  Min score: {args.min_score}")
+    print(f"  Saved to: {output}")
+    return 0
+
+
+def _cmd_repair(args: argparse.Namespace) -> int:
+    """Test model self-repair on failed results."""
+    from .repair import SelfRepairTester
+    from .storage import JsonlStore
+
+    path = Path(args.results)
+    if not path.exists():
+        print(f"Error: file not found: {path}", file=sys.stderr)
+        return 1
+
+    store = JsonlStore(path)
+    results = store.read_all()
+    if not results:
+        print("No results found.")
+        return 1
+
+    client = AnthropicClient()
+    tester = SelfRepairTester(client=client)
+
+    for r in results:
+        for model_name in list(r.models.keys()):
+            r.models[model_name].model_name = args.model
+            r.models[args.model] = r.models.pop(model_name)
+            break
+
+    repairs = tester.test_repair_batch(results)
+
+    if not repairs:
+        print("No failures to repair.")
+        return 0
+
+    output = Path(args.output)
+    with open(output, "w", encoding="utf-8") as f:
+        for r in repairs:
+            f.write(r.model_dump_json() + "\n")
+
+    print(f"\nRepair tested {len(repairs)} failures")
+    print(f"  Model: {args.model}")
+    print(f"  Saved to: {output}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """ReasonBench CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
@@ -165,6 +242,36 @@ def main(argv: list[str] | None = None) -> int:
     train_p.add_argument("--output", "-o", default="predictor.pkl", help="Output model file")
     train_p.add_argument("--threshold", type=int, default=4, help="Score threshold for failure label")
 
+    # -- evolve --
+    evolve_p = subparsers.add_parser(
+        "evolve", help="Evolve hard-case prompts into harder versions"
+    )
+    evolve_p.add_argument("results", help="Path to results JSONL file")
+    evolve_p.add_argument(
+        "--model", required=True, help="LLM model for evolution"
+    )
+    evolve_p.add_argument(
+        "--min-score", type=int, default=6,
+        help="Minimum score threshold for hard cases (default: 6)",
+    )
+    evolve_p.add_argument(
+        "--output", "-o", default="evolved.jsonl",
+        help="Output file for evolved prompts (default: evolved.jsonl)",
+    )
+
+    # -- repair --
+    repair_p = subparsers.add_parser(
+        "repair", help="Test model self-repair on failures"
+    )
+    repair_p.add_argument("results", help="Path to results JSONL file")
+    repair_p.add_argument(
+        "--model", required=True, help="LLM model for repair testing"
+    )
+    repair_p.add_argument(
+        "--output", "-o", default="repairs.jsonl",
+        help="Output file for repair results (default: repairs.jsonl)",
+    )
+
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -178,6 +285,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_analyze(args)
     if args.command == "train":
         return _cmd_train(args)
+    if args.command == "evolve":
+        return _cmd_evolve(args)
+    if args.command == "repair":
+        return _cmd_repair(args)
 
     parser.print_help()
     return 1

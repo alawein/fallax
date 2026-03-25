@@ -76,6 +76,16 @@ class TestComputeScore:
         # 2 + 3 + 3 + 2 + 1 = 11
         assert score == 11
 
+    def test_negative_assumption_errors_floored_at_zero(self):
+        score = Scorer.compute_score(
+            is_correct=True,
+            reasoning_flawed=False,
+            assumption_errors=-5,
+            counterfactual_fail=False,
+            model_disagreement=False,
+        )
+        assert score == 0
+
     def test_critical_scenario(self):
         score = Scorer.compute_score(
             is_correct=False,

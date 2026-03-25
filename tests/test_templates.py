@@ -82,6 +82,16 @@ class TestTemplateRegistry:
         with pytest.raises(KeyError, match="Missing parameters"):
             registry.render("implicit_assumption_trap", rule_a="x > 0")
 
+    def test_render_extra_param_raises(self, registry):
+        with pytest.raises(KeyError, match="Unexpected parameters"):
+            registry.render(
+                "implicit_assumption_trap",
+                rule_a="x > 0",
+                rule_b="x < 10",
+                edge_case_input="x = 0",
+                typo_param="oops",
+            )
+
     def test_template_ids(self, registry):
         ids = registry.template_ids()
         assert len(ids) == 10

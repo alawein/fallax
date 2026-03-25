@@ -21,7 +21,7 @@ class Scorer:
             score += 2
         if reasoning_flawed:
             score += 3
-        score += assumption_errors
+        score += max(0, assumption_errors)
         if counterfactual_fail:
             score += 2
         if model_disagreement:

@@ -188,6 +188,9 @@ class TemplateRegistry:
         missing = set(template.parameters) - set(params.keys())
         if missing:
             raise KeyError(f"Missing parameters: {missing}")
+        extra = set(params.keys()) - set(template.parameters)
+        if extra:
+            raise KeyError(f"Unexpected parameters: {extra}")
         return template.template_text.format(**params)
 
     def template_ids(self) -> list[str]:

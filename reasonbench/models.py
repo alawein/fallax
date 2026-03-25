@@ -68,3 +68,24 @@ class EvaluationResult(BaseModel):
     score: int
     severity: Severity
     failures: list[FailureRecord] = Field(default_factory=list)
+
+
+class RepairResult(BaseModel):
+    """Result of a self-repair attempt."""
+
+    model_name: str
+    prompt_text: str
+    original_answer: str
+    repaired_answer: str
+    repair_reasoning: str
+    is_fixed: bool | None = None
+
+
+class RootCausePattern(BaseModel):
+    """A recurring failure pattern extracted from results."""
+
+    pattern: str
+    frequency: int = Field(ge=1)
+    models_affected: list[str]
+    example_prompt: str
+    failure_types: list[str]

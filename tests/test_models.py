@@ -157,3 +157,54 @@ class TestEvaluationResult:
         assert restored.validation.reasoning_flawed is True
         assert restored.score == 5
         assert restored.severity == Severity.HIGH
+
+
+from reasonbench.models import RepairResult, RootCausePattern
+
+
+class TestRepairResult:
+    def test_create_minimal(self):
+        r = RepairResult(
+            model_name="model-a", prompt_text="test prompt",
+            original_answer="wrong", repaired_answer="fixed",
+            repair_reasoning="I was wrong because...",
+        )
+        assert r.model_name == "model-a"
+        assert r.is_fixed is None
+
+    def test_create_full(self):
+        r = RepairResult(
+            model_name="model-a", prompt_text="test prompt",
+            original_answer="wrong", repaired_answer="fixed",
+            repair_reasoning="I was wrong because...", is_fixed=True,
+        )
+        assert r.is_fixed is True
+
+    def test_json_roundtrip(self):
+        r = RepairResult(
+            model_name="m", prompt_text="p", original_answer="a",
+            repaired_answer="b", repair_reasoning="r", is_fixed=False,
+        )
+        restored = RepairResult.model_validate_json(r.model_dump_json())
+        assert restored.is_fixed is False
+        assert restored.original_answer == "a"
+
+
+class TestRootCausePattern:
+    def test_create(self):
+        p = RootCausePattern(
+            pattern="assumes monotonicity", frequency=15,
+            models_affected=["model-a", "model-b"],
+            example_prompt="Is f(x) monotonic?",
+            failure_types=["contradiction", "unstated_assumption"],
+        )
+        assert p.frequency == 15
+        assert len(p.models_affected) == 2
+
+    def test_json_roundtrip(self):
+        p = RootCausePattern(
+            pattern="test", frequency=1, models_affected=["m"],
+            example_prompt="p", failure_types=["contradiction"],
+        )
+        restored = RootCausePattern.model_validate_json(p.model_dump_json())
+        assert restored.pattern == "test"

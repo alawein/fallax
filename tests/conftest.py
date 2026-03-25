@@ -4,6 +4,15 @@ from __future__ import annotations
 
 import pytest
 
+from reasonbench.models import (
+    Assumption,
+    EvaluationResult,
+    ModelResponse,
+    ValidationResult,
+)
+from reasonbench.scoring import Scorer
+from reasonbench.taxonomy import FailureType, Severity
+
 
 class MockClient:
     """Mock LLM client for testing. Matches LLMClient protocol."""
@@ -67,3 +76,41 @@ MODEL_RESPONSE_TEXT = (
 def model_client():
     """MockClient pre-loaded with model evaluation responses."""
     return MockClient(default=MODEL_RESPONSE_TEXT)
+
+
+def make_result(
+    prompt_id: str = "test",
+    prompt_text: str = "test prompt",
+    failure_type: FailureType = FailureType.CONTRADICTION,
+    score: int = 5,
+    reasoning_flawed: bool = True,
+    answer: str = "42",
+    reasoning: str = "Step 1: assume. Step 2: conclude.",
+    is_correct: bool = False,
+    model_name: str = "test-model",
+    assumptions: list[Assumption] | None = None,
+) -> EvaluationResult:
+    """Build an EvaluationResult for testing."""
+    severity = Scorer.severity(score)
+    return EvaluationResult(
+        prompt_id=prompt_id,
+        failure_type=failure_type,
+        prompt_text=prompt_text,
+        models={
+            model_name: ModelResponse(
+                model_name=model_name,
+                answer=answer,
+                reasoning=reasoning,
+                is_correct=is_correct,
+            ),
+        },
+        validation=ValidationResult(
+            reasoning_flawed=reasoning_flawed,
+            first_error_step=2 if reasoning_flawed else None,
+            assumptions=assumptions or [],
+            counterfactual_fail=reasoning_flawed,
+            final_answer_correct=not reasoning_flawed,
+        ),
+        score=score,
+        severity=severity,
+    )

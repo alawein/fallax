@@ -34,7 +34,9 @@ class FailurePredictor:
         X = self._vectorizer.fit_transform(texts)
         self._classifier.fit(X, labels)
         self._fitted = True
-        cv_folds = min(5, len(results))
+        import numpy as np
+        min_class_count = int(np.bincount(labels).min()) if len(set(labels)) > 1 else 1
+        cv_folds = min(5, len(results), max(2, min_class_count))
         scores = cross_val_score(self._classifier, X, labels, cv=cv_folds)
         return {
             "samples": len(results),

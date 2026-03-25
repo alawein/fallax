@@ -1,6 +1,8 @@
 """ReasonBench — LLM Adversarial Reasoning Evaluation System."""
 
+from .analyzer import Analyzer
 from .client import AnthropicClient, LLMClient
+from .clusterer import FailureClusterer
 from .evaluator import Evaluator
 from .generator import PromptGenerator
 from .models import (
@@ -12,6 +14,7 @@ from .models import (
     ValidationResult,
 )
 from .pipeline import Pipeline
+from .predictor import FailurePredictor
 from .runner import ModelRunner
 from .scoring import Scorer
 from .storage import JsonlStore
@@ -26,6 +29,7 @@ from .templates import DISTRIBUTION, TemplateRegistry
 from .validators import ValidatorPack
 
 __all__ = [
+    "Analyzer",
     "AnthropicClient",
     "Assumption",
     "DISTRIBUTION",
@@ -33,6 +37,8 @@ __all__ = [
     "Evaluator",
     "FAILURE_CATEGORY_MAP",
     "FailureCategory",
+    "FailureClusterer",
+    "FailurePredictor",
     "FailureRecord",
     "FailureType",
     "JsonlStore",

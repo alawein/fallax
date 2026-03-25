@@ -4,6 +4,7 @@ from .analyzer import Analyzer
 from .client import AnthropicClient, LLMClient
 from .clusterer import FailureClusterer
 from .evaluator import Evaluator
+from .evolver import PromptEvolver
 from .generator import PromptGenerator
 from .models import (
     Assumption,
@@ -11,10 +12,14 @@ from .models import (
     FailureRecord,
     ModelResponse,
     Prompt,
+    RepairResult,
+    RootCausePattern,
     ValidationResult,
 )
 from .pipeline import Pipeline
 from .predictor import FailurePredictor
+from .repair import SelfRepairTester
+from .root_cause import RootCauseExtractor
 from .runner import ModelRunner
 from .scoring import Scorer
 from .storage import JsonlStore
@@ -47,8 +52,13 @@ __all__ = [
     "ModelRunner",
     "Pipeline",
     "Prompt",
+    "PromptEvolver",
     "PromptGenerator",
+    "RepairResult",
+    "RootCauseExtractor",
+    "RootCausePattern",
     "Scorer",
+    "SelfRepairTester",
     "Severity",
     "TemplateRegistry",
     "ValidationResult",

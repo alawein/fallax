@@ -134,6 +134,58 @@ class TestRepairSubcommand:
         assert code == 1
 
 
+class TestExperimentSubcommand:
+    def test_experiment_returns_zero(self, params_dir, tmp_path):
+        output_dir = tmp_path / "experiment"
+        mock = MockClient(
+            responses={
+                **JUDGE_RESPONSES,
+                "Given this prompt and its failure": "Evolved prompt",
+                "Your previous answer was incorrect": "Fixed answer.",
+            },
+            default=MODEL_RESPONSE_TEXT,
+        )
+        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+            code = main([
+                "experiment",
+                "--models", "m",
+                "--judge", "j",
+                "--evolve-model", "e",
+                "--rounds", "2",
+                "--count", "1",
+                "--output-dir", str(output_dir),
+                "--params-dir", str(params_dir),
+            ])
+        assert code == 0
+        assert (output_dir / "round_1.jsonl").exists()
+        assert (output_dir / "report.json").exists()
+        assert (output_dir / "report.md").exists()
+
+    def test_experiment_with_seed(self, params_dir, tmp_path):
+        output_dir = tmp_path / "experiment"
+        mock = MockClient(
+            responses={
+                **JUDGE_RESPONSES,
+                "Given this prompt and its failure": "Evolved",
+                "Your previous answer was incorrect": "Fixed.",
+            },
+            default=MODEL_RESPONSE_TEXT,
+        )
+        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+            code = main([
+                "experiment",
+                "--models", "m",
+                "--judge", "j",
+                "--evolve-model", "e",
+                "--rounds", "1",
+                "--count", "1",
+                "--output-dir", str(output_dir),
+                "--params-dir", str(params_dir),
+                "--seed", "42",
+            ])
+        assert code == 0
+
+
 class TestNoSubcommand:
     def test_no_args_returns_one(self):
         code = main([])

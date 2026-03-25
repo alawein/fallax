@@ -200,6 +200,47 @@ def _cmd_repair(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_experiment(args: argparse.Namespace) -> int:
+    """Run a multi-round experiment."""
+    import json as json_mod
+
+    from .experiment import Experiment
+    from .report import ReportBuilder
+
+    output_dir = Path(args.output_dir)
+    client = AnthropicClient()
+    exp = Experiment(
+        client=client,
+        models=args.models,
+        judge_model=args.judge,
+        output_dir=output_dir,
+        evolve_model=args.evolve_model,
+        params_dir=Path(args.params_dir) if args.params_dir else None,
+        seed=args.seed,
+    )
+    data = exp.run(
+        initial_count=args.count,
+        rounds=args.rounds,
+        min_score=args.min_score,
+    )
+
+    builder = ReportBuilder(data)
+    report = builder.build()
+
+    report_json = output_dir / "report.json"
+    with open(report_json, "w", encoding="utf-8") as f:
+        json_mod.dump(report, f, indent=2, default=str)
+
+    report_md = output_dir / "report.md"
+    report_md.write_text(builder.to_markdown(), encoding="utf-8")
+
+    print(f"\nExperiment complete ({len(data['rounds'])} rounds)")
+    print(f"  Total prompts:  {data['total_prompts']}")
+    print(f"  Total failures: {data['total_failures']}")
+    print(f"  Output dir:     {output_dir}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """ReasonBench CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
@@ -272,6 +313,28 @@ def main(argv: list[str] | None = None) -> int:
         help="Output file for repair results (default: repairs.jsonl)",
     )
 
+    # -- experiment --
+    exp_p = subparsers.add_parser(
+        "experiment", help="Run multi-round evaluation experiment"
+    )
+    exp_p.add_argument(
+        "--models", nargs="+", required=True,
+        help="Models to evaluate",
+    )
+    exp_p.add_argument(
+        "--judge", required=True, help="Judge model",
+    )
+    exp_p.add_argument(
+        "--evolve-model", required=True,
+        help="Model for prompt evolution",
+    )
+    exp_p.add_argument("--rounds", type=int, default=3)
+    exp_p.add_argument("--count", type=int, default=10)
+    exp_p.add_argument("--min-score", type=int, default=6)
+    exp_p.add_argument("--output-dir", default="experiment_output")
+    exp_p.add_argument("--params-dir", default=None)
+    exp_p.add_argument("--seed", type=int, default=None)
+
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -289,6 +352,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_evolve(args)
     if args.command == "repair":
         return _cmd_repair(args)
+    if args.command == "experiment":
+        return _cmd_experiment(args)
 
     parser.print_help()
     return 1

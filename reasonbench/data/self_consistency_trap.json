@@ -1,0 +1,7 @@
+[
+  {"reasoning_chain": "Step 1: All mammals are warm-blooded.\nStep 2: A whale is a mammal.\nStep 3: Therefore, a whale is cold-blooded."},
+  {"reasoning_chain": "Step 1: If it rains, the ground gets wet.\nStep 2: The ground is wet.\nStep 3: Therefore, it must have rained."},
+  {"reasoning_chain": "Step 1: x^2 = 4.\nStep 2: Taking the square root of both sides: x = 2.\nStep 3: Therefore, x = 2 is the only solution."},
+  {"reasoning_chain": "Step 1: The set S = {1, 2, 3} has 3 elements.\nStep 2: The power set of S has 2^3 = 8 subsets.\nStep 3: Therefore, S has 8 proper subsets."},
+  {"reasoning_chain": "Step 1: Function f is continuous on [0,1].\nStep 2: f(0) = -1 and f(1) = 1.\nStep 3: By the intermediate value theorem, f(0.5) = 0."}
+]

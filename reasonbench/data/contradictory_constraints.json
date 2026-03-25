@@ -1,0 +1,7 @@
+[
+  {"constraint_1": "x must be greater than 10", "constraint_2": "x must be less than 5", "constraint_3": "x must be a positive integer"},
+  {"constraint_1": "the output must be sorted in ascending order", "constraint_2": "the output must preserve the original insertion order", "constraint_3": "no element may appear more than once"},
+  {"constraint_1": "the algorithm must run in O(n) time", "constraint_2": "the algorithm must sort the input array", "constraint_3": "the algorithm must use only O(1) extra memory"},
+  {"constraint_1": "all employees must work exactly 8 hours per day", "constraint_2": "no employee may work after 5 PM", "constraint_3": "all employees must start after 10 AM"},
+  {"constraint_1": "the container must hold at least 500ml", "constraint_2": "the container must weigh less than 100g when empty", "constraint_3": "the container must be made of solid steel with walls at least 5mm thick"}
+]

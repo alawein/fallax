@@ -1,0 +1,7 @@
+[
+  {"partial_info": "X = 5. The result is X * Y + 3."},
+  {"partial_info": "The area of the rectangle is 24 square units. One side has length 6."},
+  {"partial_info": "The function is f(x) = ax^2 + bx + c. We know f(0) = 3 and f(1) = 7."},
+  {"partial_info": "A car travels from A to B at 60 km/h. The total trip took 2 hours including a stop."},
+  {"partial_info": "The average of three numbers is 10. Two of the numbers are 8 and 12."}
+]

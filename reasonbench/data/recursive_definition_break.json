@@ -1,0 +1,7 @@
+[
+  {"base_case": "f(0) = 1", "recursive_rule": "f(n) = f(n-1) + f(n+1) for n > 0"},
+  {"base_case": "f(1) = 0", "recursive_rule": "f(n) = n * f(n/2) for all n > 1 (integer division)"},
+  {"base_case": "f(0) = 0, f(1) = 1", "recursive_rule": "f(n) = f(n-1) - f(n-2) for n > 1"},
+  {"base_case": "g(1) = 1", "recursive_rule": "g(n) = g(n - g(n-1)) for n > 1"},
+  {"base_case": "h(0) = 2", "recursive_rule": "h(n) = h(n-1) / h(n-1) for n > 0"}
+]

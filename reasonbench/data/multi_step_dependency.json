@@ -1,0 +1,7 @@
+[
+  {"step1": "x = 10 / 2", "step2": "y = x - 3 (but if x is even, subtract 4 instead)", "step3": "z = y * 2"},
+  {"step1": "Parse the string '12.5abc' as a number (stop at first non-numeric character)", "step2": "Round the result to the nearest integer", "step3": "Determine if the rounded result is prime"},
+  {"step1": "Sort the list [3, 1, 4, 1, 5] and remove duplicates", "step2": "Take the median of the resulting list", "step3": "Determine if the median equals the arithmetic mean of the list"},
+  {"step1": "Convert the binary string '10110' to decimal", "step2": "Compute the factorial of the result", "step3": "Find the sum of the digits of the factorial"},
+  {"step1": "Count the vowels in 'aeiou123aei'", "step2": "Raise 2 to the power of that count", "step3": "Determine if the result is divisible by the original vowel count"}
+]

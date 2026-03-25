@@ -1,0 +1,7 @@
+[
+  {"general_rule": "For any positive integer n, n! > 2^n", "edge_case": "n = 1"},
+  {"general_rule": "Quicksort has O(n log n) average time complexity and is faster than insertion sort", "edge_case": "the array has exactly 3 elements"},
+  {"general_rule": "The sum of interior angles of a polygon with n sides is (n-2) * 180 degrees", "edge_case": "n = 2 (a digon)"},
+  {"general_rule": "Adding more workers to a project reduces the completion time proportionally", "edge_case": "the project has a single indivisible task"},
+  {"general_rule": "A hash table provides O(1) average lookup time", "edge_case": "all keys hash to the same bucket"}
+]

@@ -1,0 +1,7 @@
+[
+  {"rule_a": "inputs must be positive integers", "rule_b": "outputs are doubled", "edge_case_input": "the input is -3"},
+  {"rule_a": "the system accepts strings of length <= 10", "rule_b": "all strings are reversed before output", "edge_case_input": "the input is an empty string"},
+  {"rule_a": "only alphabetic characters are valid input", "rule_b": "the first character determines the processing mode", "edge_case_input": "the input is '123abc'"},
+  {"rule_a": "the queue processes items in FIFO order", "rule_b": "items with priority > 5 skip the queue", "edge_case_input": "two items arrive simultaneously with priority 5"},
+  {"rule_a": "temperature readings are in Celsius", "rule_b": "readings below 0 trigger an alert", "edge_case_input": "the reading is exactly 0"}
+]

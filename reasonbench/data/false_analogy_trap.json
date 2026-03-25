@@ -1,0 +1,7 @@
+[
+  {"well_known_problem": "the traveling salesman problem", "key_difference": "the salesman can teleport between any two non-adjacent cities for free, but only once"},
+  {"well_known_problem": "binary search on a sorted array", "key_difference": "the array is sorted but contains duplicate elements and you need to find the count of a target value"},
+  {"well_known_problem": "the classic 0/1 knapsack problem", "key_difference": "items can be split into fractions, but splitting reduces the item's value-to-weight ratio by 50%"},
+  {"well_known_problem": "Dijkstra's shortest path algorithm", "key_difference": "some edges have negative weights, but there are no negative cycles"},
+  {"well_known_problem": "the Monty Hall problem with 3 doors", "key_difference": "Monty does not know which door has the prize and opens one at random"}
+]

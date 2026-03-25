@@ -1,0 +1,7 @@
+[
+  {"objective": "f(x, y) = x + y", "constraints": "x >= 0, y >= 0, x + y <= 10, x + y >= 15"},
+  {"objective": "profit = 3x + 5y", "constraints": "x + y <= 100, 2x + y <= 150, x >= 60, y >= 60"},
+  {"objective": "the number of items processed per hour", "constraints": "each item takes at least 10 minutes to process, the system must process at least 8 items per hour, there is only 1 worker"},
+  {"objective": "total distance traveled", "constraints": "visit all 4 cities exactly once, return to start, total distance < 10km, minimum distance between any two cities is 5km"},
+  {"objective": "minimize cost = 2a + 3b", "constraints": "a + b >= 100, a <= 30, b <= 60"}
+]

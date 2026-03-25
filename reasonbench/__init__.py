@@ -5,10 +5,12 @@ from .client import AnthropicClient, LLMClient
 from .clusterer import FailureClusterer
 from .evaluator import Evaluator
 from .evolver import PromptEvolver
+from .experiment import Experiment
 from .generator import PromptGenerator
 from .models import (
     Assumption,
     EvaluationResult,
+    ExperimentRound,
     FailureRecord,
     ModelResponse,
     Prompt,
@@ -19,6 +21,7 @@ from .models import (
 from .pipeline import Pipeline
 from .predictor import FailurePredictor
 from .repair import SelfRepairTester
+from .report import ReportBuilder
 from .root_cause import RootCauseExtractor
 from .runner import ModelRunner
 from .scoring import Scorer
@@ -40,6 +43,8 @@ __all__ = [
     "DISTRIBUTION",
     "EvaluationResult",
     "Evaluator",
+    "Experiment",
+    "ExperimentRound",
     "FAILURE_CATEGORY_MAP",
     "FailureCategory",
     "FailureClusterer",
@@ -54,6 +59,7 @@ __all__ = [
     "Prompt",
     "PromptEvolver",
     "PromptGenerator",
+    "ReportBuilder",
     "RepairResult",
     "RootCauseExtractor",
     "RootCausePattern",

@@ -208,3 +208,50 @@ class TestRootCausePattern:
         )
         restored = RootCausePattern.model_validate_json(p.model_dump_json())
         assert restored.pattern == "test"
+
+
+from reasonbench.models import ExperimentRound
+
+
+class TestExperimentRound:
+    def test_create(self):
+        r = ExperimentRound(
+            round_number=1,
+            prompts_evaluated=10,
+            avg_score=6.5,
+            failure_rate=0.8,
+            hard_case_count=8,
+            evolved_count=5,
+        )
+        assert r.round_number == 1
+        assert r.prompts_evaluated == 10
+        assert r.avg_score == 6.5
+        assert r.failure_rate == 0.8
+        assert r.hard_case_count == 8
+        assert r.evolved_count == 5
+        assert r.repair_success_rate is None
+
+    def test_with_repair_rate(self):
+        r = ExperimentRound(
+            round_number=2,
+            prompts_evaluated=5,
+            avg_score=7.0,
+            failure_rate=1.0,
+            hard_case_count=5,
+            evolved_count=0,
+            repair_success_rate=0.4,
+        )
+        assert r.repair_success_rate == 0.4
+
+    def test_json_roundtrip(self):
+        r = ExperimentRound(
+            round_number=1,
+            prompts_evaluated=3,
+            avg_score=5.0,
+            failure_rate=0.5,
+            hard_case_count=1,
+            evolved_count=1,
+        )
+        restored = ExperimentRound.model_validate_json(r.model_dump_json())
+        assert restored.round_number == 1
+        assert restored.avg_score == 5.0

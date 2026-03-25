@@ -89,3 +89,15 @@ class RootCausePattern(BaseModel):
     models_affected: list[str]
     example_prompt: str
     failure_types: list[str]
+
+
+class ExperimentRound(BaseModel):
+    """Metadata for one round of an experiment."""
+
+    round_number: int = Field(ge=1)
+    prompts_evaluated: int = Field(ge=0)
+    avg_score: float
+    failure_rate: float
+    hard_case_count: int = Field(ge=0)
+    evolved_count: int = Field(ge=0)
+    repair_success_rate: float | None = None

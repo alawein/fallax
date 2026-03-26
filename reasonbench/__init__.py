@@ -1,6 +1,12 @@
 """ReasonBench — LLM Adversarial Reasoning Evaluation System."""
 
 from .analyzer import Analyzer
+from .benchmark import (
+    BenchmarkBaselines,
+    BenchmarkMetadata,
+    BenchmarkSuite,
+    ModelBaseline,
+)
 from .client import AnthropicClient, LLMClient
 from .clients import create_client
 from .clusterer import FailureClusterer
@@ -40,6 +46,9 @@ from .validators import ValidatorPack
 __all__ = [
     "Analyzer",
     "AnthropicClient",
+    "BenchmarkBaselines",
+    "BenchmarkMetadata",
+    "BenchmarkSuite",
     "Assumption",
     "DISTRIBUTION",
     "EvaluationResult",
@@ -55,6 +64,7 @@ __all__ = [
     "FailureType",
     "JsonlStore",
     "LLMClient",
+    "ModelBaseline",
     "ModelResponse",
     "ModelRunner",
     "Pipeline",

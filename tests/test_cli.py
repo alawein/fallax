@@ -237,6 +237,68 @@ class TestExperimentSubcommand:
         assert code == 0
 
 
+class TestBenchmarkSubcommand:
+    @pytest.fixture()
+    def bench_dir(self, tmp_path):
+        """Create a minimal benchmark v1 in a temp directory."""
+        v1 = tmp_path / "benchmarks" / "v1"
+        v1.mkdir(parents=True)
+        prompt = {
+            "prompt_id": "b1",
+            "failure_type": "unstated_assumption",
+            "prompt_text": "Test prompt",
+            "difficulty": 5,
+        }
+        (v1 / "prompts.jsonl").write_text(json.dumps(prompt) + "\n")
+        meta = {
+            "version": "v1",
+            "created": "2026-01-01",
+            "description": "Test benchmark",
+            "prompt_count": 1,
+            "failure_types": ["unstated_assumption"],
+            "categories": ["assumption_error"],
+        }
+        (v1 / "metadata.json").write_text(json.dumps(meta))
+        (v1 / "baselines.json").write_text(json.dumps({"version": "v1", "models": []}))
+        return tmp_path / "benchmarks"
+
+    def test_benchmark_list(self, bench_dir):
+        with patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None), patch("reasonbench.benchmark.BenchmarkSuite.versions", return_value=["v1"]), patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta:
+            from reasonbench.benchmark import BenchmarkMetadata
+
+            mock_meta.return_value = BenchmarkMetadata(
+                version="v1",
+                created="2026-01-01",
+                description="Test",
+                prompt_count=1,
+                failure_types=[],
+                categories=[],
+            )
+            code = main(["benchmark", "--list"])
+        assert code == 0
+
+    def test_benchmark_info_no_models(self, bench_dir):
+        from reasonbench.benchmark import BenchmarkBaselines, BenchmarkMetadata
+
+        with patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None), patch("reasonbench.benchmark.BenchmarkSuite.load_prompts", return_value=[]), patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta, patch("reasonbench.benchmark.BenchmarkSuite.load_baselines") as mock_base:
+            mock_meta.return_value = BenchmarkMetadata(
+                version="v1",
+                created="2026-01-01",
+                description="Test",
+                prompt_count=1,
+                failure_types=[],
+                categories=[],
+            )
+            mock_base.return_value = BenchmarkBaselines(version="v1", models=[])
+            code = main(["benchmark", "--version", "v1"])
+        assert code == 0
+
+    def test_benchmark_not_found(self):
+        with patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None), patch("reasonbench.benchmark.BenchmarkSuite.load_prompts", side_effect=FileNotFoundError("not found")):
+            code = main(["benchmark", "--version", "v99"])
+        assert code == 1
+
+
 class TestNoSubcommand:
     def test_no_args_returns_one(self):
         code = main([])

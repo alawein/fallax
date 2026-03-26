@@ -248,6 +248,77 @@ def _cmd_experiment(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_benchmark(args: argparse.Namespace) -> int:
+    """Run benchmark evaluation against a versioned prompt set."""
+    from .benchmark import BenchmarkSuite
+
+    suite = BenchmarkSuite()
+
+    if args.list:
+        versions = suite.versions()
+        if not versions:
+            print("No benchmark versions found.")
+        else:
+            print("Available benchmark versions:")
+            for v in versions:
+                meta = suite.load_metadata(v)
+                print(f"  {v}: {meta.prompt_count} prompts — {meta.description}")
+        return 0
+
+    version = args.version
+    try:
+        prompts = suite.load_prompts(version)
+    except FileNotFoundError:
+        print(f"Error: benchmark {version} not found", file=sys.stderr)
+        return 1
+
+    meta = suite.load_metadata(version)
+    print(f"\nBenchmark {version}: {meta.prompt_count} prompts")
+    print(f"  {meta.description}")
+
+    if not args.models:
+        baselines = suite.load_baselines(version)
+        if baselines.models:
+            print("\nBaseline scores:")
+            for b in baselines.models:
+                print(
+                    f"  {b.model_name}: score={b.overall_score:.2f} "
+                    f"failure_rate={b.failure_rate:.1%}"
+                )
+        else:
+            print("\nNo baselines recorded yet.")
+        return 0
+
+    client = _make_client(args)
+    pipeline = Pipeline(
+        client=client,
+        models=args.models,
+        judge_model=args.judge,
+        output_path=Path(args.output),
+        seed=42,
+    )
+
+    results = pipeline.run_prompts(prompts)
+    scores = suite.score_results(results)
+
+    print(f"\nBenchmark Results ({version})")
+    print(f"  Overall score:  {scores['overall_score']:.2f}")
+    print(f"  Failure rate:   {scores['failure_rate']:.1%}")
+    print(f"  Prompts scored: {scores['total']}")
+
+    if scores["category_scores"]:
+        print("\n  By category:")
+        for cat, score in scores["category_scores"].items():
+            print(f"    {cat:>25}: {score:.2f}")
+
+    if scores["type_scores"]:
+        print("\n  By failure type:")
+        for ft, score in scores["type_scores"].items():
+            print(f"    {ft:>30}: {score:.2f}")
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """ReasonBench CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
@@ -376,6 +447,27 @@ def main(argv: list[str] | None = None) -> int:
         help="LLM provider",
     )
 
+    # -- benchmark --
+    bench_p = subparsers.add_parser(
+        "benchmark", help="Run benchmark evaluation against versioned prompt set"
+    )
+    bench_p.add_argument(
+        "--version", default="v1", help="Benchmark version (default: v1)"
+    )
+    bench_p.add_argument(
+        "--list", action="store_true", help="List available benchmark versions"
+    )
+    bench_p.add_argument(
+        "--models", nargs="+", default=None, help="Models to evaluate"
+    )
+    bench_p.add_argument(
+        "--judge", default=default_judge or None, help="Judge model"
+    )
+    bench_p.add_argument("--output", default="benchmark_results.jsonl")
+    bench_p.add_argument(
+        "--provider", default="anthropic", help="LLM provider"
+    )
+
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -395,6 +487,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_repair(args)
     if args.command == "experiment":
         return _cmd_experiment(args)
+    if args.command == "benchmark":
+        return _cmd_benchmark(args)
 
     parser.print_help()
     return 1

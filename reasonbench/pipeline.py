@@ -8,7 +8,7 @@ from pathlib import Path
 from .client import LLMClient
 from .evaluator import Evaluator
 from .generator import PromptGenerator
-from .models import EvaluationResult
+from .models import EvaluationResult, Prompt
 from .runner import ModelRunner
 from .scoring import Scorer
 from .storage import JsonlStore
@@ -33,12 +33,19 @@ class Pipeline:
         self._evaluator = Evaluator(client, judge_model)
         self._store = JsonlStore(output_path)
 
+    def run_prompts(self, prompts: list[Prompt]) -> list[EvaluationResult]:
+        """Run the pipeline on a pre-built list of prompts."""
+        return self._evaluate_prompts(prompts)
+
     def run(self, count: int = 100) -> list[EvaluationResult]:
         """Run the full pipeline: generate -> evaluate -> validate -> score -> store."""
         prompts = self._generator.generate_batch(count)
         if not prompts:
             return []
+        return self._evaluate_prompts(prompts)
 
+    def _evaluate_prompts(self, prompts: list[Prompt]) -> list[EvaluationResult]:
+        """Evaluate a list of prompts through the pipeline."""
         results: list[EvaluationResult] = []
         for i, prompt in enumerate(prompts, 1):
             logger.info(

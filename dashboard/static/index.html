@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReasonBench Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header h1 { font-size: 1.25rem; font-weight: 600; }
+    .header select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.875rem;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .card h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .card .value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .card .value.danger { color: var(--danger); }
+    .card .value.success { color: var(--success); }
+    .card .value.accent { color: var(--accent-light); }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .chart-card h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .chart-card canvas { max-height: 300px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+    th {
+      text-align: left;
+      padding: 0.625rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.6875rem;
+      letter-spacing: 0.05em;
+    }
+    td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:hover td { background: rgba(99, 102, 241, 0.05); }
+    .badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+    }
+    .badge-low { background: #22c55e20; color: #22c55e; }
+    .badge-medium { background: #f59e0b20; color: #f59e0b; }
+    .badge-high { background: #f9731620; color: #f97316; }
+    .badge-critical { background: #ef444420; color: #ef4444; }
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+    }
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-size: 0.875rem;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active {
+      color: var(--accent-light);
+      border-bottom-color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .prompt-cell {
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mono { font-family: monospace; font-size: 0.75rem; }
+    @media (max-width: 768px) {
+      .chart-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>ReasonBench</h1>
+    <select id="experiment-select">
+      <option value="">Select experiment...</option>
+    </select>
+  </div>
+
+  <div class="container">
+    <div id="empty-state" class="empty">
+      <p>Select an experiment to view results, or ensure experiment output directories are available.</p>
+    </div>
+
+    <div id="dashboard" style="display: none;">
+      <div class="grid" id="stats-cards"></div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="failures">Failure Explorer</button>
+        <button class="tab" data-tab="models">Model Comparison</button>
+      </div>
+
+      <div id="tab-overview" class="tab-panel active">
+        <div class="chart-row">
+          <div class="chart-card">
+            <h3>Score Trend by Round</h3>
+            <canvas id="chart-score-trend"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Failure Rate by Round</h3>
+            <canvas id="chart-failure-trend"></canvas>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-card">
+            <h3>Score Distribution</h3>
+            <canvas id="chart-score-dist"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>By Failure Category</h3>
+            <canvas id="chart-category"></canvas>
+          </div>
+        </div>
+        <div class="chart-card" style="margin-bottom: 1.5rem;">
+          <h3>Top Root Cause Patterns</h3>
+          <div id="patterns-table"></div>
+        </div>
+      </div>
+
+      <div id="tab-failures" class="tab-panel">
+        <div class="chart-card">
+          <h3>Evaluation Results</h3>
+          <div style="overflow-x: auto;">
+            <table id="results-table">
+              <thead>
+                <tr>
+                  <th>Prompt ID</th>
+                  <th>Failure Type</th>
+                  <th>Score</th>
+                  <th>Severity</th>
+                  <th>Flawed</th>
+                  <th>Prompt (truncated)</th>
+                </tr>
+              </thead>
+              <tbody id="results-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-models" class="tab-panel">
+        <div class="chart-row">
+          <div class="chart-card">
+            <h3>Model Accuracy</h3>
+            <canvas id="chart-models"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Model Statistics</h3>
+            <div id="models-table"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const charts = {};
+
+    // --- DOM helpers ---
+    function el(tag, attrs, ...children) {
+      const e = document.createElement(tag);
+      if (attrs) {
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === 'className') e.className = v;
+          else if (k === 'style') Object.assign(e.style, v);
+          else e.setAttribute(k, v);
+        }
+      }
+      for (const c of children) {
+        if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+        else if (c) e.appendChild(c);
+      }
+      return e;
+    }
+
+    function clearChildren(parent) {
+      while (parent.firstChild) parent.removeChild(parent.firstChild);
+    }
+
+    // --- Tab switching ---
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // --- API helpers ---
+    async function api(path) {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error('API error: ' + res.status);
+      return res.json();
+    }
+
+    // --- Init ---
+    async function init() {
+      const experiments = await api('/api/experiments');
+      const select = document.getElementById('experiment-select');
+      experiments.forEach(exp => {
+        const opt = document.createElement('option');
+        opt.value = exp.name;
+        opt.textContent = exp.name + ' (' + exp.total_prompts + ' prompts, ' + exp.total_rounds + ' rounds)';
+        select.appendChild(opt);
+      });
+      if (experiments.length === 1) {
+        select.value = experiments[0].name;
+        loadExperiment(experiments[0].name);
+      }
+      select.addEventListener('change', () => {
+        if (select.value) loadExperiment(select.value);
+      });
+    }
+
+    // --- Load experiment data ---
+    async function loadExperiment(name) {
+      const [report, summary, results, models] = await Promise.all([
+        api('/api/experiments/' + encodeURIComponent(name) + '/report'),
+        api('/api/experiments/' + encodeURIComponent(name) + '/summary'),
+        api('/api/experiments/' + encodeURIComponent(name) + '/results'),
+        api('/api/experiments/' + encodeURIComponent(name) + '/models'),
+      ]);
+
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+
+      renderStats(report, summary);
+      renderScoreTrend(report);
+      renderFailureTrend(report);
+      renderScoreDist(summary);
+      renderCategory(summary);
+      renderPatterns(report);
+      renderResults(results);
+      renderModels(models);
+    }
+
+    // --- Stat cards ---
+    function renderStats(report, summary) {
+      const container = document.getElementById('stats-cards');
+      clearChildren(container);
+
+      const failClass = summary.failure_rate > 0.5 ? 'danger' : summary.failure_rate > 0.25 ? 'warning' : 'success';
+
+      const cards = [
+        { label: 'Total Prompts', value: String(report.total_prompts), cls: 'accent' },
+        { label: 'Rounds', value: String(report.total_rounds), cls: 'accent' },
+        { label: 'Avg Score', value: summary.avg_score.toFixed(2), cls: '' },
+        { label: 'Failure Rate', value: (summary.failure_rate * 100).toFixed(1) + '%', cls: failClass },
+      ];
+
+      cards.forEach(c => {
+        const card = el('div', { className: 'card' },
+          el('h3', null, c.label),
+          el('div', { className: 'value ' + c.cls }, c.value)
+        );
+        container.appendChild(card);
+      });
+    }
+
+    // --- Charts ---
+    function destroyChart(id) {
+      if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+    }
+
+    function renderScoreTrend(report) {
+      destroyChart('score-trend');
+      const ctx = document.getElementById('chart-score-trend').getContext('2d');
+      const trend = report.score_trend || [];
+      charts['score-trend'] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: trend.map(function(_, i) { return 'Round ' + (i + 1); }),
+          datasets: [{
+            label: 'Avg Score',
+            data: trend,
+            borderColor: '#6366f1',
+            backgroundColor: '#6366f120',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: chartOpts('Score', 0, 10),
+      });
+    }
+
+    function renderFailureTrend(report) {
+      destroyChart('failure-trend');
+      const ctx = document.getElementById('chart-failure-trend').getContext('2d');
+      const trend = report.failure_trend || [];
+      charts['failure-trend'] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: trend.map(function(_, i) { return 'Round ' + (i + 1); }),
+          datasets: [{
+            label: 'Failure Rate',
+            data: trend.map(function(v) { return v * 100; }),
+            borderColor: '#ef4444',
+            backgroundColor: '#ef444420',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: chartOpts('Failure %', 0, 100),
+      });
+    }
+
+    function renderScoreDist(summary) {
+      destroyChart('score-dist');
+      const ctx = document.getElementById('chart-score-dist').getContext('2d');
+      const dist = summary.score_distribution || {};
+      const labels = Object.keys(dist).sort(function(a, b) { return +a - +b; });
+      charts['score-dist'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Count',
+            data: labels.map(function(k) { return dist[k]; }),
+            backgroundColor: labels.map(function(k) { return +k >= 6 ? '#ef4444' : +k >= 4 ? '#f59e0b' : '#22c55e'; }),
+            borderRadius: 4,
+          }],
+        },
+        options: chartOpts('Count'),
+      });
+    }
+
+    function renderCategory(summary) {
+      destroyChart('category');
+      const ctx = document.getElementById('chart-category').getContext('2d');
+      const cats = summary.by_category || {};
+      const labels = Object.keys(cats);
+      const colors = ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#f43f5e'];
+      charts['category'] = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels.map(function(l) { return l.replace(/_/g, ' '); }),
+          datasets: [{
+            data: Object.values(cats),
+            backgroundColor: colors.slice(0, labels.length),
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#e4e4e7', font: { size: 11 } } },
+          },
+        },
+      });
+    }
+
+    function renderPatterns(report) {
+      const container = document.getElementById('patterns-table');
+      clearChildren(container);
+      const patterns = report.top_patterns || [];
+      if (!patterns.length) {
+        container.appendChild(el('p', { style: { color: 'var(--muted)', padding: '1rem' } }, 'No patterns extracted.'));
+        return;
+      }
+
+      const thead = el('thead', null,
+        el('tr', null, el('th', null, 'Pattern'), el('th', null, 'Frequency'), el('th', null, 'Models'))
+      );
+      const tbody = el('tbody');
+      patterns.forEach(function(p) {
+        tbody.appendChild(el('tr', null,
+          el('td', null, p.pattern),
+          el('td', null, String(p.frequency)),
+          el('td', null, p.models_affected.join(', '))
+        ));
+      });
+      container.appendChild(el('table', null, thead, tbody));
+    }
+
+    // --- Results table ---
+    function renderResults(results) {
+      const tbody = document.getElementById('results-tbody');
+      clearChildren(tbody);
+      results.forEach(function(r) {
+        var badge = el('span', { className: 'badge badge-' + r.severity }, r.severity);
+        var score = el('strong', null, String(r.score));
+        var tr = el('tr', null,
+          el('td', { className: 'mono' }, r.prompt_id.substring(0, 8)),
+          el('td', null, r.failure_type.replace(/_/g, ' ')),
+          el('td', null, score),
+          el('td', null, badge),
+          el('td', null, (r.validation && r.validation.reasoning_flawed) ? 'Yes' : 'No'),
+          el('td', { className: 'prompt-cell' }, r.prompt_text.substring(0, 120))
+        );
+        tbody.appendChild(tr);
+      });
+    }
+
+    // --- Model comparison ---
+    function renderModels(models) {
+      destroyChart('models');
+      var ctx = document.getElementById('chart-models').getContext('2d');
+      charts['models'] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: models.map(function(m) { return m.model; }),
+          datasets: [{
+            label: 'Accuracy',
+            data: models.map(function(m) { return m.accuracy * 100; }),
+            backgroundColor: '#6366f1',
+            borderRadius: 4,
+          }],
+        },
+        options: chartOpts('Accuracy %', 0, 100),
+      });
+
+      var container = document.getElementById('models-table');
+      clearChildren(container);
+      var thead = el('thead', null,
+        el('tr', null, el('th', null, 'Model'), el('th', null, 'Total'), el('th', null, 'Correct'), el('th', null, 'Accuracy'))
+      );
+      var tbody = el('tbody');
+      models.forEach(function(m) {
+        tbody.appendChild(el('tr', null,
+          el('td', null, m.model),
+          el('td', null, String(m.total)),
+          el('td', null, String(m.correct)),
+          el('td', null, (m.accuracy * 100).toFixed(1) + '%')
+        ));
+      });
+      container.appendChild(el('table', null, thead, tbody));
+    }
+
+    // --- Chart options helper ---
+    function chartOpts(yLabel, yMin, yMax) {
+      return {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#e4e4e7' } } },
+        scales: {
+          x: { ticks: { color: '#71717a' }, grid: { color: '#2a2d3a' } },
+          y: {
+            ticks: { color: '#71717a' },
+            grid: { color: '#2a2d3a' },
+            title: { display: true, text: yLabel, color: '#71717a' },
+            min: yMin,
+            max: yMax,
+          },
+        },
+      };
+    }
+
+    init();
+  </script>
+</body>
+</html>

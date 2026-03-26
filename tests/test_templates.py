@@ -4,7 +4,6 @@ from reasonbench.taxonomy import FailureType
 from reasonbench.templates import (
     DISTRIBUTION,
     TEMPLATES,
-    PromptTemplate,
     TemplateRegistry,
 )
 
@@ -63,9 +62,7 @@ class TestTemplateRegistry:
     def test_list_by_failure_type(self, registry):
         results = registry.list_by_failure_type(FailureType.UNSTATED_ASSUMPTION)
         assert len(results) >= 1
-        assert all(
-            t.failure_target == FailureType.UNSTATED_ASSUMPTION for t in results
-        )
+        assert all(t.failure_target == FailureType.UNSTATED_ASSUMPTION for t in results)
 
     def test_render_success(self, registry):
         rendered = registry.render(

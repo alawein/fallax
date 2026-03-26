@@ -1,7 +1,5 @@
 from unittest.mock import MagicMock
 
-import pytest
-
 from reasonbench.client import AnthropicClient, LLMClient
 from tests.conftest import MockClient
 

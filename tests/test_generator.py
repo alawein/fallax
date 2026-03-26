@@ -6,7 +6,6 @@ import pytest
 from reasonbench.generator import TEMPLATE_DIFFICULTY, PromptGenerator
 from reasonbench.models import Prompt
 from reasonbench.taxonomy import FailureType
-from reasonbench.templates import DISTRIBUTION
 
 
 @pytest.fixture()
@@ -88,6 +87,7 @@ class TestPromptGenerator:
 class TestTemplateDifficulty:
     def test_covers_all_templates(self):
         from reasonbench.templates import TEMPLATES
+
         template_ids = {t.template_id for t in TEMPLATES}
         assert set(TEMPLATE_DIFFICULTY.keys()) == template_ids
 

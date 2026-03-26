@@ -10,12 +10,54 @@ from tests.conftest import make_result
 def results():
     """Mixed set of 6 results for analytics testing."""
     return [
-        make_result(prompt_id="1", score=8, reasoning_flawed=True, failure_type=FailureType.CONTRADICTION, prompt_text="contradiction prompt", assumptions=[Assumption(text="a", justified=False)]),
-        make_result(prompt_id="2", score=7, reasoning_flawed=True, failure_type=FailureType.CONTRADICTION, prompt_text="another contradiction", assumptions=[Assumption(text="b", justified=False), Assumption(text="c", justified=True)]),
-        make_result(prompt_id="3", score=3, reasoning_flawed=True, failure_type=FailureType.UNSTATED_ASSUMPTION, prompt_text="assumption prompt"),
-        make_result(prompt_id="4", score=1, reasoning_flawed=False, failure_type=FailureType.UNSTATED_ASSUMPTION, prompt_text="easy assumption"),
-        make_result(prompt_id="5", score=5, reasoning_flawed=True, failure_type=FailureType.OVERGENERALIZATION, prompt_text="overgeneralization prompt", assumptions=[Assumption(text="d", justified=False)]),
-        make_result(prompt_id="6", score=0, reasoning_flawed=False, failure_type=FailureType.OVERGENERALIZATION, prompt_text="easy overgeneralization"),
+        make_result(
+            prompt_id="1",
+            score=8,
+            reasoning_flawed=True,
+            failure_type=FailureType.CONTRADICTION,
+            prompt_text="contradiction prompt",
+            assumptions=[Assumption(text="a", justified=False)],
+        ),
+        make_result(
+            prompt_id="2",
+            score=7,
+            reasoning_flawed=True,
+            failure_type=FailureType.CONTRADICTION,
+            prompt_text="another contradiction",
+            assumptions=[
+                Assumption(text="b", justified=False),
+                Assumption(text="c", justified=True),
+            ],
+        ),
+        make_result(
+            prompt_id="3",
+            score=3,
+            reasoning_flawed=True,
+            failure_type=FailureType.UNSTATED_ASSUMPTION,
+            prompt_text="assumption prompt",
+        ),
+        make_result(
+            prompt_id="4",
+            score=1,
+            reasoning_flawed=False,
+            failure_type=FailureType.UNSTATED_ASSUMPTION,
+            prompt_text="easy assumption",
+        ),
+        make_result(
+            prompt_id="5",
+            score=5,
+            reasoning_flawed=True,
+            failure_type=FailureType.OVERGENERALIZATION,
+            prompt_text="overgeneralization prompt",
+            assumptions=[Assumption(text="d", justified=False)],
+        ),
+        make_result(
+            prompt_id="6",
+            score=0,
+            reasoning_flawed=False,
+            failure_type=FailureType.OVERGENERALIZATION,
+            prompt_text="easy overgeneralization",
+        ),
     ]
 
 

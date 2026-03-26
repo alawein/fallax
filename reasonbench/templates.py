@@ -169,15 +169,9 @@ class TemplateRegistry:
         """Return all registered templates."""
         return list(self._templates.values())
 
-    def list_by_failure_type(
-        self, failure_type: FailureType
-    ) -> list[PromptTemplate]:
+    def list_by_failure_type(self, failure_type: FailureType) -> list[PromptTemplate]:
         """Return templates targeting a specific failure type."""
-        return [
-            t
-            for t in self._templates.values()
-            if t.failure_target == failure_type
-        ]
+        return [t for t in self._templates.values() if t.failure_target == failure_type]
 
     def render(self, template_id: str, **params: str) -> str:
         """Render a template with given parameters.

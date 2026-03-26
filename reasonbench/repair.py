@@ -36,17 +36,13 @@ class SelfRepairTester:
             repair_reasoning=response,
         )
 
-    def test_repair_batch(
-        self, results: list[EvaluationResult]
-    ) -> list[RepairResult]:
+    def test_repair_batch(self, results: list[EvaluationResult]) -> list[RepairResult]:
         """Test repair on all results with flawed reasoning."""
         repairs: list[RepairResult] = []
         for r in results:
             if not r.validation.reasoning_flawed:
                 continue
             for model_name, response in r.models.items():
-                repair = self.test_repair(
-                    r.prompt_text, response.answer, model_name
-                )
+                repair = self.test_repair(r.prompt_text, response.answer, model_name)
                 repairs.append(repair)
         return repairs

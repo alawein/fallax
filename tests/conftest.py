@@ -11,7 +11,7 @@ from reasonbench.models import (
     ValidationResult,
 )
 from reasonbench.scoring import Scorer
-from reasonbench.taxonomy import FailureType, Severity
+from reasonbench.taxonomy import FailureType
 
 
 class MockClient:

@@ -1,14 +1,15 @@
-import json
-
 import pytest
 from pydantic import ValidationError
 
 from reasonbench.models import (
     Assumption,
     EvaluationResult,
+    ExperimentRound,
     FailureRecord,
     ModelResponse,
     Prompt,
+    RepairResult,
+    RootCausePattern,
     ValidationResult,
 )
 from reasonbench.taxonomy import FailureType, Severity
@@ -58,8 +59,12 @@ class TestPrompt:
             )
 
     def test_unique_ids(self):
-        p1 = Prompt(failure_type=FailureType.CONTRADICTION, prompt_text="A", difficulty=1)
-        p2 = Prompt(failure_type=FailureType.CONTRADICTION, prompt_text="B", difficulty=1)
+        p1 = Prompt(
+            failure_type=FailureType.CONTRADICTION, prompt_text="A", difficulty=1
+        )
+        p2 = Prompt(
+            failure_type=FailureType.CONTRADICTION, prompt_text="B", difficulty=1
+        )
         assert p1.prompt_id != p2.prompt_id
 
 
@@ -86,9 +91,7 @@ class TestModelResponse:
 
     def test_confidence_bounds(self):
         with pytest.raises(ValidationError):
-            ModelResponse(
-                model_name="m", answer="a", reasoning="r", confidence=1.5
-            )
+            ModelResponse(model_name="m", answer="a", reasoning="r", confidence=1.5)
 
 
 class TestAssumption:
@@ -159,14 +162,13 @@ class TestEvaluationResult:
         assert restored.severity == Severity.HIGH
 
 
-from reasonbench.models import RepairResult, RootCausePattern
-
-
 class TestRepairResult:
     def test_create_minimal(self):
         r = RepairResult(
-            model_name="model-a", prompt_text="test prompt",
-            original_answer="wrong", repaired_answer="fixed",
+            model_name="model-a",
+            prompt_text="test prompt",
+            original_answer="wrong",
+            repaired_answer="fixed",
             repair_reasoning="I was wrong because...",
         )
         assert r.model_name == "model-a"
@@ -174,16 +176,23 @@ class TestRepairResult:
 
     def test_create_full(self):
         r = RepairResult(
-            model_name="model-a", prompt_text="test prompt",
-            original_answer="wrong", repaired_answer="fixed",
-            repair_reasoning="I was wrong because...", is_fixed=True,
+            model_name="model-a",
+            prompt_text="test prompt",
+            original_answer="wrong",
+            repaired_answer="fixed",
+            repair_reasoning="I was wrong because...",
+            is_fixed=True,
         )
         assert r.is_fixed is True
 
     def test_json_roundtrip(self):
         r = RepairResult(
-            model_name="m", prompt_text="p", original_answer="a",
-            repaired_answer="b", repair_reasoning="r", is_fixed=False,
+            model_name="m",
+            prompt_text="p",
+            original_answer="a",
+            repaired_answer="b",
+            repair_reasoning="r",
+            is_fixed=False,
         )
         restored = RepairResult.model_validate_json(r.model_dump_json())
         assert restored.is_fixed is False
@@ -193,7 +202,8 @@ class TestRepairResult:
 class TestRootCausePattern:
     def test_create(self):
         p = RootCausePattern(
-            pattern="assumes monotonicity", frequency=15,
+            pattern="assumes monotonicity",
+            frequency=15,
             models_affected=["model-a", "model-b"],
             example_prompt="Is f(x) monotonic?",
             failure_types=["contradiction", "unstated_assumption"],
@@ -203,14 +213,14 @@ class TestRootCausePattern:
 
     def test_json_roundtrip(self):
         p = RootCausePattern(
-            pattern="test", frequency=1, models_affected=["m"],
-            example_prompt="p", failure_types=["contradiction"],
+            pattern="test",
+            frequency=1,
+            models_affected=["m"],
+            example_prompt="p",
+            failure_types=["contradiction"],
         )
         restored = RootCausePattern.model_validate_json(p.model_dump_json())
         assert restored.pattern == "test"
-
-
-from reasonbench.models import ExperimentRound
 
 
 class TestExperimentRound:

@@ -1,4 +1,5 @@
 import pytest
+
 from reasonbench.clusterer import FailureClusterer
 from reasonbench.taxonomy import FailureType
 from tests.conftest import make_result
@@ -8,11 +9,35 @@ from tests.conftest import make_result
 def cluster_data():
     data = []
     for i in range(5):
-        data.append(make_result(prompt_id=f"math-{i}", prompt_text=f"math problem {i}", reasoning=f"Step 1: apply formula. Step 2: compute {i}. Step 3: derive answer.", failure_type=FailureType.CONTRADICTION, score=6))
+        data.append(
+            make_result(
+                prompt_id=f"math-{i}",
+                prompt_text=f"math problem {i}",
+                reasoning=f"Step 1: apply formula. Step 2: compute {i}. Step 3: derive answer.",
+                failure_type=FailureType.CONTRADICTION,
+                score=6,
+            )
+        )
     for i in range(5):
-        data.append(make_result(prompt_id=f"assume-{i}", prompt_text=f"assumption problem {i}", reasoning=f"Step 1: assume input valid. Step 2: assume positive. Step 3: conclude {i}.", failure_type=FailureType.UNSTATED_ASSUMPTION, score=5))
+        data.append(
+            make_result(
+                prompt_id=f"assume-{i}",
+                prompt_text=f"assumption problem {i}",
+                reasoning=f"Step 1: assume input valid. Step 2: assume positive. Step 3: conclude {i}.",
+                failure_type=FailureType.UNSTATED_ASSUMPTION,
+                score=5,
+            )
+        )
     for i in range(5):
-        data.append(make_result(prompt_id=f"constraint-{i}", prompt_text=f"constraint problem {i}", reasoning=f"Step 1: check constraint. Step 2: verify bounds. Step 3: satisfy {i}.", failure_type=FailureType.IGNORED_CONSTRAINT, score=7))
+        data.append(
+            make_result(
+                prompt_id=f"constraint-{i}",
+                prompt_text=f"constraint problem {i}",
+                reasoning=f"Step 1: check constraint. Step 2: verify bounds. Step 3: satisfy {i}.",
+                failure_type=FailureType.IGNORED_CONSTRAINT,
+                score=7,
+            )
+        )
     return data
 
 
@@ -28,7 +53,7 @@ class TestFailureClusterer:
         c.fit(cluster_data)
         summary = c.cluster_summary()
         assert len(summary) == 3
-        for label, info in summary.items():
+        for _label, info in summary.items():
             assert "size" in info
             assert "avg_score" in info
             assert "dominant_failure_type" in info

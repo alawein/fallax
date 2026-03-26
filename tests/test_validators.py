@@ -21,9 +21,7 @@ class TestReasoningCritic:
         assert "test reasoning" in result
 
     def test_includes_audit_instruction(self):
-        result = ValidatorPack.reasoning_critic(
-            prompt="p", answer="a", reasoning="r"
-        )
+        result = ValidatorPack.reasoning_critic(prompt="p", answer="a", reasoning="r")
         assert "FIRST step" in result
 
 
@@ -77,9 +75,7 @@ class TestTruthJudge:
         assert isinstance(result, str)
 
     def test_includes_inputs(self):
-        result = ValidatorPack.truth_judge(
-            prompt="my prompt", answer="my answer"
-        )
+        result = ValidatorPack.truth_judge(prompt="my prompt", answer="my answer")
         assert "my prompt" in result
         assert "my answer" in result
 

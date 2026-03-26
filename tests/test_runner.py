@@ -1,5 +1,3 @@
-import pytest
-
 from reasonbench.models import ModelResponse
 from reasonbench.runner import ModelRunner
 from tests.conftest import MockClient

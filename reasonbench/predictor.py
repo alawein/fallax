@@ -35,6 +35,7 @@ class FailurePredictor:
         self._classifier.fit(X, labels)
         self._fitted = True
         import numpy as np
+
         min_class_count = int(np.bincount(labels).min()) if len(set(labels)) > 1 else 1
         cv_folds = min(5, len(results), max(2, min_class_count))
         scores = cross_val_score(self._classifier, X, labels, cv=cv_folds)
@@ -58,7 +59,9 @@ class FailurePredictor:
 
     def save(self, path: Path) -> None:
         with open(path, "wb") as f:
-            pickle.dump({"vectorizer": self._vectorizer, "classifier": self._classifier}, f)
+            pickle.dump(
+                {"vectorizer": self._vectorizer, "classifier": self._classifier}, f
+            )
 
     def load(self, path: Path) -> None:
         with open(path, "rb") as f:

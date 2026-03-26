@@ -17,9 +17,7 @@ class ModelRunner:
         """Run a prompt against all configured models."""
         results: dict[str, ModelResponse] = {}
         for model_name in self._models:
-            response_text = self._client.complete(
-                prompt_text, model=model_name
-            )
+            response_text = self._client.complete(prompt_text, model=model_name)
             results[model_name] = ModelResponse(
                 model_name=model_name,
                 answer=self._extract_answer(response_text),
@@ -39,7 +37,7 @@ class ModelRunner:
         for line in response.split("\n"):
             stripped = line.strip()
             if stripped.upper().startswith("ANSWER:"):
-                return stripped[len("ANSWER:"):].strip()
+                return stripped[len("ANSWER:") :].strip()
         # Fallback: last non-empty line
         for line in reversed(response.split("\n")):
             if line.strip():

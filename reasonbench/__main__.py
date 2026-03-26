@@ -30,7 +30,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     medium = sum(1 for r in results if r.severity.value == "medium")
     low = sum(1 for r in results if r.severity.value == "low")
 
-    print(f"\nReasonBench Evaluation Complete")
+    print("\nReasonBench Evaluation Complete")
     print(f"  Prompts evaluated: {len(results)}")
     print(f"  Critical: {critical}")
     print(f"  High:     {high}")
@@ -65,19 +65,19 @@ def _cmd_analyze(args: argparse.Namespace) -> int:
     print(f"  Disagreement:  {analyzer.disagreement_rate():.1%}")
     print(f"  Assumption density: {analyzer.assumption_density():.2f}")
 
-    print(f"\nSeverity distribution:")
+    print("\nSeverity distribution:")
     for sev, count in sorted(
         summary["severity_counts"].items(), key=lambda x: x[0].value
     ):
         print(f"  {sev.value:>8}: {count}")
 
-    print(f"\nFailure rate by type:")
+    print("\nFailure rate by type:")
     for ft, rate in sorted(
         analyzer.failure_rate_by_type().items(), key=lambda x: -x[1]
     ):
         print(f"  {ft:>30}: {rate:.1%}")
 
-    print(f"\nModel accuracy:")
+    print("\nModel accuracy:")
     for model, acc in analyzer.model_accuracy().items():
         print(f"  {model}: {acc:.1%}")
 
@@ -115,7 +115,7 @@ def _cmd_train(args: argparse.Namespace) -> int:
     output = Path(args.output)
     predictor.save(output)
 
-    print(f"\nPredictor trained")
+    print("\nPredictor trained")
     print(f"  Samples:     {metrics['samples']}")
     print(f"  Positive rate: {metrics['positive_rate']:.1%}")
     print(f"  CV accuracy:   {metrics['cv_accuracy']:.1%}")
@@ -191,8 +191,8 @@ def _cmd_repair(args: argparse.Namespace) -> int:
 
     output = Path(args.output)
     with open(output, "w", encoding="utf-8") as f:
-        for r in repairs:
-            f.write(r.model_dump_json() + "\n")
+        for repair in repairs:
+            f.write(repair.model_dump_json() + "\n")
 
     print(f"\nRepair tested {len(repairs)} failures")
     print(f"  Model: {args.model}")
@@ -255,7 +255,8 @@ def main(argv: list[str] | None = None) -> int:
     # -- run --
     run_p = subparsers.add_parser("run", help="Run evaluation pipeline")
     run_p.add_argument(
-        "--models", nargs="+",
+        "--models",
+        nargs="+",
         required=not bool(default_model),
         default=[default_model] if default_model else None,
         help="Models to evaluate (or set REASONBENCH_MODEL env var)",
@@ -275,28 +276,36 @@ def main(argv: list[str] | None = None) -> int:
     # -- analyze --
     analyze_p = subparsers.add_parser("analyze", help="Analyze evaluation results")
     analyze_p.add_argument("results", help="Path to results JSONL file")
-    analyze_p.add_argument("--top", type=int, default=10, help="Number of top failures to show")
+    analyze_p.add_argument(
+        "--top", type=int, default=10, help="Number of top failures to show"
+    )
 
     # -- train --
     train_p = subparsers.add_parser("train", help="Train failure predictor")
     train_p.add_argument("results", help="Path to results JSONL file")
-    train_p.add_argument("--output", "-o", default="predictor.pkl", help="Output model file")
-    train_p.add_argument("--threshold", type=int, default=4, help="Score threshold for failure label")
+    train_p.add_argument(
+        "--output", "-o", default="predictor.pkl", help="Output model file"
+    )
+    train_p.add_argument(
+        "--threshold", type=int, default=4, help="Score threshold for failure label"
+    )
 
     # -- evolve --
     evolve_p = subparsers.add_parser(
         "evolve", help="Evolve hard-case prompts into harder versions"
     )
     evolve_p.add_argument("results", help="Path to results JSONL file")
+    evolve_p.add_argument("--model", required=True, help="LLM model for evolution")
     evolve_p.add_argument(
-        "--model", required=True, help="LLM model for evolution"
-    )
-    evolve_p.add_argument(
-        "--min-score", type=int, default=6,
+        "--min-score",
+        type=int,
+        default=6,
         help="Minimum score threshold for hard cases (default: 6)",
     )
     evolve_p.add_argument(
-        "--output", "-o", default="evolved.jsonl",
+        "--output",
+        "-o",
+        default="evolved.jsonl",
         help="Output file for evolved prompts (default: evolved.jsonl)",
     )
 
@@ -305,11 +314,11 @@ def main(argv: list[str] | None = None) -> int:
         "repair", help="Test model self-repair on failures"
     )
     repair_p.add_argument("results", help="Path to results JSONL file")
+    repair_p.add_argument("--model", required=True, help="LLM model for repair testing")
     repair_p.add_argument(
-        "--model", required=True, help="LLM model for repair testing"
-    )
-    repair_p.add_argument(
-        "--output", "-o", default="repairs.jsonl",
+        "--output",
+        "-o",
+        default="repairs.jsonl",
         help="Output file for repair results (default: repairs.jsonl)",
     )
 
@@ -318,14 +327,19 @@ def main(argv: list[str] | None = None) -> int:
         "experiment", help="Run multi-round evaluation experiment"
     )
     exp_p.add_argument(
-        "--models", nargs="+", required=True,
+        "--models",
+        nargs="+",
+        required=True,
         help="Models to evaluate",
     )
     exp_p.add_argument(
-        "--judge", required=True, help="Judge model",
+        "--judge",
+        required=True,
+        help="Judge model",
     )
     exp_p.add_argument(
-        "--evolve-model", required=True,
+        "--evolve-model",
+        required=True,
         help="Model for prompt evolution",
     )
     exp_p.add_argument("--rounds", type=int, default=3)

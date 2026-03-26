@@ -77,9 +77,7 @@ class Experiment:
             if not prompts:
                 break
 
-            logger.info(
-                "Round %d: evaluating %d prompts", round_num, len(prompts)
-            )
+            logger.info("Round %d: evaluating %d prompts", round_num, len(prompts))
             results = self._evaluate_prompts(prompts, round_path)
             all_results.extend(results)
             last_round_results = results
@@ -110,9 +108,7 @@ class Experiment:
         repair_results = []
         if all_results:
             extractor = RootCauseExtractor(all_results)
-            root_cause_patterns = extractor.extract_patterns(
-                min_frequency=1
-            )
+            root_cause_patterns = extractor.extract_patterns(min_frequency=1)
             tester = SelfRepairTester(self._client)
             repair_results = tester.test_repair_batch(last_round_results)
 
@@ -120,13 +116,9 @@ class Experiment:
             "rounds": round_summaries,
             "root_cause_patterns": root_cause_patterns,
             "repair_results": repair_results,
-            "total_prompts": sum(
-                r.prompts_evaluated for r in round_summaries
-            ),
+            "total_prompts": sum(r.prompts_evaluated for r in round_summaries),
             "total_failures": sum(
-                1
-                for r in all_results
-                if r.validation.reasoning_flawed
+                1 for r in all_results if r.validation.reasoning_flawed
             ),
         }
 
@@ -148,9 +140,7 @@ class Experiment:
                 reasoning=first_response.reasoning,
             )
 
-            unjustified = sum(
-                1 for a in validation.assumptions if not a.justified
-            )
+            unjustified = sum(1 for a in validation.assumptions if not a.justified)
             answers = {r.answer for r in model_responses.values()}
             disagreement = len(answers) > 1
 

@@ -40,7 +40,8 @@ class FailureClusterer:
             failure_types = Counter(r.failure_type.value for r in cluster_results)
             summaries[label] = {
                 "size": len(cluster_results),
-                "avg_score": sum(r.score for r in cluster_results) / len(cluster_results),
+                "avg_score": sum(r.score for r in cluster_results)
+                / len(cluster_results),
                 "dominant_failure_type": failure_types.most_common(1)[0][0],
                 "failure_type_distribution": dict(failure_types),
             }

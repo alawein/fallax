@@ -41,19 +41,25 @@ def results_file(tmp_path: Path) -> Path:
 class TestRunSubcommand:
     def test_run_returns_zero(self, params_dir, tmp_path):
         output = tmp_path / "out.jsonl"
-        mock = MockClient(
-            responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT
-        )
+        mock = MockClient(responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT)
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "run",
-                "--models", "m",
-                "--judge", "j",
-                "--count", "1",
-                "--output", str(output),
-                "--params-dir", str(params_dir),
-                "--seed", "42",
-            ])
+            code = main(
+                [
+                    "run",
+                    "--models",
+                    "m",
+                    "--judge",
+                    "j",
+                    "--count",
+                    "1",
+                    "--output",
+                    str(output),
+                    "--params-dir",
+                    str(params_dir),
+                    "--seed",
+                    "42",
+                ]
+            )
         assert code == 0
         assert output.exists()
 
@@ -75,18 +81,26 @@ class TestAnalyzeSubcommand:
 class TestTrainSubcommand:
     def test_train_returns_zero(self, results_file, tmp_path):
         model_path = tmp_path / "predictor.pkl"
-        code = main([
-            "train", str(results_file),
-            "--output", str(model_path),
-        ])
+        code = main(
+            [
+                "train",
+                str(results_file),
+                "--output",
+                str(model_path),
+            ]
+        )
         assert code == 0
         assert model_path.exists()
 
     def test_train_missing_file_returns_error(self, tmp_path):
-        code = main([
-            "train", str(tmp_path / "nonexistent.jsonl"),
-            "--output", str(tmp_path / "model.pkl"),
-        ])
+        code = main(
+            [
+                "train",
+                str(tmp_path / "nonexistent.jsonl"),
+                "--output",
+                str(tmp_path / "model.pkl"),
+            ]
+        )
         assert code == 1
 
 
@@ -95,20 +109,29 @@ class TestEvolveSubcommand:
         output = tmp_path / "evolved.jsonl"
         mock = MockClient(default="A harder evolved prompt.")
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "evolve", str(results_file),
-                "--model", "m",
-                "--output", str(output),
-            ])
+            code = main(
+                [
+                    "evolve",
+                    str(results_file),
+                    "--model",
+                    "m",
+                    "--output",
+                    str(output),
+                ]
+            )
         assert code == 0
 
     def test_evolve_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="evolved")
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "evolve", str(tmp_path / "nonexistent.jsonl"),
-                "--model", "m",
-            ])
+            code = main(
+                [
+                    "evolve",
+                    str(tmp_path / "nonexistent.jsonl"),
+                    "--model",
+                    "m",
+                ]
+            )
         assert code == 1
 
 
@@ -117,20 +140,29 @@ class TestRepairSubcommand:
         output = tmp_path / "repairs.jsonl"
         mock = MockClient(default="I was wrong. The correct answer is X.")
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "repair", str(results_file),
-                "--model", "m",
-                "--output", str(output),
-            ])
+            code = main(
+                [
+                    "repair",
+                    str(results_file),
+                    "--model",
+                    "m",
+                    "--output",
+                    str(output),
+                ]
+            )
         assert code == 0
 
     def test_repair_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="fixed")
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "repair", str(tmp_path / "nonexistent.jsonl"),
-                "--model", "m",
-            ])
+            code = main(
+                [
+                    "repair",
+                    str(tmp_path / "nonexistent.jsonl"),
+                    "--model",
+                    "m",
+                ]
+            )
         assert code == 1
 
 
@@ -146,16 +178,25 @@ class TestExperimentSubcommand:
             default=MODEL_RESPONSE_TEXT,
         )
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "experiment",
-                "--models", "m",
-                "--judge", "j",
-                "--evolve-model", "e",
-                "--rounds", "2",
-                "--count", "1",
-                "--output-dir", str(output_dir),
-                "--params-dir", str(params_dir),
-            ])
+            code = main(
+                [
+                    "experiment",
+                    "--models",
+                    "m",
+                    "--judge",
+                    "j",
+                    "--evolve-model",
+                    "e",
+                    "--rounds",
+                    "2",
+                    "--count",
+                    "1",
+                    "--output-dir",
+                    str(output_dir),
+                    "--params-dir",
+                    str(params_dir),
+                ]
+            )
         assert code == 0
         assert (output_dir / "round_1.jsonl").exists()
         assert (output_dir / "report.json").exists()
@@ -172,17 +213,27 @@ class TestExperimentSubcommand:
             default=MODEL_RESPONSE_TEXT,
         )
         with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
-            code = main([
-                "experiment",
-                "--models", "m",
-                "--judge", "j",
-                "--evolve-model", "e",
-                "--rounds", "1",
-                "--count", "1",
-                "--output-dir", str(output_dir),
-                "--params-dir", str(params_dir),
-                "--seed", "42",
-            ])
+            code = main(
+                [
+                    "experiment",
+                    "--models",
+                    "m",
+                    "--judge",
+                    "j",
+                    "--evolve-model",
+                    "e",
+                    "--rounds",
+                    "1",
+                    "--count",
+                    "1",
+                    "--output-dir",
+                    str(output_dir),
+                    "--params-dir",
+                    str(params_dir),
+                    "--seed",
+                    "42",
+                ]
+            )
         assert code == 0
 
 

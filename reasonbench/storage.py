@@ -27,9 +27,7 @@ class JsonlStore:
             for line in f:
                 line = line.strip()
                 if line:
-                    results.append(
-                        EvaluationResult.model_validate_json(line)
-                    )
+                    results.append(EvaluationResult.model_validate_json(line))
         return results
 
     def count(self) -> int:

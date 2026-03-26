@@ -118,9 +118,10 @@ class TestSeverity:
 
 class TestHardness:
     def test_zero(self):
-        assert Scorer.hardness(
-            wrong_models=0, reasoning_failures=0, repair_failures=0
-        ) == 0
+        assert (
+            Scorer.hardness(wrong_models=0, reasoning_failures=0, repair_failures=0)
+            == 0
+        )
 
     def test_formula(self):
         result = Scorer.hardness(

@@ -1,7 +1,6 @@
-from pathlib import Path
 import pytest
+
 from reasonbench.predictor import FailurePredictor
-from reasonbench.taxonomy import FailureType
 from tests.conftest import make_result
 
 
@@ -10,25 +9,46 @@ def training_data():
     """20 results with varied scores and distinct prompt texts."""
     data = []
     high_words = [
-        "contradictory constraints impossible", "recursive definition undefined",
-        "edge case boundary fails", "implicit assumption hidden rule",
-        "overconstrained no solution exists", "ambiguous specification unclear",
-        "multi step dependency chain error", "false analogy pattern mismatch",
-        "self consistency logical flaw", "hidden variable missing information",
+        "contradictory constraints impossible",
+        "recursive definition undefined",
+        "edge case boundary fails",
+        "implicit assumption hidden rule",
+        "overconstrained no solution exists",
+        "ambiguous specification unclear",
+        "multi step dependency chain error",
+        "false analogy pattern mismatch",
+        "self consistency logical flaw",
+        "hidden variable missing information",
     ]
     low_words = [
-        "simple arithmetic addition", "basic string reversal",
-        "trivial sorting ascending", "easy boolean logic gate",
-        "straightforward lookup table", "plain concatenation operation",
-        "direct mapping function", "clear input validation",
-        "obvious pattern matching", "standard list filtering",
+        "simple arithmetic addition",
+        "basic string reversal",
+        "trivial sorting ascending",
+        "easy boolean logic gate",
+        "straightforward lookup table",
+        "plain concatenation operation",
+        "direct mapping function",
+        "clear input validation",
+        "obvious pattern matching",
+        "standard list filtering",
     ]
     for i, text in enumerate(high_words):
-        data.append(make_result(prompt_id=f"high-{i}", prompt_text=text, score=7, reasoning_flawed=True))
+        data.append(
+            make_result(
+                prompt_id=f"high-{i}", prompt_text=text, score=7, reasoning_flawed=True
+            )
+        )
     for i, text in enumerate(low_words):
         # Alternate between score=1 and score=3 so threshold=2 captures the 3s
         score = 3 if i % 2 == 0 else 1
-        data.append(make_result(prompt_id=f"low-{i}", prompt_text=text, score=score, reasoning_flawed=False))
+        data.append(
+            make_result(
+                prompt_id=f"low-{i}",
+                prompt_text=text,
+                score=score,
+                reasoning_flawed=False,
+            )
+        )
     return data
 
 

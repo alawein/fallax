@@ -16,18 +16,24 @@ def evolver():
 def hard_results():
     return [
         make_result(
-            prompt_id="hard-1", score=8, reasoning_flawed=True,
+            prompt_id="hard-1",
+            score=8,
+            reasoning_flawed=True,
             prompt_text="original hard prompt",
             failure_type=FailureType.CONTRADICTION,
             assumptions=[Assumption(text="x is positive", justified=False)],
         ),
         make_result(
-            prompt_id="hard-2", score=7, reasoning_flawed=True,
+            prompt_id="hard-2",
+            score=7,
+            reasoning_flawed=True,
             prompt_text="another hard prompt",
             failure_type=FailureType.UNSTATED_ASSUMPTION,
         ),
         make_result(
-            prompt_id="easy-1", score=2, reasoning_flawed=False,
+            prompt_id="easy-1",
+            score=2,
+            reasoning_flawed=False,
             prompt_text="easy prompt",
             failure_type=FailureType.OVERGENERALIZATION,
         ),

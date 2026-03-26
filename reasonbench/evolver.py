@@ -54,13 +54,10 @@ class PromptEvolver:
             parts.append(
                 f"Reasoning flawed at step {result.validation.first_error_step}"
             )
-        unjustified = [
-            a for a in result.validation.assumptions if not a.justified
-        ]
+        unjustified = [a for a in result.validation.assumptions if not a.justified]
         if unjustified:
             parts.append(
-                "Unjustified assumptions: "
-                + ", ".join(a.text for a in unjustified)
+                "Unjustified assumptions: " + ", ".join(a.text for a in unjustified)
             )
         if result.validation.counterfactual_fail:
             parts.append("Failed counterfactual test")

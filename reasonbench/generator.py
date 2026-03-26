@@ -53,9 +53,7 @@ class PromptGenerator:
                 with open(path, encoding="utf-8") as f:
                     self._param_banks[template_id] = json.load(f)
 
-    def generate_for_template(
-        self, template_id: str, count: int
-    ) -> list[Prompt]:
+    def generate_for_template(self, template_id: str, count: int) -> list[Prompt]:
         """Generate N prompts from a specific template."""
         bank = self._param_banks.get(template_id, [])
         if not bank:
@@ -81,9 +79,7 @@ class PromptGenerator:
     def generate_batch(self, count: int = 100) -> list[Prompt]:
         """Generate a batch of prompts following distribution targets."""
         available = {
-            tid: pct
-            for tid, pct in DISTRIBUTION.items()
-            if tid in self._param_banks
+            tid: pct for tid, pct in DISTRIBUTION.items() if tid in self._param_banks
         }
         if not available:
             return []

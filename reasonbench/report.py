@@ -49,9 +49,7 @@ class ReportBuilder:
             fixed = sum(1 for r in repairs if r.is_fixed is True)
             repair_rate = fixed / len(repairs)
 
-        patterns: list[RootCausePattern] = self._data.get(
-            "root_cause_patterns", []
-        )
+        patterns: list[RootCausePattern] = self._data.get("root_cause_patterns", [])
         top_patterns = [
             {
                 "pattern": p.pattern,
@@ -103,28 +101,31 @@ class ReportBuilder:
             )
 
         total_rounds = report["total_rounds"]
-        lines.extend([
-            "",
-            "## Trends",
-            "",
-            f"- **Score delta:** {report['score_delta']:+.2f} "
-            f"(round 1 to round {total_rounds})",
-            f"- **Failure rate delta:** {report['failure_delta']:+.1%}",
-            f"- **Hardening rate:** {report['hardening_rate']:.1%}",
-        ])
+        lines.extend(
+            [
+                "",
+                "## Trends",
+                "",
+                f"- **Score delta:** {report['score_delta']:+.2f} "
+                f"(round 1 to round {total_rounds})",
+                f"- **Failure rate delta:** {report['failure_delta']:+.1%}",
+                f"- **Hardening rate:** {report['hardening_rate']:.1%}",
+            ]
+        )
 
         if report["repair_success_rate"] is not None:
             lines.append(
-                f"- **Repair success rate:** "
-                f"{report['repair_success_rate']:.1%}"
+                f"- **Repair success rate:** {report['repair_success_rate']:.1%}"
             )
 
         if report["top_patterns"]:
-            lines.extend([
-                "",
-                "## Top Root Cause Patterns",
-                "",
-            ])
+            lines.extend(
+                [
+                    "",
+                    "## Top Root Cause Patterns",
+                    "",
+                ]
+            )
             for p in report["top_patterns"]:
                 models = ", ".join(p["models_affected"])
                 lines.append(

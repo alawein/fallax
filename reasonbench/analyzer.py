@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 
 from .models import EvaluationResult
-from .taxonomy import Severity
 
 
 class Analyzer:
@@ -17,12 +16,20 @@ class Analyzer:
     def summary(self) -> dict:
         n = len(self._results)
         if n == 0:
-            return {"total": 0, "severity_counts": {}, "avg_score": 0.0, "failure_rate": 0.0}
+            return {
+                "total": 0,
+                "severity_counts": {},
+                "avg_score": 0.0,
+                "failure_rate": 0.0,
+            }
         return {
             "total": n,
             "severity_counts": dict(Counter(r.severity for r in self._results)),
             "avg_score": sum(r.score for r in self._results) / n,
-            "failure_rate": sum(1 for r in self._results if r.validation.reasoning_flawed) / n,
+            "failure_rate": sum(
+                1 for r in self._results if r.validation.reasoning_flawed
+            )
+            / n,
         }
 
     def failure_rate_by_type(self) -> dict[str, float]:
@@ -48,11 +55,18 @@ class Analyzer:
     def disagreement_rate(self) -> float:
         if not self._results:
             return 0.0
-        disagreements = sum(1 for r in self._results if len({resp.answer for resp in r.models.values()}) > 1)
+        disagreements = sum(
+            1
+            for r in self._results
+            if len({resp.answer for resp in r.models.values()}) > 1
+        )
         return disagreements / len(self._results)
 
     def assumption_density(self) -> float:
         if not self._results:
             return 0.0
-        total = sum(sum(1 for a in r.validation.assumptions if not a.justified) for r in self._results)
+        total = sum(
+            sum(1 for a in r.validation.assumptions if not a.justified)
+            for r in self._results
+        )
         return total / len(self._results)

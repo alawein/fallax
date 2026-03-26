@@ -11,7 +11,9 @@ def results_with_patterns():
     """Results with recurring assumption patterns."""
     return [
         make_result(
-            prompt_id="1", score=7, reasoning_flawed=True,
+            prompt_id="1",
+            score=7,
+            reasoning_flawed=True,
             failure_type=FailureType.CONTRADICTION,
             model_name="model-a",
             assumptions=[
@@ -20,7 +22,9 @@ def results_with_patterns():
             ],
         ),
         make_result(
-            prompt_id="2", score=6, reasoning_flawed=True,
+            prompt_id="2",
+            score=6,
+            reasoning_flawed=True,
             failure_type=FailureType.UNSTATED_ASSUMPTION,
             model_name="model-a",
             assumptions=[
@@ -28,7 +32,9 @@ def results_with_patterns():
             ],
         ),
         make_result(
-            prompt_id="3", score=8, reasoning_flawed=True,
+            prompt_id="3",
+            score=8,
+            reasoning_flawed=True,
             failure_type=FailureType.CONTRADICTION,
             model_name="model-b",
             assumptions=[
@@ -37,7 +43,9 @@ def results_with_patterns():
             ],
         ),
         make_result(
-            prompt_id="4", score=5, reasoning_flawed=True,
+            prompt_id="4",
+            score=5,
+            reasoning_flawed=True,
             failure_type=FailureType.OVERGENERALIZATION,
             model_name="model-b",
             assumptions=[
@@ -45,7 +53,9 @@ def results_with_patterns():
             ],
         ),
         make_result(
-            prompt_id="5", score=1, reasoning_flawed=False,
+            prompt_id="5",
+            score=1,
+            reasoning_flawed=False,
             failure_type=FailureType.OVERGENERALIZATION,
             model_name="model-a",
             assumptions=[
@@ -123,11 +133,15 @@ class TestRootCauseExtractor:
     def test_case_insensitive_matching(self):
         results = [
             make_result(
-                prompt_id="1", score=7, reasoning_flawed=True,
+                prompt_id="1",
+                score=7,
+                reasoning_flawed=True,
                 assumptions=[Assumption(text="Input Is Positive", justified=False)],
             ),
             make_result(
-                prompt_id="2", score=6, reasoning_flawed=True,
+                prompt_id="2",
+                score=6,
+                reasoning_flawed=True,
                 assumptions=[Assumption(text="input is positive", justified=False)],
             ),
         ]

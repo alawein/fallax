@@ -1,8 +1,8 @@
 from reasonbench.taxonomy import (
+    FAILURE_CATEGORY_MAP,
     FailureCategory,
     FailureType,
     Severity,
-    FAILURE_CATEGORY_MAP,
     get_category,
 )
 
@@ -57,20 +57,44 @@ class TestCategoryMap:
         assert set(FAILURE_CATEGORY_MAP.keys()) == set(FailureType)
 
     def test_logic_error_subtypes(self):
-        assert FAILURE_CATEGORY_MAP[FailureType.CONTRADICTION] == FailureCategory.LOGIC_ERROR
-        assert FAILURE_CATEGORY_MAP[FailureType.INVALID_INFERENCE] == FailureCategory.LOGIC_ERROR
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.CONTRADICTION]
+            == FailureCategory.LOGIC_ERROR
+        )
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.INVALID_INFERENCE]
+            == FailureCategory.LOGIC_ERROR
+        )
 
     def test_assumption_error_subtypes(self):
-        assert FAILURE_CATEGORY_MAP[FailureType.UNSTATED_ASSUMPTION] == FailureCategory.ASSUMPTION_ERROR
-        assert FAILURE_CATEGORY_MAP[FailureType.UNJUSTIFIED_ASSUMPTION] == FailureCategory.ASSUMPTION_ERROR
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.UNSTATED_ASSUMPTION]
+            == FailureCategory.ASSUMPTION_ERROR
+        )
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.UNJUSTIFIED_ASSUMPTION]
+            == FailureCategory.ASSUMPTION_ERROR
+        )
 
     def test_constraint_violation_subtypes(self):
-        assert FAILURE_CATEGORY_MAP[FailureType.IGNORED_CONSTRAINT] == FailureCategory.CONSTRAINT_VIOLATION
-        assert FAILURE_CATEGORY_MAP[FailureType.PARTIAL_SATISFACTION] == FailureCategory.CONSTRAINT_VIOLATION
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.IGNORED_CONSTRAINT]
+            == FailureCategory.CONSTRAINT_VIOLATION
+        )
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.PARTIAL_SATISFACTION]
+            == FailureCategory.CONSTRAINT_VIOLATION
+        )
 
     def test_generalization_error_subtypes(self):
-        assert FAILURE_CATEGORY_MAP[FailureType.OVERGENERALIZATION] == FailureCategory.GENERALIZATION_ERROR
-        assert FAILURE_CATEGORY_MAP[FailureType.PATTERN_MISAPPLICATION] == FailureCategory.GENERALIZATION_ERROR
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.OVERGENERALIZATION]
+            == FailureCategory.GENERALIZATION_ERROR
+        )
+        assert (
+            FAILURE_CATEGORY_MAP[FailureType.PATTERN_MISAPPLICATION]
+            == FailureCategory.GENERALIZATION_ERROR
+        )
 
 
 class TestGetCategory:

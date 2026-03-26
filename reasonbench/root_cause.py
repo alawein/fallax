@@ -18,9 +18,7 @@ class RootCauseExtractor:
     def __init__(self, results: list[EvaluationResult]) -> None:
         self._results = results
 
-    def extract_patterns(
-        self, min_frequency: int = 2
-    ) -> list[RootCausePattern]:
+    def extract_patterns(self, min_frequency: int = 2) -> list[RootCausePattern]:
         """Extract root cause patterns from failures.
 
         Only considers results with flawed reasoning. Groups unjustified
@@ -28,9 +26,7 @@ class RootCauseExtractor:
         frequency (descending).
         """
         # Group results by unjustified assumption text
-        pattern_results: dict[str, list[EvaluationResult]] = defaultdict(
-            list
-        )
+        pattern_results: dict[str, list[EvaluationResult]] = defaultdict(list)
         for r in self._results:
             if not r.validation.reasoning_flawed:
                 continue
@@ -49,16 +45,10 @@ class RootCauseExtractor:
                     pattern=pattern_text,
                     frequency=len(matching),
                     models_affected=sorted(
-                        {
-                            model
-                            for r in matching
-                            for model in r.models
-                        }
+                        {model for r in matching for model in r.models}
                     ),
                     example_prompt=matching[0].prompt_text,
-                    failure_types=sorted(
-                        {r.failure_type.value for r in matching}
-                    ),
+                    failure_types=sorted({r.failure_type.value for r in matching}),
                 )
             )
         return sorted(patterns, key=lambda p: p.frequency, reverse=True)

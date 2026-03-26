@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import Any
 
 from .client import LLMClient
 from .models import Assumption, ValidationResult
@@ -47,23 +48,23 @@ class Evaluator:
             final_answer_correct=correct,
         )
 
-    def _judge(self, validator_prompt: str, schema_hint: str) -> dict:
+    def _judge(self, validator_prompt: str, schema_hint: str) -> dict[str, Any]:
         """Call judge LLM and parse JSON response."""
         full_prompt = (
             f"{validator_prompt}\n\n"
             f"Respond ONLY with valid JSON matching: {schema_hint}"
         )
-        response = self._client.complete(
-            full_prompt, model=self._judge_model
-        )
+        response = self._client.complete(full_prompt, model=self._judge_model)
         return self._parse_json(response)
 
     @staticmethod
-    def _parse_json(text: str) -> dict:
+    def _parse_json(text: str) -> dict[str, Any]:
         """Extract JSON from text. Tries full parse, then embedded JSON."""
         text = text.strip()
         try:
-            return json.loads(text)
+            parsed = json.loads(text)
+            if isinstance(parsed, dict):
+                return parsed
         except json.JSONDecodeError:
             pass
         # Try to find JSON object embedded in text
@@ -71,21 +72,21 @@ class Evaluator:
         end = text.rfind("}") + 1
         if start >= 0 and end > start:
             try:
-                return json.loads(text[start:end])
+                parsed = json.loads(text[start:end])
+                if isinstance(parsed, dict):
+                    return parsed
             except json.JSONDecodeError:
                 pass
         return {}
 
     def _run_reasoning_critic(
         self, prompt: str, answer: str, reasoning: str
-    ) -> dict:
+    ) -> dict[str, Any]:
         schema = (
             '{"reasoning_flawed": bool, "first_error_step": int|null, '
             '"explanation": "string"}'
         )
-        validator_prompt = ValidatorPack.reasoning_critic(
-            prompt, answer, reasoning
-        )
+        validator_prompt = ValidatorPack.reasoning_critic(prompt, answer, reasoning)
         try:
             result = self._judge(validator_prompt, schema)
             return {
@@ -109,13 +110,9 @@ class Evaluator:
             logger.debug("Assumption extractor parse failed", exc_info=True)
             return []
 
-    def _run_counterfactual_test(
-        self, reasoning: str, perturbation: str
-    ) -> bool:
+    def _run_counterfactual_test(self, reasoning: str, perturbation: str) -> bool:
         schema = '{"holds": bool}'
-        validator_prompt = ValidatorPack.counterfactual_test(
-            reasoning, perturbation
-        )
+        validator_prompt = ValidatorPack.counterfactual_test(reasoning, perturbation)
         try:
             result = self._judge(validator_prompt, schema)
             return not result.get("holds", True)
@@ -128,11 +125,10 @@ class Evaluator:
         validator_prompt = ValidatorPack.adversarial_challenger(reasoning)
         try:
             result = self._judge(validator_prompt, schema)
-            return result.get("issues", [])
+            raw = result.get("issues", [])
+            return [str(i) for i in raw] if isinstance(raw, list) else []
         except Exception:
-            logger.debug(
-                "Adversarial challenger parse failed", exc_info=True
-            )
+            logger.debug("Adversarial challenger parse failed", exc_info=True)
             return []
 
     def _run_truth_judge(self, prompt: str, answer: str) -> bool | None:

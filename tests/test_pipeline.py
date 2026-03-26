@@ -57,7 +57,7 @@ class TestPipeline:
         )
         pipeline.run(count=2)
         assert output_path.exists()
-        lines = [l for l in output_path.read_text().strip().split("\n") if l]
+        lines = [line for line in output_path.read_text().strip().split("\n") if line]
         assert len(lines) == 2
 
     def test_dual_model_disagreement(self, params_dir, output_path):
@@ -90,7 +90,9 @@ class TestPipeline:
         assert "model-a" in results[0].models
         assert "model-b" in results[0].models
 
-    def test_score_and_severity_populated(self, pipeline_client, params_dir, output_path):
+    def test_score_and_severity_populated(
+        self, pipeline_client, params_dir, output_path
+    ):
         pipeline = Pipeline(
             client=pipeline_client,
             models=["model-a"],

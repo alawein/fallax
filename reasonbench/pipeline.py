@@ -28,9 +28,7 @@ class Pipeline:
         params_dir: Path | None = None,
         seed: int | None = None,
     ) -> None:
-        self._generator = PromptGenerator(
-            params_dir=params_dir, seed=seed
-        )
+        self._generator = PromptGenerator(params_dir=params_dir, seed=seed)
         self._runner = ModelRunner(client, models)
         self._evaluator = Evaluator(client, judge_model)
         self._store = JsonlStore(output_path)
@@ -62,9 +60,7 @@ class Pipeline:
             )
 
             # Compute score
-            unjustified = sum(
-                1 for a in validation.assumptions if not a.justified
-            )
+            unjustified = sum(1 for a in validation.assumptions if not a.justified)
             answers = {r.answer for r in model_responses.values()}
             disagreement = len(answers) > 1
 

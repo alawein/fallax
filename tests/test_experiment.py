@@ -3,7 +3,7 @@ import json
 import pytest
 
 from reasonbench.experiment import Experiment
-from reasonbench.models import ExperimentRound, RootCausePattern, RepairResult
+from reasonbench.models import ExperimentRound, RepairResult
 from tests.conftest import JUDGE_RESPONSES, MODEL_RESPONSE_TEXT, MockClient
 
 
@@ -50,9 +50,7 @@ class TestExperiment:
         assert "total_prompts" in result
         assert "total_failures" in result
 
-    def test_run_creates_round_files(
-        self, experiment_client, params_dir, tmp_path
-    ):
+    def test_run_creates_round_files(self, experiment_client, params_dir, tmp_path):
         output_dir = tmp_path / "experiment"
         exp = Experiment(
             client=experiment_client,
@@ -101,9 +99,7 @@ class TestExperiment:
         assert result["rounds"][0].round_number == 1
         assert result["rounds"][1].round_number == 2
 
-    def test_round_metadata_populated(
-        self, experiment_client, params_dir, tmp_path
-    ):
+    def test_round_metadata_populated(self, experiment_client, params_dir, tmp_path):
         output_dir = tmp_path / "experiment"
         exp = Experiment(
             client=experiment_client,
@@ -120,9 +116,7 @@ class TestExperiment:
         assert r1.avg_score > 0
         assert r1.hard_case_count > 0
 
-    def test_total_prompts_sums_rounds(
-        self, experiment_client, params_dir, tmp_path
-    ):
+    def test_total_prompts_sums_rounds(self, experiment_client, params_dir, tmp_path):
         output_dir = tmp_path / "experiment"
         exp = Experiment(
             client=experiment_client,
@@ -153,9 +147,7 @@ class TestExperiment:
 
         assert isinstance(result["root_cause_patterns"], list)
 
-    def test_repair_results_returned(
-        self, experiment_client, params_dir, tmp_path
-    ):
+    def test_repair_results_returned(self, experiment_client, params_dir, tmp_path):
         output_dir = tmp_path / "experiment"
         exp = Experiment(
             client=experiment_client,
@@ -187,9 +179,7 @@ class TestExperiment:
 
         assert len(result["rounds"]) == 1
 
-    def test_last_round_does_not_evolve(
-        self, experiment_client, params_dir, tmp_path
-    ):
+    def test_last_round_does_not_evolve(self, experiment_client, params_dir, tmp_path):
         output_dir = tmp_path / "experiment"
         exp = Experiment(
             client=experiment_client,

@@ -47,8 +47,4 @@ class Scorer:
         repair_failures: int,
     ) -> int:
         """Compute prompt hardness for ranking difficulty."""
-        return (
-            wrong_models * 2
-            + reasoning_failures * 2
-            + repair_failures * 3
-        )
+        return wrong_models * 2 + reasoning_failures * 2 + repair_failures * 3

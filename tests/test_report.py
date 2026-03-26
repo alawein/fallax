@@ -1,6 +1,6 @@
 import pytest
 
-from reasonbench.models import ExperimentRound, RootCausePattern, RepairResult
+from reasonbench.models import ExperimentRound, RepairResult, RootCausePattern
 from reasonbench.report import ReportBuilder
 
 
@@ -68,10 +68,16 @@ class TestReportBuilder:
         builder = ReportBuilder(experiment_data)
         report = builder.build()
         expected_keys = {
-            "total_rounds", "total_prompts", "total_failures",
-            "score_trend", "failure_trend", "score_delta",
-            "failure_delta", "hardening_rate",
-            "repair_success_rate", "top_patterns",
+            "total_rounds",
+            "total_prompts",
+            "total_failures",
+            "score_trend",
+            "failure_trend",
+            "score_delta",
+            "failure_delta",
+            "hardening_rate",
+            "repair_success_rate",
+            "top_patterns",
         }
         assert expected_keys <= set(report.keys())
 

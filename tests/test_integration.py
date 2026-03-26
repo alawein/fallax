@@ -7,6 +7,7 @@ import pytest
 from reasonbench import (
     Assumption,
     EvaluationResult,
+    FailureCategory,
     FailureType,
     JsonlStore,
     ModelResponse,
@@ -17,7 +18,6 @@ from reasonbench import (
     ValidationResult,
     ValidatorPack,
     get_category,
-    FailureCategory,
 )
 
 
@@ -73,9 +73,7 @@ class TestEndToEnd:
         )
         assert len(critic) > 0
 
-        assumptions_prompt = ValidatorPack.assumption_extractor(
-            model_b.reasoning
-        )
+        assumptions_prompt = ValidatorPack.assumption_extractor(model_b.reasoning)
         assert len(assumptions_prompt) > 0
 
         # 6. Create validation result (simulated validator outputs)

@@ -1,8 +1,8 @@
 import pytest
 
 from reasonbench.evaluator import Evaluator
-from reasonbench.models import Assumption, ValidationResult
-from tests.conftest import JUDGE_RESPONSES, MockClient
+from reasonbench.models import ValidationResult
+from tests.conftest import MockClient
 
 
 @pytest.fixture()
@@ -21,19 +21,25 @@ class TestEvaluator:
 
     def test_reasoning_flawed_detected(self, evaluator):
         result = evaluator.evaluate(
-            prompt="p", answer="a", reasoning="r",
+            prompt="p",
+            answer="a",
+            reasoning="r",
         )
         assert result.reasoning_flawed is True
 
     def test_first_error_step_extracted(self, evaluator):
         result = evaluator.evaluate(
-            prompt="p", answer="a", reasoning="r",
+            prompt="p",
+            answer="a",
+            reasoning="r",
         )
         assert result.first_error_step == 2
 
     def test_assumptions_extracted(self, evaluator):
         result = evaluator.evaluate(
-            prompt="p", answer="a", reasoning="r",
+            prompt="p",
+            answer="a",
+            reasoning="r",
         )
         assert len(result.assumptions) == 1
         assert result.assumptions[0].text == "x is positive"
@@ -41,20 +47,26 @@ class TestEvaluator:
 
     def test_counterfactual_fail_detected(self, evaluator):
         result = evaluator.evaluate(
-            prompt="p", answer="a", reasoning="r",
+            prompt="p",
+            answer="a",
+            reasoning="r",
         )
         assert result.counterfactual_fail is True
 
     def test_adversarial_issues_extracted(self, evaluator):
         result = evaluator.evaluate(
-            prompt="p", answer="a", reasoning="r",
+            prompt="p",
+            answer="a",
+            reasoning="r",
         )
         assert len(result.adversarial_issues) >= 1
         assert "unjustified" in result.adversarial_issues[0].lower()
 
     def test_final_answer_correctness(self, evaluator):
         result = evaluator.evaluate(
-            prompt="p", answer="a", reasoning="r",
+            prompt="p",
+            answer="a",
+            reasoning="r",
         )
         assert result.final_answer_correct is False
 

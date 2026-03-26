@@ -2,13 +2,14 @@ import pytest
 
 from reasonbench.models import RepairResult
 from reasonbench.repair import SelfRepairTester
-from reasonbench.taxonomy import FailureType
 from tests.conftest import MockClient, make_result
 
 
 @pytest.fixture()
 def tester():
-    client = MockClient(default="I was wrong because I assumed X. The correct answer is Y.")
+    client = MockClient(
+        default="I was wrong because I assumed X. The correct answer is Y."
+    )
     return SelfRepairTester(client=client)
 
 
@@ -16,18 +17,27 @@ def tester():
 def failed_results():
     return [
         make_result(
-            prompt_id="f1", score=7, reasoning_flawed=True,
-            prompt_text="hard prompt 1", answer="wrong answer 1",
+            prompt_id="f1",
+            score=7,
+            reasoning_flawed=True,
+            prompt_text="hard prompt 1",
+            answer="wrong answer 1",
             model_name="model-a",
         ),
         make_result(
-            prompt_id="f2", score=6, reasoning_flawed=True,
-            prompt_text="hard prompt 2", answer="wrong answer 2",
+            prompt_id="f2",
+            score=6,
+            reasoning_flawed=True,
+            prompt_text="hard prompt 2",
+            answer="wrong answer 2",
             model_name="model-b",
         ),
         make_result(
-            prompt_id="ok", score=1, reasoning_flawed=False,
-            prompt_text="easy prompt", answer="correct",
+            prompt_id="ok",
+            score=1,
+            reasoning_flawed=False,
+            prompt_text="easy prompt",
+            answer="correct",
             model_name="model-a",
         ),
     ]
@@ -91,4 +101,6 @@ class TestSelfRepairTester:
     def test_repair_extracts_answer(self, tester):
         result = tester.test_repair("p", "a", model="m")
         # MockClient returns "I was wrong because I assumed X. The correct answer is Y."
-        assert result.repair_reasoning == result.repaired_answer  # full response used as both
+        assert (
+            result.repair_reasoning == result.repaired_answer
+        )  # full response used as both

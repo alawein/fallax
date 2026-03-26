@@ -9,12 +9,19 @@ import sys
 from pathlib import Path
 
 from .client import AnthropicClient
+from .clients import create_client
 from .pipeline import Pipeline
+
+
+def _make_client(args: argparse.Namespace) -> AnthropicClient:
+    """Create LLM client from CLI args."""
+    provider = getattr(args, "provider", "anthropic")
+    return create_client(provider)  # type: ignore[return-value]
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
     """Execute the evaluation pipeline."""
-    client = AnthropicClient()
+    client = _make_client(args)
     pipeline = Pipeline(
         client=client,
         models=args.models,
@@ -139,7 +146,7 @@ def _cmd_evolve(args: argparse.Namespace) -> int:
         print("No results found.")
         return 1
 
-    client = AnthropicClient()
+    client = _make_client(args)
     evolver = PromptEvolver(client=client, model=args.model)
     evolved = evolver.evolve_batch(results, min_score=args.min_score)
 
@@ -174,7 +181,7 @@ def _cmd_repair(args: argparse.Namespace) -> int:
         print("No results found.")
         return 1
 
-    client = AnthropicClient()
+    client = _make_client(args)
     tester = SelfRepairTester(client=client)
 
     for r in results:
@@ -208,7 +215,7 @@ def _cmd_experiment(args: argparse.Namespace) -> int:
     from .report import ReportBuilder
 
     output_dir = Path(args.output_dir)
-    client = AnthropicClient()
+    client = _make_client(args)
     exp = Experiment(
         client=client,
         models=args.models,
@@ -271,6 +278,11 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument("--output", default="results.jsonl")
     run_p.add_argument("--params-dir", default=None)
     run_p.add_argument("--seed", type=int, default=None)
+    run_p.add_argument(
+        "--provider",
+        default="anthropic",
+        help="LLM provider: anthropic, openai, gemini, ollama",
+    )
     run_p.add_argument("--verbose", "-v", action="store_true")
 
     # -- analyze --
@@ -297,6 +309,11 @@ def main(argv: list[str] | None = None) -> int:
     evolve_p.add_argument("results", help="Path to results JSONL file")
     evolve_p.add_argument("--model", required=True, help="LLM model for evolution")
     evolve_p.add_argument(
+        "--provider",
+        default="anthropic",
+        help="LLM provider",
+    )
+    evolve_p.add_argument(
         "--min-score",
         type=int,
         default=6,
@@ -315,6 +332,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     repair_p.add_argument("results", help="Path to results JSONL file")
     repair_p.add_argument("--model", required=True, help="LLM model for repair testing")
+    repair_p.add_argument(
+        "--provider",
+        default="anthropic",
+        help="LLM provider",
+    )
     repair_p.add_argument(
         "--output",
         "-o",
@@ -348,6 +370,11 @@ def main(argv: list[str] | None = None) -> int:
     exp_p.add_argument("--output-dir", default="experiment_output")
     exp_p.add_argument("--params-dir", default=None)
     exp_p.add_argument("--seed", type=int, default=None)
+    exp_p.add_argument(
+        "--provider",
+        default="anthropic",
+        help="LLM provider",
+    )
 
     args = parser.parse_args(argv)
 

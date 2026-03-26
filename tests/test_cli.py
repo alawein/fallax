@@ -42,7 +42,7 @@ class TestRunSubcommand:
     def test_run_returns_zero(self, params_dir, tmp_path):
         output = tmp_path / "out.jsonl"
         mock = MockClient(responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT)
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "run",
@@ -108,7 +108,7 @@ class TestEvolveSubcommand:
     def test_evolve_returns_zero(self, results_file, tmp_path):
         output = tmp_path / "evolved.jsonl"
         mock = MockClient(default="A harder evolved prompt.")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "evolve",
@@ -123,7 +123,7 @@ class TestEvolveSubcommand:
 
     def test_evolve_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="evolved")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "evolve",
@@ -139,7 +139,7 @@ class TestRepairSubcommand:
     def test_repair_returns_zero(self, results_file, tmp_path):
         output = tmp_path / "repairs.jsonl"
         mock = MockClient(default="I was wrong. The correct answer is X.")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "repair",
@@ -154,7 +154,7 @@ class TestRepairSubcommand:
 
     def test_repair_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="fixed")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "repair",
@@ -177,7 +177,7 @@ class TestExperimentSubcommand:
             },
             default=MODEL_RESPONSE_TEXT,
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "experiment",
@@ -212,7 +212,7 @@ class TestExperimentSubcommand:
             },
             default=MODEL_RESPONSE_TEXT,
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("reasonbench.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "experiment",

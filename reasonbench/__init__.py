@@ -2,6 +2,7 @@
 
 from .analyzer import Analyzer
 from .client import AnthropicClient, LLMClient
+from .clients import create_client
 from .clusterer import FailureClusterer
 from .evaluator import Evaluator
 from .evolver import PromptEvolver
@@ -69,5 +70,6 @@ __all__ = [
     "TemplateRegistry",
     "ValidationResult",
     "ValidatorPack",
+    "create_client",
     "get_category",
 ]

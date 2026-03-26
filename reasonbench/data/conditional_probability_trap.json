@@ -1,0 +1,7 @@
+[
+  {"conditional_info": "Given that a person is a professional basketball player, the probability they are over 6 feet tall is 95%.", "inverse_question": "Given that a person is over 6 feet tall, what is the probability they are a professional basketball player?"},
+  {"conditional_info": "Given that a patient has pancreatic cancer, there is a 70% chance they experience unexplained weight loss.", "inverse_question": "Given that a patient is experiencing unexplained weight loss, what is the probability they have pancreatic cancer?"},
+  {"conditional_info": "Given that someone commits a robbery, the probability they were seen near the scene beforehand is 80%.", "inverse_question": "Given that someone was seen near the scene of a robbery beforehand, what is the probability they committed the robbery?"},
+  {"conditional_info": "Given that a software build fails due to a dependency error, there is a 90% chance the error log mentions a missing package.", "inverse_question": "Given that the error log mentions a missing package, what is the probability the build failed due to a dependency error?"},
+  {"conditional_info": "Given that a message is spam, a spam filter will flag it as spam 98% of the time. Given that a message is not spam, the filter still flags it as spam 2% of the time.", "inverse_question": "If the filter flags a message as spam, what is the probability the message is actually spam, assuming 5% of all messages are spam?"}
+]

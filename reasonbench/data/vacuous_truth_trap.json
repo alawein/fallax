@@ -1,0 +1,7 @@
+[
+  {"false_antecedent": "All integers that are both even and odd", "consequent": "are divisible by 7"},
+  {"false_antecedent": "Every unicorn currently registered with the DMV", "consequent": "has a valid driver's license"},
+  {"false_antecedent": "Any file in this directory that was created after the directory was deleted", "consequent": "contains valid data"},
+  {"false_antecedent": "For every round square in the room", "consequent": "the area equals the circumference"},
+  {"false_antecedent": "All employees who were hired before the company was founded", "consequent": "are entitled to a founding equity grant"}
+]

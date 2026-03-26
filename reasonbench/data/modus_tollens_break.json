@@ -1,0 +1,7 @@
+[
+  {"antecedent": "If the server is overloaded", "consequent": "the response time exceeds 5 seconds", "negated_consequent": "the response time does not exceed 5 seconds"},
+  {"antecedent": "If a number is divisible by 4", "consequent": "it is divisible by 2", "negated_consequent": "it is not divisible by 2"},
+  {"antecedent": "If it is raining outside", "consequent": "the ground is wet", "negated_consequent": "the ground is not wet"},
+  {"antecedent": "If the authentication token is expired", "consequent": "the API returns a 401 error", "negated_consequent": "the API does not return a 401 error"},
+  {"antecedent": "If a triangle has all sides of equal length", "consequent": "all its interior angles are equal", "negated_consequent": "not all its interior angles are equal"}
+]

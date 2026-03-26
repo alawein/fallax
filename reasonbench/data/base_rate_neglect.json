@@ -1,0 +1,7 @@
+[
+  {"base_rate_info": "1 in 1000 people in the population have Disease X. A test for Disease X is 99% accurate (99% true positive rate, 99% true negative rate).", "observation": "A randomly selected person tests positive for Disease X.", "target_event": "the person actually has Disease X"},
+  {"base_rate_info": "Only 0.1% of email is genuine phishing. A spam filter flags emails as phishing with 95% accuracy for actual phishing and a 5% false positive rate.", "observation": "The spam filter flags an incoming email as phishing.", "target_event": "the email is genuinely a phishing attempt"},
+  {"base_rate_info": "In a city, 95% of taxis are Blue and 5% are Green. A witness reports the taxi in an accident was Green. Witnesses correctly identify cab color 80% of the time.", "observation": "The witness says the cab was Green.", "target_event": "the cab involved in the accident was actually Green"},
+  {"base_rate_info": "Drug-impaired driving causes 1% of all accidents. A roadside test detects impairment with 90% sensitivity and has a 10% false positive rate on sober drivers.", "observation": "A driver fails the roadside impairment test.", "target_event": "the driver is actually drug-impaired"},
+  {"base_rate_info": "1 in 10,000 chips manufactured by a plant is defective. An automated inspector catches 99% of defective chips but incorrectly flags 0.5% of good chips.", "observation": "The inspector flags a chip as defective.", "target_event": "the chip is actually defective"}
+]

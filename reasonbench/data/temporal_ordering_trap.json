@@ -1,0 +1,7 @@
+[
+  {"event_sequence": "Alice was born in 1990. Bob graduated college in 2012. Carol got married in 2008. Dave started his first job in 2015.", "temporal_question": "Who among Alice, Bob, Carol, and Dave completed their listed milestone most recently?"},
+  {"event_sequence": "The treaty was signed after the ceasefire was declared. The ceasefire was declared before the peace talks concluded. The peace talks began after the siege ended.", "temporal_question": "What happened first: the treaty signing or the siege ending?"},
+  {"event_sequence": "Version 2.0 was released six months before version 3.0. Version 1.5 was released three months after version 1.0. Version 2.0 was released one year after version 1.5.", "temporal_question": "How many months elapsed between the release of version 1.0 and version 3.0?"},
+  {"event_sequence": "The fire started after the power outage. The power outage occurred because the transformer failed. The transformer failed two hours before the fire department arrived. The fire was extinguished one hour after the department arrived.", "temporal_question": "How long after the transformer failed was the fire extinguished?"},
+  {"event_sequence": "Meeting A was scheduled before Meeting B. Meeting B was rescheduled to before Meeting A. Meeting C occurs after whichever of A or B happens last.", "temporal_question": "After rescheduling, which meeting happens last: A, B, or C?"}
+]

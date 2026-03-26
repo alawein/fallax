@@ -1,0 +1,7 @@
+[
+  {"recursive_definition": "A valid proof is a sequence of steps where each step is justified by a valid proof of that step's correctness.", "query": "Is a single-step proof with no justification a valid proof under this definition?"},
+  {"recursive_definition": "A word is defined by its meaning, and its meaning is defined by the words used to explain it.", "query": "Can any word in a dictionary be fully defined without circular reference under this scheme?"},
+  {"recursive_definition": "A decision is rational if it is endorsed by a rational agent, and a rational agent is one that consistently makes rational decisions.", "query": "How do you determine whether the first decision made by a newly created agent is rational?"},
+  {"recursive_definition": "An authority is legitimate if it is recognized by other legitimate authorities.", "query": "Under this definition, how is the first legitimate authority established?"},
+  {"recursive_definition": "A function call is safe if all functions it calls are safe, and a safe function is one that only makes safe function calls.", "query": "Under this definition, is a function that makes no function calls automatically safe?"}
+]

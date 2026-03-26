@@ -1,0 +1,7 @@
+[
+  {"negated_statement": "Not all students who study hard fail the exam.", "option_a": "Some students who study hard pass the exam.", "option_b": "All students who study hard pass the exam."},
+  {"negated_statement": "It is not the case that no birds can fly.", "option_a": "All birds can fly.", "option_b": "At least one bird can fly."},
+  {"negated_statement": "The system does not always return incorrect results.", "option_a": "The system sometimes returns correct results.", "option_b": "The system always returns correct results."},
+  {"negated_statement": "Nobody who voted for the policy was unaware of its consequences.", "option_a": "Everyone who voted for the policy was aware of its consequences.", "option_b": "Some people who voted for the policy were unaware of its consequences."},
+  {"negated_statement": "It is false that the contract was not signed before the deadline.", "option_a": "The contract was signed before the deadline.", "option_b": "The contract was not signed before the deadline."}
+]

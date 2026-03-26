@@ -17,7 +17,7 @@ class TestPromptTemplate:
 
 class TestTemplateConstants:
     def test_ten_templates_defined(self):
-        assert len(TEMPLATES) == 10
+        assert len(TEMPLATES) == 25
 
     def test_all_have_unique_ids(self):
         ids = [t.template_id for t in TEMPLATES]
@@ -57,7 +57,7 @@ class TestTemplateRegistry:
 
     def test_list_all(self, registry):
         all_templates = registry.list_all()
-        assert len(all_templates) == 10
+        assert len(all_templates) == 25
 
     def test_list_by_failure_type(self, registry):
         results = registry.list_by_failure_type(FailureType.UNSTATED_ASSUMPTION)
@@ -91,5 +91,5 @@ class TestTemplateRegistry:
 
     def test_template_ids(self, registry):
         ids = registry.template_ids()
-        assert len(ids) == 10
+        assert len(ids) == 25
         assert "implicit_assumption_trap" in ids

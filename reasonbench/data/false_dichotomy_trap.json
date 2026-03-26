@@ -1,0 +1,7 @@
+[
+  {"situation": "A software team is debating how to handle a production bug.", "option_a": "Roll back the entire deployment immediately.", "option_b": "Leave the buggy code in production and fix it in the next sprint."},
+  {"situation": "A company is deciding how to respond to declining sales.", "option_a": "Cut all marketing spend to reduce costs.", "option_b": "Double the marketing budget to drive growth."},
+  {"situation": "A student struggling with a difficult course must choose.", "option_a": "Drop the course entirely.", "option_b": "Continue alone without seeking any help."},
+  {"situation": "A government is formulating policy on data privacy.", "option_a": "Allow companies unrestricted access to all user data.", "option_b": "Ban all data collection by private companies."},
+  {"situation": "An engineer is evaluating system reliability requirements.", "option_a": "Build for 100% uptime with unlimited budget.", "option_b": "Accept frequent outages to keep infrastructure costs near zero."}
+]

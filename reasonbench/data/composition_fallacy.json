@@ -1,0 +1,7 @@
+[
+  {"part_property": "Each player on a basketball team is the best player on their respective college team.", "num_parts": 5},
+  {"part_property": "Every individual module in the software system has been independently benchmarked as highly performant.", "num_parts": 12},
+  {"part_property": "Each ingredient in the recipe is delicious on its own.", "num_parts": 8},
+  {"part_property": "Every member of the committee is individually considered a strong communicator.", "num_parts": 7},
+  {"part_property": "Each line of code in the program has been verified to be correct in isolation.", "num_parts": 10000}
+]

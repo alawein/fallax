@@ -1,0 +1,7 @@
+[
+  {"original_task": "Write a function that sorts a list of integers in ascending order.", "scope_addition": "Also handle sorting lists of strings, mixed types, nested lists, and return metadata about the sort operation including time complexity."},
+  {"original_task": "Summarize the key findings of the attached research paper in three bullet points.", "scope_addition": "Also evaluate the methodology, suggest improvements, compare it to five related papers, and provide a rebuttal to potential criticisms."},
+  {"original_task": "Fix the null pointer exception on line 42 of the payment processing module.", "scope_addition": "While you're in there, refactor the entire module to use the new async/await pattern, update all tests, and migrate to the new logging framework."},
+  {"original_task": "Design a login page with an email field and password field.", "scope_addition": "Also add social login options for 12 providers, two-factor authentication, biometric login, password strength meter, CAPTCHA, and full accessibility compliance."},
+  {"original_task": "Calculate the total cost of items in a shopping cart given a list of prices.", "scope_addition": "Also apply tiered discount rules, regional tax rates, loyalty points, currency conversion for 30 currencies, and promotional code validation."}
+]

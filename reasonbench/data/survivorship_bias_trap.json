@@ -1,0 +1,7 @@
+[
+  {"survivor_data": "A study of 200 successful startups found that 90% of founders dropped out of college, worked 80+ hour weeks, and pivoted their product at least once.", "conclusion_question": "Should an aspiring entrepreneur drop out of college and work 80+ hour weeks to maximize their chance of success?"},
+  {"survivor_data": "An analysis of 500 profitable hedge funds shows they all employed contrarian investment strategies and concentrated their portfolios in fewer than 20 stocks.", "conclusion_question": "Does adopting a contrarian, concentrated strategy reliably lead to hedge fund profitability?"},
+  {"survivor_data": "Every military aircraft that returned from WWII combat missions had bullet holes concentrated on the wings and fuselage but almost none on the engine.", "conclusion_question": "Should engineers add armor to the wings and fuselage where the bullet holes were found?"},
+  {"survivor_data": "A survey of people who have lived past 100 years old found that 70% smoked at some point in their lives and regularly ate red meat.", "conclusion_question": "Does smoking and eating red meat not significantly reduce lifespan?"},
+  {"survivor_data": "Interviews with 300 bestselling authors reveal they all wrote every day, received dozens of rejections before publishing, and had a strict morning writing routine.", "conclusion_question": "Will following a daily morning writing routine and persisting through rejections lead to becoming a bestselling author?"}
+]

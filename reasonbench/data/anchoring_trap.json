@@ -1,0 +1,7 @@
+[
+  {"anchor_info": "The last car sold on this lot went for $85,000.", "estimation_question": "What is a fair price for a used 2018 Honda Civic with 60,000 miles on it?"},
+  {"anchor_info": "A famous painting recently sold at auction for $450 million.", "estimation_question": "How much should a competent but unknown local artist charge for an original oil painting?"},
+  {"anchor_info": "The project was initially estimated to take 2 weeks.", "estimation_question": "Given that the requirements have tripled in scope, how long should the revised project take?"},
+  {"anchor_info": "This jar contains either 100 or 100,000 jellybeans — the exact number is unknown.", "estimation_question": "How many jellybeans are in the jar?"},
+  {"anchor_info": "The first salary offer presented was $45,000 per year.", "estimation_question": "What is the fair market salary for a senior software engineer with 10 years of experience in a major tech hub?"}
+]

@@ -10,6 +10,7 @@ from .models import Prompt
 from .templates import DISTRIBUTION, TemplateRegistry
 
 TEMPLATE_DIFFICULTY: dict[str, int] = {
+    # Original 10 templates
     "implicit_assumption_trap": 6,
     "contradictory_constraints": 7,
     "false_analogy_trap": 7,
@@ -20,6 +21,22 @@ TEMPLATE_DIFFICULTY: dict[str, int] = {
     "overconstrained_optimization": 8,
     "hidden_variable_trap": 6,
     "self_consistency_trap": 7,
+    # New 15 templates
+    "temporal_ordering_trap": 7,
+    "negation_scope_trap": 6,
+    "base_rate_neglect": 7,
+    "survivorship_bias_trap": 6,
+    "modus_tollens_break": 5,
+    "scope_creep_trap": 6,
+    "anchoring_trap": 7,
+    "false_dichotomy_trap": 5,
+    "composition_fallacy": 6,
+    "conjunction_fallacy": 7,
+    "regression_to_mean_trap": 8,
+    "conditional_probability_trap": 8,
+    "vacuous_truth_trap": 6,
+    "infinite_regress_trap": 7,
+    "equivocation_trap": 6,
 }
 
 

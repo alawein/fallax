@@ -1,3 +1,10 @@
+---
+type: canonical
+source: none
+sync: none
+sla: none
+---
+
 # ReasonBench Roadmap
 
 Planned enhancements beyond the core 5-phase implementation.

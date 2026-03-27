@@ -1,3 +1,10 @@
+---
+type: canonical
+source: none
+sync: none
+sla: none
+---
+
 # ReasonBench Phase 5: Experiment Loop & Reporting — Design Spec
 
 ## Goal

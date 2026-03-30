@@ -5,7 +5,7 @@ sync: none
 sla: none
 ---
 
-# ReasonBench Phase 3: Intelligence — Implementation Plan
+# Fallax Phase 3: Intelligence — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -997,7 +997,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     medium = sum(1 for r in results if r.severity.value == "medium")
     low = sum(1 for r in results if r.severity.value == "low")
 
-    print(f"\nReasonBench Evaluation Complete")
+    print(f"\nFallax Evaluation Complete")
     print(f"  Prompts evaluated: {len(results)}")
     print(f"  Critical: {critical}")
     print(f"  High:     {high}")
@@ -1026,7 +1026,7 @@ def _cmd_analyze(args: argparse.Namespace) -> int:
     analyzer = Analyzer(results)
     summary = analyzer.summary()
 
-    print(f"\nReasonBench Analysis ({summary['total']} results)")
+    print(f"\nFallax Analysis ({summary['total']} results)")
     print(f"  Avg score:     {summary['avg_score']:.2f}")
     print(f"  Failure rate:  {summary['failure_rate']:.1%}")
     print(f"  Disagreement:  {analyzer.disagreement_rate():.1%}")
@@ -1091,7 +1091,7 @@ def _cmd_train(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """ReasonBench CLI entry point."""
+    """Fallax CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
     default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
 
@@ -1192,7 +1192,7 @@ git commit -m "feat(cli): restructure to subcommands (run/analyze/train)"
 Read existing `reasonbench/__init__.py`, then replace with:
 
 ```python
-"""ReasonBench — LLM Adversarial Reasoning Evaluation System."""
+"""Fallax — LLM Adversarial Reasoning Evaluation System."""
 
 from .analyzer import Analyzer
 from .client import AnthropicClient, LLMClient

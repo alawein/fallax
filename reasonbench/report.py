@@ -79,7 +79,7 @@ class ReportBuilder:
         rounds: list[ExperimentRound] = self._data["rounds"]
 
         lines = [
-            "# ReasonBench Experiment Report",
+            "# Fallax Experiment Report",
             "",
             "## Overview",
             "",

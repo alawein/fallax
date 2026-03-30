@@ -12,7 +12,7 @@ last-verified: 2026-03-26
 
 ## Project Context
 
-ReasonBench — LLM Adversarial Reasoning Evaluation System. Multi-provider adversarial prompt generation, evaluation, clustering, and diagnostics.
+Fallax — LLM Adversarial Reasoning Evaluation System. Multi-provider adversarial prompt generation, evaluation, clustering, and diagnostics.
 
 ## Quick Links
 

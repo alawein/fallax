@@ -1,4 +1,4 @@
-"""ReasonBench — LLM Adversarial Reasoning Evaluation System."""
+"""Fallax — LLM Adversarial Reasoning Evaluation System."""
 
 from .analyzer import Analyzer
 from .benchmark import (

@@ -1,4 +1,4 @@
-"""Launch the ReasonBench dashboard server."""
+"""Launch the Fallax dashboard server."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="reasonbench-dashboard",
-        description="Launch the ReasonBench experiment dashboard",
+        description="Launch the Fallax experiment dashboard",
     )
     parser.add_argument(
         "--data-dir",

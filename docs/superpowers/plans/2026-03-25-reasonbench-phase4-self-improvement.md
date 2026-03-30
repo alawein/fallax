@@ -5,7 +5,7 @@ sync: none
 sla: none
 ---
 
-# ReasonBench Phase 4: Self-Improvement — Implementation Plan
+# Fallax Phase 4: Self-Improvement — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -1001,7 +1001,7 @@ git commit -m "feat(cli): add evolve and repair subcommands"
 Read existing `reasonbench/__init__.py`, then replace with:
 
 ```python
-"""ReasonBench — LLM Adversarial Reasoning Evaluation System."""
+"""Fallax — LLM Adversarial Reasoning Evaluation System."""
 
 from .analyzer import Analyzer
 from .client import AnthropicClient, LLMClient

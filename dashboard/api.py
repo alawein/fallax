@@ -1,4 +1,4 @@
-"""FastAPI backend for the ReasonBench dashboard."""
+"""FastAPI backend for the Fallax dashboard."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         data_dir: Parent directory containing experiment output directories.
                   Each subdirectory with a report.json is treated as an experiment.
     """
-    app = FastAPI(title="ReasonBench Dashboard", version="1.0.0")
+    app = FastAPI(title="Fallax Dashboard", version="1.0.0")
     resolved_dir = data_dir or Path.cwd()
 
     app.state.data_dir = resolved_dir

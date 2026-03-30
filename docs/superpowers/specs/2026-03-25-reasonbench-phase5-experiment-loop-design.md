@@ -5,7 +5,7 @@ sync: none
 sla: none
 ---
 
-# ReasonBench Phase 5: Experiment Loop & Reporting — Design Spec
+# Fallax Phase 5: Experiment Loop & Reporting — Design Spec
 
 ## Goal
 

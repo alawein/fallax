@@ -136,7 +136,7 @@ class TestReportBuilder:
     def test_to_markdown_contains_sections(self, experiment_data):
         builder = ReportBuilder(experiment_data)
         md = builder.to_markdown()
-        assert "# ReasonBench Experiment Report" in md
+        assert "# Fallax Experiment Report" in md
         assert "## Overview" in md
         assert "## Per-Round Results" in md
         assert "## Trends" in md

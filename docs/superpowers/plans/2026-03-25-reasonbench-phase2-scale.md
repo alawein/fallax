@@ -5,7 +5,7 @@ sync: none
 sla: none
 ---
 
-# ReasonBench Phase 2: Scale — Implementation Plan
+# Fallax Phase 2: Scale — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -1656,7 +1656,7 @@ from pathlib import Path
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run the ReasonBench evaluation pipeline."""
+    """Run the Fallax evaluation pipeline."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
     default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
 
@@ -1733,7 +1733,7 @@ def main(argv: list[str] | None = None) -> int:
     medium = sum(1 for r in results if r.severity.value == "medium")
     low = sum(1 for r in results if r.severity.value == "low")
 
-    print(f"\nReasonBench Evaluation Complete")
+    print(f"\nFallax Evaluation Complete")
     print(f"  Prompts evaluated: {len(results)}")
     print(f"  Critical: {critical}")
     print(f"  High:     {high}")
@@ -1826,7 +1826,7 @@ class TestCLI:
 Read the current `reasonbench/__init__.py`, then replace with:
 
 ```python
-"""ReasonBench — LLM Adversarial Reasoning Evaluation System."""
+"""Fallax — LLM Adversarial Reasoning Evaluation System."""
 
 from .client import AnthropicClient, LLMClient
 from .evaluator import Evaluator

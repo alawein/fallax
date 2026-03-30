@@ -7,7 +7,7 @@ sla: none
 
 # Changelog
 
-All notable changes to **reasonbench** will be documented in this file.
+All notable changes to **Fallax** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 

@@ -37,7 +37,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     medium = sum(1 for r in results if r.severity.value == "medium")
     low = sum(1 for r in results if r.severity.value == "low")
 
-    print("\nReasonBench Evaluation Complete")
+    print("\nFallax Evaluation Complete")
     print(f"  Prompts evaluated: {len(results)}")
     print(f"  Critical: {critical}")
     print(f"  High:     {high}")
@@ -66,7 +66,7 @@ def _cmd_analyze(args: argparse.Namespace) -> int:
     analyzer = Analyzer(results)
     summary = analyzer.summary()
 
-    print(f"\nReasonBench Analysis ({summary['total']} results)")
+    print(f"\nFallax Analysis ({summary['total']} results)")
     print(f"  Avg score:     {summary['avg_score']:.2f}")
     print(f"  Failure rate:  {summary['failure_rate']:.1%}")
     print(f"  Disagreement:  {analyzer.disagreement_rate():.1%}")
@@ -320,7 +320,7 @@ def _cmd_benchmark(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """ReasonBench CLI entry point."""
+    """Fallax CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
     default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
 

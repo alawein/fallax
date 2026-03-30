@@ -5,7 +5,7 @@ sync: none
 sla: none
 ---
 
-# ReasonBench Phase 1: Foundation — Implementation Plan
+# Fallax Phase 1: Foundation — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -114,7 +114,7 @@ testpaths = ["tests"]
 
 Create `reasonbench/__init__.py`:
 ```python
-"""ReasonBench — LLM Adversarial Reasoning Evaluation System."""
+"""Fallax — LLM Adversarial Reasoning Evaluation System."""
 ```
 
 Create `tests/__init__.py` (empty file).
@@ -1663,7 +1663,7 @@ Expected: FAIL with `ImportError` (package init doesn't re-export yet)
 Modify `reasonbench/__init__.py`:
 
 ```python
-"""ReasonBench — LLM Adversarial Reasoning Evaluation System."""
+"""Fallax — LLM Adversarial Reasoning Evaluation System."""
 
 from .models import (
     Assumption,

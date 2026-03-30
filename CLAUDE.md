@@ -9,11 +9,11 @@ sla: none
 <!-- Generated from _pkos governance templates. Do not edit the template sections -->
 <!-- directly in consuming projects — update the template and re-sync instead.    -->
 
-# CLAUDE.md — ReasonBench
+# CLAUDE.md — Fallax
 
 ## Repository Context
 
-**Name:** ReasonBench
+**Name:** Fallax
 **Type:** research-library
 **Purpose:** LLM Adversarial Reasoning Evaluation System. Generates adversarial
 reasoning prompts, evaluates LLM responses across multiple providers (Anthropic,

@@ -1,7 +1,7 @@
 {
   "version": "v1",
   "created": "2026-03-26T00:36:51.683270+00:00",
-  "description": "ReasonBench v1 benchmark: 100 curated adversarial reasoning prompts across 25 templates",
+  "description": "Fallax v1 benchmark: 100 curated adversarial reasoning prompts across 25 templates",
   "prompt_count": 100,
   "failure_types": [
     "ambiguity_failure",

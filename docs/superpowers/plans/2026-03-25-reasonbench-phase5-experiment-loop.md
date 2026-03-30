@@ -5,7 +5,7 @@ sync: none
 sla: none
 ---
 
-# ReasonBench Phase 5: Experiment Loop & Reporting — Implementation Plan
+# Fallax Phase 5: Experiment Loop & Reporting — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -700,7 +700,7 @@ class TestReportBuilder:
     def test_to_markdown_contains_sections(self, experiment_data):
         builder = ReportBuilder(experiment_data)
         md = builder.to_markdown()
-        assert "# ReasonBench Experiment Report" in md
+        assert "# Fallax Experiment Report" in md
         assert "## Overview" in md
         assert "## Per-Round Results" in md
         assert "## Trends" in md
@@ -836,7 +836,7 @@ class ReportBuilder:
         rounds: list[ExperimentRound] = self._data["rounds"]
 
         lines = [
-            "# ReasonBench Experiment Report",
+            "# Fallax Experiment Report",
             "",
             "## Overview",
             "",

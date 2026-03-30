@@ -78,9 +78,7 @@ def experiment_dir(tmp_path):
             }
         ],
     }
-    (exp / "report.json").write_text(
-        json.dumps(report), encoding="utf-8"
-    )
+    (exp / "report.json").write_text(json.dumps(report), encoding="utf-8")
 
     return tmp_path
 
@@ -139,24 +137,18 @@ class TestGetResults:
         assert len(data) == 2
 
     def test_filter_by_min_score(self, client):
-        resp = client.get(
-            "/api/experiments/test_experiment/results?min_score=5"
-        )
+        resp = client.get("/api/experiments/test_experiment/results?min_score=5")
         data = resp.json()
         assert len(data) == 1
         assert data[0]["score"] == 7
 
     def test_filter_by_round(self, client):
-        resp = client.get(
-            "/api/experiments/test_experiment/results?round_num=1"
-        )
+        resp = client.get("/api/experiments/test_experiment/results?round_num=1")
         data = resp.json()
         assert len(data) == 2
 
     def test_nonexistent_round(self, client):
-        resp = client.get(
-            "/api/experiments/test_experiment/results?round_num=99"
-        )
+        resp = client.get("/api/experiments/test_experiment/results?round_num=99")
         assert resp.status_code == 200
         assert resp.json() == []
 

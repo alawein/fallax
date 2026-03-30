@@ -263,7 +263,11 @@ class TestBenchmarkSubcommand:
         return tmp_path / "benchmarks"
 
     def test_benchmark_list(self, bench_dir):
-        with patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None), patch("reasonbench.benchmark.BenchmarkSuite.versions", return_value=["v1"]), patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta:
+        with (
+            patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None),
+            patch("reasonbench.benchmark.BenchmarkSuite.versions", return_value=["v1"]),
+            patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta,
+        ):
             from reasonbench.benchmark import BenchmarkMetadata
 
             mock_meta.return_value = BenchmarkMetadata(
@@ -280,7 +284,12 @@ class TestBenchmarkSubcommand:
     def test_benchmark_info_no_models(self, bench_dir):
         from reasonbench.benchmark import BenchmarkBaselines, BenchmarkMetadata
 
-        with patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None), patch("reasonbench.benchmark.BenchmarkSuite.load_prompts", return_value=[]), patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta, patch("reasonbench.benchmark.BenchmarkSuite.load_baselines") as mock_base:
+        with (
+            patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None),
+            patch("reasonbench.benchmark.BenchmarkSuite.load_prompts", return_value=[]),
+            patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta,
+            patch("reasonbench.benchmark.BenchmarkSuite.load_baselines") as mock_base,
+        ):
             mock_meta.return_value = BenchmarkMetadata(
                 version="v1",
                 created="2026-01-01",
@@ -294,7 +303,13 @@ class TestBenchmarkSubcommand:
         assert code == 0
 
     def test_benchmark_not_found(self):
-        with patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None), patch("reasonbench.benchmark.BenchmarkSuite.load_prompts", side_effect=FileNotFoundError("not found")):
+        with (
+            patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None),
+            patch(
+                "reasonbench.benchmark.BenchmarkSuite.load_prompts",
+                side_effect=FileNotFoundError("not found"),
+            ),
+        ):
             code = main(["benchmark", "--version", "v99"])
         assert code == 1
 

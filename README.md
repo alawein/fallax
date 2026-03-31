@@ -19,6 +19,36 @@ sla: none
 - **Multi-step evaluation** — Tasks requiring chained reasoning, not pattern matching
 - **Structured scoring** — Step-level correctness, not just final-answer accuracy
 - **Extensible harness** — Add new reasoning domains via config
+- **Dashboard** — Visual results explorer
+- **Benchmarks** — Performance regression tracking
+
+## Tech Stack
+
+- **Language:** Python 3.12+
+- **Build:** pyproject.toml (`reasonbench`)
+- **Testing:** pytest
+- **Linting:** ruff, mypy
+
+## Quick Start
+
+```bash
+python -m venv .venv && .venv\Scripts\activate   # Windows
+pip install -e .
+pytest tests/
+```
+
+## Project Structure
+
+```text
+fallax/
+├── reasonbench/     # core evaluation engine
+├── benchmarks/      # performance benchmarks
+├── dashboard/       # results visualization
+├── tests/           # pytest suite
+├── website/         # project site
+├── docs/            # documentation
+└── pyproject.toml   # package config (reasonbench 0.1.0)
+```
 
 ## Installation
 

@@ -33,3 +33,8 @@ pip install -e .
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Ownership
+
+- **Maintainer:** @alawein
+- **Support:** GitHub Issues on this repository

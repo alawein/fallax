@@ -63,7 +63,7 @@ reasonbench/                  # repo root
 - [ ] **Step 1: Initialize git repo**
 
 ```bash
-cd C:/Users/mesha/Desktop/GitHub/alawein/reasonbench
+cd C:/Users/mesha/Desktop/GitHub/alawein/fallax
 git init
 ```
 

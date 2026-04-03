@@ -14,6 +14,12 @@ sla: none
 
 **Fallax** evaluates language models on structured, multi-step reasoning tasks — logical deduction, mathematical proof, causal inference, and compositional planning. Designed to surface failure modes that single-turn benchmarks miss.
 
+## Why Fallax
+
+- Measures step-level correctness, not just final answers.
+- Configurable domains and task packs to mirror real workloads.
+- Reproducible harness with dashboards for regression tracking.
+
 ## Features
 
 - **Multi-step evaluation** — Tasks requiring chained reasoning, not pattern matching
@@ -37,6 +43,31 @@ pip install -e .
 pytest tests/
 ```
 
+### Alternative installs
+
+```bash
+# Using uv
+uv venv
+uv pip install -e .
+uv run pytest tests/
+
+# Optional GPU extras (if available)
+pip install -e .[gpu]
+
+# Lint/type
+ruff check .
+mypy reasonbench
+```
+
+## Make/Task Shortcuts
+
+```bash
+make test          # fast suite
+make test-all      # full suite
+make lint          # ruff + mypy
+make format        # formatters
+```
+
 ## Project Structure
 
 ```text
@@ -50,11 +81,16 @@ fallax/
 └── pyproject.toml   # package config (reasonbench 0.1.0)
 ```
 
-## Installation
+## Roadmap
 
-```bash
-pip install -e .
-```
+- **Near term:** deterministic scoring fixtures, dataset versioning, richer domain configs
+- **Mid term:** new benchmarks (causal graphs, program synthesis), reproducibility dashboard
+
+## TODO
+
+- [ ] Publish task schema examples in `docs/`
+- [ ] Add seed-based determinism toggle for all evaluators
+- [ ] Benchmark harness against public LLM baselines
 
 ## License
 
@@ -62,7 +98,7 @@ pip install -e .
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Keep tests green and run ruff/mypy before submitting.
 
 ## Ownership
 

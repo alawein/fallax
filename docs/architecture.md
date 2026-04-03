@@ -1,18 +1,42 @@
 ---
 type: canonical
-owner: platform-engineering
-last-reviewed: 2026-03-31
+source: none
+sync: none
+sla: none
 ---
 
-# Architecture Overview — fallax
-
-> TODO: Document major components, data flow, dependencies, and non-functional constraints.
+# Architecture
 
 ## Components
 
-## Data Flow
+- `reasonbench/` — core evaluation engine, task loaders, scorers, and configuration.
+- `benchmarks/` — curated benchmark bundles with tasks, gold answers, and configs.
+- `dashboard/` — visualization layer for runs and regressions.
+- `website/` — marketing/docs site.
+- `tests/` — pytest suites (unit + integration).
 
-## Dependencies
+## Data Model
 
-## Constraints
+- **Task** — multi-step prompt/instruction with expected intermediate states.
+- **Run** — model invocation with recorded responses and parsed steps.
+- **Score** — structured scoring record (step correctness, final correctness, metadata).
 
+## Execution Flow
+
+1. Select benchmark bundle (config).
+2. Load tasks into `reasonbench`.
+3. Run model adapter to produce responses.
+4. Parse and score responses step-by-step.
+5. Emit results to JSON; dashboard consumes these artifacts.
+
+## Extensibility
+
+- Add a domain: create config + tasks under `benchmarks/<domain>/`.
+- Add a model: implement adapter conforming to the interface in `reasonbench/models`.
+- Add metrics: extend scorer to emit new dimensions; update dashboard schemas accordingly.
+
+## Reproducibility
+
+- Pin datasets and configs; version benchmark bundles.
+- Use seeds for any sampling; record seeds in result metadata.
+- Keep runs and scores under a dedicated `outputs/` directory (gitignored).

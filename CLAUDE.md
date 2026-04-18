@@ -3,108 +3,59 @@ type: canonical
 source: none
 sync: none
 sla: none
+authority: canonical
+audience: [ai-agents, contributors]
+last_updated: 2026-04-15
+last-verified: 2026-04-15
 ---
-
-<!-- Template: research-library v1.0.0 -->
-<!-- Generated from _pkos governance templates. Do not edit the template sections -->
-<!-- directly in consuming projects — update the template and re-sync instead.    -->
 
 # CLAUDE.md — Fallax
 
-## Repository Context
+## Workspace identity
 
-**Name:** Fallax
-**Type:** research-library
-**Purpose:** LLM Adversarial Reasoning Evaluation System. Generates adversarial
-reasoning prompts, evaluates LLM responses across multiple providers (Anthropic,
-OpenAI, Gemini, Ollama), and produces structured analysis with clustering,
-scoring, and root-cause diagnostics.
+Fallax is a reasoning-evaluation repo. The work here is about exposing
+multi-step failure modes in LLM outputs, not just recording final-answer
+accuracy. Keep the evaluation logic inspectable at the step, taxonomy, and
+benchmark level.
 
----
+Shared voice and research-writing contract:
 
-## Build and Test Commands
+- <https://github.com/alawein/alawein/blob/main/docs/style/VOICE.md>
+- <https://github.com/alawein/alawein/blob/main/prompt-kits/AGENT.md>
+
+## Directory structure
+
+- `reasonbench/`: canonical evaluation engine
+- `benchmarks/`: benchmark definitions and datasets
+- `dashboard/`: visualization and operator-facing results surface
+- `website/`: public-facing project surface
+- `tests/`: required verification
+- `docs/`: repo-local documentation
+
+## Governance rules
+
+1. Use `uv` as the primary environment and dependency workflow.
+2. Preserve schema stability for public evaluation outputs unless the change is
+   explicitly versioned.
+3. Keep benchmark behavior deterministic under the pinned environment.
+4. Provider API keys live in environment variables only.
+5. Do not commit transient benchmark artifacts or scratch result stores.
+6. Keep the scoring, clustering, and taxonomy surfaces legible instead of
+   collapsing everything into a single opaque score.
+
+## Code conventions
+
+- Public Python behavior lives under `reasonbench/`.
+- Comments explain benchmark semantics, scoring dimensions, or failure-taxonomy
+  logic.
+- Prefer explicit benchmark contracts over convenience wrappers that hide what
+  is being measured.
+
+## Build and test commands
 
 ```bash
-# Install dependencies (use uv, not pip)
 uv sync --all-extras
-
-# Run tests
 python -m pytest tests/
-
-# Run single test
-python -m pytest tests/test_specific.py -k "test_name"
-
-# Type checking
-python -m mypy reasonbench/
-
-# Linting
 python -m ruff check reasonbench/ tests/
-
-# Format
-python -m ruff format reasonbench/ tests/
+python -m mypy reasonbench/
 ```
-
----
-
-## Architecture
-
-```text
-reasonbench/
-  models.py          # Pydantic data models
-  templates.py       # Adversarial prompt templates (25 patterns)
-  generator.py       # Prompt generation from templates
-  evolver.py         # Template evolution and mutation
-  client.py          # Multi-provider LLM client abstraction
-  clients/           # Provider-specific implementations
-  evaluator.py       # Response evaluation pipeline
-  scoring.py         # Scoring framework (6 dimensions)
-  analyzer.py        # Statistical analysis
-  clusterer.py       # Response clustering (scikit-learn)
-  root_cause.py      # Root cause diagnostics
-  predictor.py       # Failure prediction
-  repair.py          # Prompt repair suggestions
-  pipeline.py        # End-to-end orchestration
-  runner.py          # CLI runner
-  experiment.py      # Experiment management
-  benchmark.py       # Versioned benchmark suite
-  report.py          # Report generation
-  storage.py         # Result persistence
-  taxonomy.py        # Failure taxonomy
-  validators.py      # Input validation
-  data/              # Static data (taxonomies, datasets)
-benchmarks/          # Versioned benchmark datasets
-dashboard/           # FastAPI web UI for visualization
-tests/               # Test suite
-docs/                # Documentation
-```
-
----
-
-## Key Concepts
-
-- **Templates:** Adversarial reasoning patterns (syllogistic, temporal, modal, etc.)
-- **Evolution:** Templates mutate via LLM-driven rewriting for diversity
-- **Scoring:** 6-dimensional evaluation (logical validity, premise accuracy, etc.)
-- **Clustering:** Groups failure modes via scikit-learn for pattern detection
-- **Benchmarks:** Versioned datasets in `benchmarks/` for reproducibility
-
----
-
-## Conventions
-
-- **Python version:** 3.12+
-- **Dependency management:** `uv` (not pip)
-- **Type annotations:** Required on all public functions (mypy strict)
-- **Linting:** ruff with select rules (E, F, I, UP, B, SIM)
-- **Line length:** 88 characters
-- **Test framework:** pytest with coverage
-- **File naming:** `snake_case.py`
-
----
-
-## Gotchas
-
-- Provider API keys must be set as environment variables (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)
-- The `all-providers` extra installs all LLM client dependencies
-- Dashboard requires the `dashboard` extra (`uv sync --extra dashboard`)
-- `.coverage` and `.benchmarks/` are generated artifacts — don't commit them

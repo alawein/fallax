@@ -2,14 +2,14 @@ name: ci-smoke
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
   pull_request:
-    branches: [master]
+    branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
@@ -25,5 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: OK
-        run: echo ok
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: uv sync --extra dashboard
+      - name: Smoke — baseline status
+        run: python -m reasonbench baseline status --version v1

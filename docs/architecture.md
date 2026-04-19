@@ -15,6 +15,42 @@ sla: none
 - `website/` — marketing/docs site.
 - `tests/` — pytest suites (unit + integration).
 
+## Module layout
+
+```text
+reasonbench/
+  models.py          # Pydantic data models
+  templates.py       # Adversarial prompt templates (25 patterns)
+  generator.py       # Prompt generation from templates
+  evolver.py         # Template evolution and mutation
+  client.py          # Multi-provider LLM client abstraction
+  clients/           # Provider-specific implementations
+  evaluator.py       # Response evaluation pipeline
+  scoring.py         # Scoring framework (6 dimensions)
+  analyzer.py        # Statistical analysis
+  clusterer.py       # Response clustering (scikit-learn)
+  root_cause.py      # Root cause diagnostics
+  predictor.py       # Failure prediction
+  repair.py          # Prompt repair suggestions
+  pipeline.py        # End-to-end orchestration
+  runner.py          # CLI runner
+  experiment.py      # Experiment management
+  benchmark.py       # Versioned benchmark suite
+  report.py          # Report generation
+  storage.py         # Result persistence
+  taxonomy.py        # Failure taxonomy
+  validators.py      # Input validation
+  data/              # Static data (taxonomies, datasets)
+```
+
+## Key concepts
+
+- **Templates** — adversarial reasoning patterns (syllogistic, temporal, modal, etc.).
+- **Evolution** — templates mutate via LLM-driven rewriting for diversity.
+- **Scoring** — 6-dimensional evaluation (logical validity, premise accuracy, and related axes).
+- **Clustering** — groups failure modes via scikit-learn for pattern detection.
+- **Benchmarks** — versioned datasets under `benchmarks/` for reproducibility.
+
 ## Data Model
 
 - **Task** — multi-step prompt/instruction with expected intermediate states.

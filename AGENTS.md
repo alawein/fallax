@@ -3,59 +3,44 @@ type: canonical
 source: none
 sync: none
 sla: none
----
-
-<!-- Template: python-research-tooling v1.0.0 -->
-<!-- Generated for governance parity across workspace repos. -->
----
-type: normative
 authority: canonical
 audience: [agents, contributors, maintainers]
-last-verified: 2026-03-30
+last-verified: 2026-04-16
 ---
 
-# AGENTS — reasonbench
+# AGENTS — Fallax
 
-> **Status: Normative.** Do not modify without maintainer review.
+## Workspace identity
 
-This repository is a Python benchmark and reasoning-evaluation toolkit (`reasonbench`).
+Fallax is a Python reasoning-evaluation toolkit built around `reasonbench/`.
 
-## Repository Scope
+## Directory structure
 
-| Directory | Purpose | Governance level |
-|-----------|---------|------------------|
-| `reasonbench/` | Core library package | Primary |
-| `dashboard/` | Optional API/UI service wiring | Stable |
-| `tests/` | Test suite and regression fixtures | Primary |
-| `benchmarks/` | Benchmark definitions and dataset wrappers | Secondary |
-| `docs/` | Additional documentation | Secondary |
+- `reasonbench/`: primary source
+- `benchmarks/`: benchmark definitions and datasets
+- `dashboard/`: results UI surface
+- `tests/`: required verification
+- `docs/`: repo-local documentation
 
-## Invariants (Must Always Hold)
+## Governance rules
 
-1. `pytest` must pass before proposing behavior-impacting merges.
-2. Public evaluation outputs should remain schema-stable unless explicitly versioned.
-3. Requests/session handling changes must preserve timeout and error-path coverage.
-4. No secrets or API keys in repository files.
-5. Keep package dependencies minimal and pinned to avoid reproducibility drift.
-6. Benchmark artifacts should remain deterministic under pinned environments.
+1. Use `uv` as the primary environment workflow.
+2. Keep public evaluation schemas stable unless explicitly versioned.
+3. Maintain deterministic benchmark behavior.
+4. Do not commit transient benchmark artifacts or secrets.
+5. Comments should explain scoring and taxonomy behavior clearly.
 
-## Agent Rules
+## Code conventions
 
-- Read `AGENTS.md` and `CLAUDE.md` before changing files.
-- Prefer minimal, targeted edits with explicit test evidence.
-- Preserve Python runtime compatibility for `>=3.12` unless justified.
-- Run `pytest` for touched modules; add regression tests where confidence is non-trivial.
-- Run `ruff check .` for touched Python packages.
-- Avoid changing benchmark fixture payloads unless required by evidence-backed behavior changes.
-- Do not edit `uv.lock` without dependency intent and review comment.
+- Type hints and accurate docstrings on public surfaces
+- Conventional commits only
+- Add tests when evaluation behavior changes
 
-## Test / Verification Requirements
+## Build and test commands
 
-- Baseline: `pytest` (uses project default testpaths).
-- Type safety on touched modules: run `mypy reasonbench` where practical.
-- If dashboard routes change, validate local run path documented in README.
-
-## Repo-Specific Notes
-
-- This repo does not currently include `.claude/AGENTS.md`; this file is authoritative.
-- For release or behavior-surface changes, update `CHANGELOG.md` and `README.md`.
+```bash
+uv sync --all-extras
+python -m pytest tests/
+python -m ruff check reasonbench/ tests/
+python -m mypy reasonbench/
+```

@@ -96,9 +96,10 @@ class BenchmarkSuite:
             raise ValueError(f"baselines.json at {path} is malformed: {e}") from e
 
     def save_baselines(self, baselines: BenchmarkBaselines) -> Path:
-        """Save baseline scores atomically (tmp + os.replace)."""
+        """Save baselines atomically; models sorted by name for stable diffs."""
         path = self._version_dir(baselines.version) / "baselines.json"
         path.parent.mkdir(parents=True, exist_ok=True)
+        baselines.models.sort(key=lambda m: m.model_name)
         tmp = path.with_suffix(".json.tmp")
         tmp.write_text(
             baselines.model_dump_json(indent=2),

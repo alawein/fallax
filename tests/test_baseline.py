@@ -255,7 +255,9 @@ class TestBaselineCompare:
                 ]
             )
         assert code == 2
-        assert "REGRESSION" in capsys.readouterr().out
+        captured = capsys.readouterr()
+        assert "REGRESSION" in captured.err
+        assert "REGRESSION" not in captured.out
 
     def test_compare_exits_one_on_missing_baseline(self, patch_suite, capsys):
         """No baseline for 'unknown-model' → exit 1."""

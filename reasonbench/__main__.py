@@ -263,7 +263,7 @@ def _cmd_benchmark(args: argparse.Namespace) -> int:
             print("Available benchmark versions:")
             for v in versions:
                 meta = suite.load_metadata(v)
-                print(f"  {v}: {meta.prompt_count} prompts — {meta.description}")
+                print(f"  {v}: {meta.prompt_count} prompts -- {meta.description}")
         return 0
 
     version = args.version
@@ -333,7 +333,7 @@ def _cmd_baseline_compare(args: argparse.Namespace) -> int:
     recorded = next((m for m in baselines.models if m.model_name == args.model), None)
     if recorded is None:
         print(
-            f"Error: no baseline for '{args.model}' — run 'baseline capture' first",
+            f"Error: no baseline for '{args.model}' -- run 'baseline capture' first",
             file=sys.stderr,
         )
         return 1
@@ -372,7 +372,8 @@ def _cmd_baseline_compare(args: argparse.Namespace) -> int:
     if regressed:
         print(
             f"\nREGRESSION: {args.model} overall_score dropped "
-            f"{abs(delta):.2f} points (threshold: {args.threshold})"
+            f"{abs(delta):.2f} points (threshold: {args.threshold})",
+            file=sys.stderr,
         )
         return 2
 
@@ -442,7 +443,7 @@ def _cmd_baseline_status(args: argparse.Namespace) -> int:
     print(f"  {'Model':<35} {'Score':>7} {'Fail%':>7} {'Captured':>25}")
     print(f"  {'-' * 77}")
     for m in baselines.models:
-        ca = m.captured_at[:25] if m.captured_at else "—"
+        ca = m.captured_at[:25] if m.captured_at else "-"
         print(
             f"  {m.model_name:<35} {m.overall_score:>7.2f} "
             f"{m.failure_rate:>7.1%} {ca:>25}"

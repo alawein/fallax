@@ -5,7 +5,6 @@ sync: none
 sla: none
 authority: canonical
 audience: [contributors, maintainers, agents]
-last_updated: 2026-04-16
 last-verified: 2026-04-16
 ---
 

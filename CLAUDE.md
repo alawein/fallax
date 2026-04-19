@@ -5,8 +5,7 @@ sync: none
 sla: none
 authority: canonical
 audience: [ai-agents, contributors]
-last_updated: 2026-04-15
-last-verified: 2026-04-15
+last-verified: 2026-04-16
 ---
 
 # CLAUDE.md — Fallax

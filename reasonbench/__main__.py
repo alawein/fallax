@@ -357,7 +357,7 @@ def _cmd_baseline_compare(args: argparse.Namespace) -> int:
 
     print(f"\nBaseline comparison ({args.version} / {args.model})")
     print(f"  {'Metric':<20} {'Baseline':>10} {'Current':>10} {'Delta':>10}")
-    print(f"  {'-' * 54}")
+    print(f"  {'-' * 53}")
     print(
         f"  {'overall_score':<20} {recorded.overall_score:>10.2f} "
         f"{scores['overall_score']:>10.2f} {delta:>+10.2f}"

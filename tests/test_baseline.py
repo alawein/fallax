@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import functools
 import json
+import re
 
 import pytest
 
@@ -82,6 +83,14 @@ class TestBaselineStatus:
         captured = capsys.readouterr()
         assert "No baselines" in captured.out
 
+    def test_status_no_baselines_file(self, patch_suite, benchmark_dir, capsys):
+        """First-run case: baselines.json doesn't exist yet. Must not crash."""
+        (benchmark_dir / "v1" / "baselines.json").unlink()
+        code = main(["baseline", "status", "--version", "v1"])
+        assert code == 0
+        captured = capsys.readouterr()
+        assert "No baselines" in captured.out
+
 
 # ---------------------------------------------------------------------------
 # baseline capture
@@ -124,6 +133,12 @@ class TestBaselineCapture:
         data = json.loads(baselines_path.read_text(encoding="utf-8"))
         names = [m["model_name"] for m in data["models"]]
         assert "new-model" in names
+        # captured_at must be a valid ISO-8601 UTC timestamp, not empty/local
+        entry = next(m for m in data["models"] if m["model_name"] == "new-model")
+        assert re.match(
+            r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?\+00:00$",
+            entry["captured_at"],
+        ), f"captured_at not ISO-8601 UTC: {entry['captured_at']!r}"
 
     def test_capture_replaces_existing_entry(
         self, patch_suite, benchmark_dir, monkeypatch
@@ -154,6 +169,10 @@ class TestBaselineCapture:
         )
         # still exactly one entry for base-model (not duplicated)
         assert sum(1 for m in data["models"] if m["model_name"] == "base-model") == 1
+        # the surviving entry is the NEW capture, not the frozen fixture one —
+        # guards against a "dedupe keeps old" bug
+        base = next(m for m in data["models"] if m["model_name"] == "base-model")
+        assert base["captured_at"] != "2026-04-18T10:00:00+00:00"
 
     def test_capture_missing_version_returns_1(self, patch_suite, capsys):
         code = main(

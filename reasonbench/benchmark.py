@@ -36,7 +36,7 @@ class ModelBaseline(BaseModel):
     type_scores: dict[str, float] = Field(default_factory=dict)
     assumption_density: float = 0.0
     runs: int = Field(ge=1, default=1)
-    captured_at: str = ""
+    captured_at: str | None = None
 
 
 class BenchmarkBaselines(BaseModel):

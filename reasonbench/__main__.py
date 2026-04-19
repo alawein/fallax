@@ -628,7 +628,10 @@ def main(argv: list[str] | None = None) -> int:
         "--threshold",
         type=float,
         default=0.05,
-        help="Allowed overall_score drop before regression (default: 0.05)",
+        help=(
+            "overall_score drop larger than this is a regression; "
+            "drops of exactly threshold pass (default: 0.05)"
+        ),
     )
     cmp_p.add_argument("--output", default="compare_run.jsonl")
     cmp_p.add_argument("--provider", default="anthropic", help="LLM provider")

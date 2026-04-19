@@ -138,3 +138,69 @@ class TestBaselineCapture:
         ])
         assert code == 1
         assert "not found" in capsys.readouterr().err
+
+
+# ---------------------------------------------------------------------------
+# baseline compare
+# ---------------------------------------------------------------------------
+
+class TestBaselineCompare:
+    def _fake_results_with_score(self, avg_score: float):
+        """Return results whose average score equals avg_score."""
+        from tests.conftest import make_result
+        score_int = round(avg_score)
+        return [make_result(score=score_int), make_result(score=score_int)]
+
+    def test_compare_exits_zero_within_threshold(self, patch_suite, monkeypatch):
+        """4.0 baseline, 3.9 current → round to 4 → delta 0.0, threshold 0.5 → exit 0."""
+        from unittest.mock import patch as mock_patch
+        fake = self._fake_results_with_score(3.9)
+        with mock_patch("reasonbench.__main__._make_client"), \
+             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+            MockPipeline.return_value.run_prompts.return_value = fake
+            code = main([
+                "baseline", "compare",
+                "--version", "v1",
+                "--model", "base-model",
+                "--judge", "judge-model",
+                "--threshold", "0.5",
+            ])
+        assert code == 0
+
+    def test_compare_exits_two_on_regression(self, patch_suite, monkeypatch, capsys):
+        """4.0 baseline, 1.0 current → delta -3.0, threshold 0.05 → exit 2."""
+        from unittest.mock import patch as mock_patch
+        fake = self._fake_results_with_score(1.0)
+        with mock_patch("reasonbench.__main__._make_client"), \
+             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+            MockPipeline.return_value.run_prompts.return_value = fake
+            code = main([
+                "baseline", "compare",
+                "--version", "v1",
+                "--model", "base-model",
+                "--judge", "judge-model",
+                "--threshold", "0.05",
+            ])
+        assert code == 2
+        assert "REGRESSION" in capsys.readouterr().out
+
+    def test_compare_exits_one_on_missing_baseline(self, patch_suite, capsys):
+        """No baseline for 'unknown-model' → exit 1."""
+        code = main([
+            "baseline", "compare",
+            "--version", "v1",
+            "--model", "unknown-model",
+            "--judge", "judge-model",
+        ])
+        assert code == 1
+        assert "no baseline" in capsys.readouterr().err.lower()
+
+    def test_compare_exits_one_on_missing_version(self, patch_suite, capsys):
+        code = main([
+            "baseline", "compare",
+            "--version", "v99",
+            "--model", "base-model",
+            "--judge", "judge-model",
+        ])
+        assert code == 1
+        assert "not found" in capsys.readouterr().err

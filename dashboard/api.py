@@ -69,7 +69,8 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         report_path = _experiment_dir(name) / "report.json"
         if not report_path.exists():
             raise HTTPException(404, f"Report not found for {name}")
-        return json.loads(report_path.read_text(encoding="utf-8"))
+        result: dict[str, Any] = json.loads(report_path.read_text(encoding="utf-8"))
+        return result
 
     @app.get("/api/experiments/{name}/results")
     def get_results(
@@ -139,12 +140,8 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
             "total": total,
             "avg_score": avg_score,
             "failure_rate": failures / total,
-            "by_category": {
-                k: sum(v) / len(v) for k, v in sorted(by_category.items())
-            },
-            "by_type": {
-                k: sum(v) / len(v) for k, v in sorted(by_type.items())
-            },
+            "by_category": {k: sum(v) / len(v) for k, v in sorted(by_category.items())},
+            "by_type": {k: sum(v) / len(v) for k, v in sorted(by_type.items())},
             "by_severity": dict(sorted(by_severity.items())),
             "score_distribution": dict(sorted(score_dist.items())),
         }

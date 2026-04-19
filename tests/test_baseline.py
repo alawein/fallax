@@ -94,7 +94,8 @@ class TestBaselineCapture:
     def test_capture_writes_entry(self, patch_suite, benchmark_dir, monkeypatch, capsys):
         from unittest.mock import patch as mock_patch
         fake = self._fake_results()
-        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with mock_patch("reasonbench.__main__._make_client"), \
+             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main([
                 "baseline", "capture",
@@ -113,7 +114,8 @@ class TestBaselineCapture:
         from unittest.mock import patch as mock_patch
         fake = self._fake_results()
         # capture for "base-model" which already has an entry
-        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with mock_patch("reasonbench.__main__._make_client"), \
+             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
             MockPipeline.return_value.run_prompts.return_value = fake
             main([
                 "baseline", "capture",

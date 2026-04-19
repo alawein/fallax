@@ -320,6 +320,51 @@ def _cmd_benchmark(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_baseline_capture(args: argparse.Namespace) -> int:
+    """Capture baseline scores for one model on a benchmark version."""
+    from datetime import UTC, datetime
+
+    from .benchmark import ModelBaseline
+
+    suite = BenchmarkSuite()
+    try:
+        prompts = suite.load_prompts(args.version)
+    except FileNotFoundError:
+        print(f"Error: benchmark {args.version} not found", file=sys.stderr)
+        return 1
+
+    client = _make_client(args)
+    pipeline = Pipeline(
+        client=client,
+        models=[args.model],
+        judge_model=args.judge,
+        output_path=Path(args.output),
+        seed=42,
+    )
+    results = pipeline.run_prompts(prompts)
+    scores = suite.score_results(results)
+
+    baselines = suite.load_baselines(args.version)
+    entry = ModelBaseline(
+        model_name=args.model,
+        overall_score=scores["overall_score"],
+        failure_rate=scores["failure_rate"],
+        category_scores=scores["category_scores"],
+        type_scores=scores["type_scores"],
+        captured_at=datetime.now(UTC).isoformat(),
+    )
+    baselines.models = [m for m in baselines.models if m.model_name != args.model]
+    baselines.models.append(entry)
+    path = suite.save_baselines(baselines)
+
+    print(f"\nBaseline captured ({args.version} / {args.model})")
+    print(f"  Overall score:  {scores['overall_score']:.2f}")
+    print(f"  Failure rate:   {scores['failure_rate']:.1%}")
+    print(f"  Prompts scored: {scores['total']}")
+    print(f"  Saved to:       {path}")
+    return 0
+
+
 def _cmd_baseline_status(args: argparse.Namespace) -> int:
     """Show recorded baselines for a benchmark version."""
     suite = BenchmarkSuite()
@@ -494,6 +539,19 @@ def main(argv: list[str] | None = None) -> int:
     stat_p = baseline_sub.add_parser("status", help="Show recorded baselines")
     stat_p.add_argument("--version", default="v1", help="Benchmark version")
 
+    # baseline capture
+    cap_p = baseline_sub.add_parser("capture", help="Capture baseline for a model")
+    cap_p.add_argument("--version", default="v1", help="Benchmark version")
+    cap_p.add_argument("--model", required=True, help="Model to evaluate")
+    cap_p.add_argument(
+        "--judge",
+        required=not bool(default_judge),
+        default=default_judge or None,
+        help="Judge model (or set REASONBENCH_JUDGE_MODEL)",
+    )
+    cap_p.add_argument("--output", default="baseline_run.jsonl")
+    cap_p.add_argument("--provider", default="anthropic", help="LLM provider")
+
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -516,6 +574,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "benchmark":
         return _cmd_benchmark(args)
     if args.command == "baseline":
+        if args.baseline_command == "capture":
+            return _cmd_baseline_capture(args)
         if args.baseline_command == "status":
             return _cmd_baseline_status(args)
         baseline_p.print_help()

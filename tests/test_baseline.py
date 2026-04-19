@@ -79,3 +79,60 @@ class TestBaselineStatus:
         assert code == 0
         captured = capsys.readouterr()
         assert "No baselines" in captured.out
+
+
+# ---------------------------------------------------------------------------
+# baseline capture
+# ---------------------------------------------------------------------------
+
+class TestBaselineCapture:
+    def _fake_results(self):
+        """Two fake EvaluationResults for deterministic scoring."""
+        from tests.conftest import make_result
+        return [make_result(score=3), make_result(score=5)]
+
+    def test_capture_writes_entry(self, patch_suite, benchmark_dir, monkeypatch, capsys):
+        from unittest.mock import patch as mock_patch
+        fake = self._fake_results()
+        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+            MockPipeline.return_value.run_prompts.return_value = fake
+            code = main([
+                "baseline", "capture",
+                "--version", "v1",
+                "--model", "new-model",
+                "--judge", "judge-model",
+            ])
+        assert code == 0
+        # reload baselines from disk
+        baselines_path = benchmark_dir / "v1" / "baselines.json"
+        data = json.loads(baselines_path.read_text(encoding="utf-8"))
+        names = [m["model_name"] for m in data["models"]]
+        assert "new-model" in names
+
+    def test_capture_replaces_existing_entry(self, patch_suite, benchmark_dir, monkeypatch):
+        from unittest.mock import patch as mock_patch
+        fake = self._fake_results()
+        # capture for "base-model" which already has an entry
+        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+            MockPipeline.return_value.run_prompts.return_value = fake
+            main([
+                "baseline", "capture",
+                "--version", "v1",
+                "--model", "base-model",
+                "--judge", "judge-model",
+            ])
+        data = json.loads(
+            (benchmark_dir / "v1" / "baselines.json").read_text(encoding="utf-8")
+        )
+        # still exactly one entry for base-model (not duplicated)
+        assert sum(1 for m in data["models"] if m["model_name"] == "base-model") == 1
+
+    def test_capture_missing_version_returns_1(self, patch_suite, capsys):
+        code = main([
+            "baseline", "capture",
+            "--version", "v99",
+            "--model", "m",
+            "--judge", "j",
+        ])
+        assert code == 1
+        assert "not found" in capsys.readouterr().err

@@ -10,7 +10,6 @@ import pytest
 from reasonbench.__main__ import main
 from reasonbench.benchmark import BenchmarkSuite
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

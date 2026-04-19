@@ -1,5 +1,8 @@
 from unittest.mock import MagicMock
 
+import anthropic
+import pytest
+
 from reasonbench.client import AnthropicClient, LLMClient
 from tests.conftest import MockClient
 
@@ -35,17 +38,24 @@ class TestMockClient:
 
 
 class TestAnthropicClient:
-    def test_complete_calls_api(self):
-        mock_anthropic = MagicMock()
-        mock_message = MagicMock()
-        mock_message.content = [MagicMock(text="test response")]
-        mock_anthropic.messages.create.return_value = mock_message
-
+    def _make_client(self, mock_anthropic: MagicMock) -> AnthropicClient:
         client = AnthropicClient.__new__(AnthropicClient)
         client._client = mock_anthropic
         client._max_tokens = 4096
+        return client
 
-        result = client.complete("test prompt", model="test-model")
+    def test_complete_calls_api(self):
+        mock_anthropic = MagicMock()
+        block = anthropic.types.TextBlock.model_construct(
+            type="text", text="test response"
+        )
+        mock_message = MagicMock()
+        mock_message.content = [block]
+        mock_anthropic.messages.create.return_value = mock_message
+
+        result = self._make_client(mock_anthropic).complete(
+            "test prompt", model="test-model"
+        )
 
         assert result == "test response"
         mock_anthropic.messages.create.assert_called_once_with(
@@ -56,15 +66,24 @@ class TestAnthropicClient:
 
     def test_complete_extracts_first_content_block(self):
         mock_anthropic = MagicMock()
-        block1 = MagicMock(text="first block")
-        block2 = MagicMock(text="second block")
+        block1 = anthropic.types.TextBlock.model_construct(
+            type="text", text="first block"
+        )
+        block2 = anthropic.types.TextBlock.model_construct(
+            type="text", text="second block"
+        )
         mock_message = MagicMock()
         mock_message.content = [block1, block2]
         mock_anthropic.messages.create.return_value = mock_message
 
-        client = AnthropicClient.__new__(AnthropicClient)
-        client._client = mock_anthropic
-        client._max_tokens = 4096
-
-        result = client.complete("test", model="m")
+        result = self._make_client(mock_anthropic).complete("test", model="m")
         assert result == "first block"
+
+    def test_complete_raises_for_non_text_block(self):
+        mock_anthropic = MagicMock()
+        mock_message = MagicMock()
+        mock_message.content = [MagicMock()]  # plain MagicMock is not a TextBlock
+        mock_anthropic.messages.create.return_value = mock_message
+
+        with pytest.raises(ValueError, match="Expected TextBlock"):
+            self._make_client(mock_anthropic).complete("test", model="test-model")

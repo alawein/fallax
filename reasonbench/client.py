@@ -42,4 +42,6 @@ class AnthropicClient:
         block = message.content[0]
         if isinstance(block, anthropic.types.TextBlock):
             return block.text
-        return ""
+        raise ValueError(
+            f"Expected TextBlock from model {model!r}, got {type(block).__name__!r}"
+        )

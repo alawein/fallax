@@ -69,7 +69,8 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         report_path = _experiment_dir(name) / "report.json"
         if not report_path.exists():
             raise HTTPException(404, f"Report not found for {name}")
-        return json.loads(report_path.read_text(encoding="utf-8"))
+        result: dict[str, Any] = json.loads(report_path.read_text(encoding="utf-8"))
+        return result
 
     @app.get("/api/experiments/{name}/results")
     def get_results(

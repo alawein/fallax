@@ -8,6 +8,7 @@ import os
 import sys
 from pathlib import Path
 
+from .benchmark import BenchmarkSuite
 from .client import AnthropicClient
 from .clients import create_client
 from .pipeline import Pipeline
@@ -319,6 +320,136 @@ def _cmd_benchmark(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_baseline_compare(args: argparse.Namespace) -> int:
+    """Compare a model run against its recorded baseline."""
+    suite = BenchmarkSuite()
+    try:
+        prompts = suite.load_prompts(args.version)
+    except FileNotFoundError:
+        print(f"Error: benchmark {args.version} not found", file=sys.stderr)
+        return 1
+
+    baselines = suite.load_baselines(args.version)
+    recorded = next((m for m in baselines.models if m.model_name == args.model), None)
+    if recorded is None:
+        print(
+            f"Error: no baseline for '{args.model}' — run 'baseline capture' first",
+            file=sys.stderr,
+        )
+        return 1
+
+    try:
+        client = _make_client(args)
+        pipeline = Pipeline(
+            client=client,
+            models=[args.model],
+            judge_model=args.judge,
+            output_path=Path(args.output),
+            seed=42,
+        )
+        results = pipeline.run_prompts(prompts)
+        scores = suite.score_results(results)
+    except Exception as e:
+        print(f"Error: benchmark run failed: {e}", file=sys.stderr)
+        return 1
+
+    delta = scores["overall_score"] - recorded.overall_score
+    fr_delta = scores["failure_rate"] - recorded.failure_rate
+    regressed = delta < -args.threshold
+
+    print(f"\nBaseline comparison ({args.version} / {args.model})")
+    print(f"  {'Metric':<20} {'Baseline':>10} {'Current':>10} {'Delta':>10}")
+    print(f"  {'-' * 53}")
+    print(
+        f"  {'overall_score':<20} {recorded.overall_score:>10.2f} "
+        f"{scores['overall_score']:>10.2f} {delta:>+10.2f}"
+    )
+    print(
+        f"  {'failure_rate':<20} {recorded.failure_rate:>10.1%} "
+        f"{scores['failure_rate']:>10.1%} {fr_delta:>+10.1%}"
+    )
+
+    if regressed:
+        print(
+            f"\nREGRESSION: {args.model} overall_score dropped "
+            f"{abs(delta):.2f} points (threshold: {args.threshold})"
+        )
+        return 2
+
+    print(f"\nPASS: within threshold ({args.threshold})")
+    return 0
+
+
+def _cmd_baseline_capture(args: argparse.Namespace) -> int:
+    """Capture baseline scores for one model on a benchmark version."""
+    from datetime import UTC, datetime
+
+    from .benchmark import ModelBaseline
+
+    suite = BenchmarkSuite()
+    try:
+        prompts = suite.load_prompts(args.version)
+    except FileNotFoundError:
+        print(f"Error: benchmark {args.version} not found", file=sys.stderr)
+        return 1
+
+    try:
+        client = _make_client(args)
+        pipeline = Pipeline(
+            client=client,
+            models=[args.model],
+            judge_model=args.judge,
+            output_path=Path(args.output),
+            seed=42,
+        )
+        results = pipeline.run_prompts(prompts)
+        scores = suite.score_results(results)
+        baselines = suite.load_baselines(args.version)
+    except Exception as e:
+        print(f"Error: baseline capture failed: {e}", file=sys.stderr)
+        return 1
+
+    entry = ModelBaseline(
+        model_name=args.model,
+        overall_score=scores["overall_score"],
+        failure_rate=scores["failure_rate"],
+        category_scores=scores["category_scores"],
+        type_scores=scores["type_scores"],
+        captured_at=datetime.now(UTC).isoformat(),
+    )
+    baselines.models = [m for m in baselines.models if m.model_name != args.model]
+    baselines.models.append(entry)
+    path = suite.save_baselines(baselines)
+
+    print(f"\nBaseline captured ({args.version} / {args.model})")
+    print(f"  Overall score:  {scores['overall_score']:.2f}")
+    print(f"  Failure rate:   {scores['failure_rate']:.1%}")
+    print(f"  Prompts scored: {scores['total']}")
+    print(f"  Saved to:       {path}")
+    return 0
+
+
+def _cmd_baseline_status(args: argparse.Namespace) -> int:
+    """Show recorded baselines for a benchmark version."""
+    suite = BenchmarkSuite()
+    baselines = suite.load_baselines(args.version)
+
+    if not baselines.models:
+        print(f"No baselines recorded for {args.version}.")
+        return 0
+
+    print(f"\nBaselines ({args.version})")
+    print(f"  {'Model':<35} {'Score':>7} {'Fail%':>7} {'Captured':>25}")
+    print(f"  {'-' * 77}")
+    for m in baselines.models:
+        ca = m.captured_at[:25] if m.captured_at else "—"
+        print(
+            f"  {m.model_name:<35} {m.overall_score:>7.2f} "
+            f"{m.failure_rate:>7.1%} {ca:>25}"
+        )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Fallax CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
@@ -462,6 +593,49 @@ def main(argv: list[str] | None = None) -> int:
     bench_p.add_argument("--output", default="benchmark_results.jsonl")
     bench_p.add_argument("--provider", default="anthropic", help="LLM provider")
 
+    # -- baseline --
+    baseline_p = subparsers.add_parser("baseline", help="Manage benchmark baselines")
+    baseline_sub = baseline_p.add_subparsers(dest="baseline_command")
+
+    # baseline status
+    stat_p = baseline_sub.add_parser("status", help="Show recorded baselines")
+    stat_p.add_argument("--version", default="v1", help="Benchmark version")
+
+    # baseline capture
+    cap_p = baseline_sub.add_parser("capture", help="Capture baseline for a model")
+    cap_p.add_argument("--version", default="v1", help="Benchmark version")
+    cap_p.add_argument("--model", required=True, help="Model to evaluate")
+    cap_p.add_argument(
+        "--judge",
+        required=not bool(default_judge),
+        default=default_judge or None,
+        help="Judge model (or set REASONBENCH_JUDGE_MODEL)",
+    )
+    cap_p.add_argument("--output", default="baseline_run.jsonl")
+    cap_p.add_argument("--provider", default="anthropic", help="LLM provider")
+
+    # baseline compare
+    cmp_p = baseline_sub.add_parser("compare", help="Compare run against baseline")
+    cmp_p.add_argument("--version", default="v1", help="Benchmark version")
+    cmp_p.add_argument("--model", required=True, help="Model to compare")
+    cmp_p.add_argument(
+        "--judge",
+        required=not bool(default_judge),
+        default=default_judge or None,
+        help="Judge model",
+    )
+    cmp_p.add_argument(
+        "--threshold",
+        type=float,
+        default=0.05,
+        help=(
+            "overall_score drop larger than this is a regression; "
+            "drops of exactly threshold pass (default: 0.05)"
+        ),
+    )
+    cmp_p.add_argument("--output", default="compare_run.jsonl")
+    cmp_p.add_argument("--provider", default="anthropic", help="LLM provider")
+
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -483,6 +657,15 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_experiment(args)
     if args.command == "benchmark":
         return _cmd_benchmark(args)
+    if args.command == "baseline":
+        if args.baseline_command == "capture":
+            return _cmd_baseline_capture(args)
+        if args.baseline_command == "compare":
+            return _cmd_baseline_compare(args)
+        if args.baseline_command == "status":
+            return _cmd_baseline_status(args)
+        baseline_p.print_help()
+        return 1
 
     parser.print_help()
     return 1

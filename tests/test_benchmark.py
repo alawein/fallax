@@ -269,3 +269,14 @@ class TestBenchmarkModels:
         loaded = BenchmarkBaselines.model_validate_json(data)
         assert loaded.models[0].model_name == "m1"
         assert loaded.models[0].category_scores["logic_error"] == 3.5
+
+    def test_model_baseline_captured_at_roundtrip(self):
+        b = ModelBaseline(
+            model_name="m",
+            overall_score=3.5,
+            failure_rate=0.2,
+            captured_at="2026-04-18T12:00:00+00:00",
+        )
+        data = b.model_dump_json()
+        loaded = ModelBaseline.model_validate_json(data)
+        assert loaded.captured_at == "2026-04-18T12:00:00+00:00"

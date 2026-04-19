@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,7 @@ class ModelBaseline(BaseModel):
     type_scores: dict[str, float] = Field(default_factory=dict)
     assumption_density: float = 0.0
     runs: int = Field(ge=1, default=1)
+    captured_at: str | None = None
 
 
 class BenchmarkBaselines(BaseModel):
@@ -87,17 +89,22 @@ class BenchmarkSuite:
         path = self._version_dir(version) / "baselines.json"
         if not path.exists():
             return BenchmarkBaselines(version=version)
-        data = json.loads(path.read_text(encoding="utf-8"))
-        return BenchmarkBaselines.model_validate(data)
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            return BenchmarkBaselines.model_validate(data)
+        except (json.JSONDecodeError, ValueError) as e:
+            raise ValueError(f"baselines.json at {path} is malformed: {e}") from e
 
     def save_baselines(self, baselines: BenchmarkBaselines) -> Path:
-        """Save baseline scores."""
+        """Save baseline scores atomically (tmp + os.replace)."""
         path = self._version_dir(baselines.version) / "baselines.json"
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
+        tmp = path.with_suffix(".json.tmp")
+        tmp.write_text(
             baselines.model_dump_json(indent=2),
             encoding="utf-8",
         )
+        os.replace(tmp, path)
         return path
 
     def create_version(

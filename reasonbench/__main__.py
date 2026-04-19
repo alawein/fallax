@@ -331,11 +331,12 @@ def _cmd_baseline_status(args: argparse.Namespace) -> int:
 
     print(f"\nBaselines ({args.version})")
     print(f"  {'Model':<35} {'Score':>7} {'Fail%':>7} {'Captured':>25}")
-    print(f"  {'-'*78}")
+    print(f"  {'-'*77}")
     for m in baselines.models:
+        ca = m.captured_at[:25] if m.captured_at else "—"
         print(
             f"  {m.model_name:<35} {m.overall_score:>7.2f} "
-            f"{m.failure_rate:>7.1%} {m.captured_at:>25}"
+            f"{m.failure_rate:>7.1%} {ca:>25}"
         )
     return 0
 
@@ -515,10 +516,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "benchmark":
         return _cmd_benchmark(args)
     if args.command == "baseline":
-        if args.baseline_command == "capture":
-            return _cmd_baseline_capture(args)
-        if args.baseline_command == "compare":
-            return _cmd_baseline_compare(args)
         if args.baseline_command == "status":
             return _cmd_baseline_status(args)
         baseline_p.print_help()

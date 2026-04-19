@@ -8,6 +8,7 @@ import os
 import sys
 from pathlib import Path
 
+from .benchmark import BenchmarkSuite
 from .client import AnthropicClient
 from .clients import create_client
 from .pipeline import Pipeline
@@ -319,6 +320,26 @@ def _cmd_benchmark(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_baseline_status(args: argparse.Namespace) -> int:
+    """Show recorded baselines for a benchmark version."""
+    suite = BenchmarkSuite()
+    baselines = suite.load_baselines(args.version)
+
+    if not baselines.models:
+        print(f"No baselines recorded for {args.version}.")
+        return 0
+
+    print(f"\nBaselines ({args.version})")
+    print(f"  {'Model':<35} {'Score':>7} {'Fail%':>7} {'Captured':>25}")
+    print(f"  {'-'*78}")
+    for m in baselines.models:
+        print(
+            f"  {m.model_name:<35} {m.overall_score:>7.2f} "
+            f"{m.failure_rate:>7.1%} {m.captured_at:>25}"
+        )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Fallax CLI entry point."""
     default_model = os.environ.get("REASONBENCH_MODEL", "")
@@ -462,6 +483,16 @@ def main(argv: list[str] | None = None) -> int:
     bench_p.add_argument("--output", default="benchmark_results.jsonl")
     bench_p.add_argument("--provider", default="anthropic", help="LLM provider")
 
+    # -- baseline --
+    baseline_p = subparsers.add_parser(
+        "baseline", help="Manage benchmark baselines"
+    )
+    baseline_sub = baseline_p.add_subparsers(dest="baseline_command")
+
+    # baseline status
+    stat_p = baseline_sub.add_parser("status", help="Show recorded baselines")
+    stat_p.add_argument("--version", default="v1", help="Benchmark version")
+
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -483,6 +514,15 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_experiment(args)
     if args.command == "benchmark":
         return _cmd_benchmark(args)
+    if args.command == "baseline":
+        if args.baseline_command == "capture":
+            return _cmd_baseline_capture(args)
+        if args.baseline_command == "compare":
+            return _cmd_baseline_compare(args)
+        if args.baseline_command == "status":
+            return _cmd_baseline_status(args)
+        baseline_p.print_help()
+        return 1
 
     parser.print_help()
     return 1

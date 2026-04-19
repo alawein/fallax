@@ -330,9 +330,7 @@ def _cmd_baseline_compare(args: argparse.Namespace) -> int:
         return 1
 
     baselines = suite.load_baselines(args.version)
-    recorded = next(
-        (m for m in baselines.models if m.model_name == args.model), None
-    )
+    recorded = next((m for m in baselines.models if m.model_name == args.model), None)
     if recorded is None:
         print(
             f"Error: no baseline for '{args.model}' — run 'baseline capture' first",
@@ -434,7 +432,7 @@ def _cmd_baseline_status(args: argparse.Namespace) -> int:
 
     print(f"\nBaselines ({args.version})")
     print(f"  {'Model':<35} {'Score':>7} {'Fail%':>7} {'Captured':>25}")
-    print(f"  {'-'*77}")
+    print(f"  {'-' * 77}")
     for m in baselines.models:
         ca = m.captured_at[:25] if m.captured_at else "—"
         print(
@@ -588,9 +586,7 @@ def main(argv: list[str] | None = None) -> int:
     bench_p.add_argument("--provider", default="anthropic", help="LLM provider")
 
     # -- baseline --
-    baseline_p = subparsers.add_parser(
-        "baseline", help="Manage benchmark baselines"
-    )
+    baseline_p = subparsers.add_parser("baseline", help="Manage benchmark baselines")
     baseline_sub = baseline_p.add_subparsers(dest="baseline_command")
 
     # baseline status

@@ -14,6 +14,7 @@ from reasonbench.benchmark import BenchmarkSuite
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def benchmark_dir(tmp_path):
     """Temp benchmark dir with a v1 suite that has one baseline entry."""
@@ -23,6 +24,7 @@ def benchmark_dir(tmp_path):
     # minimal prompts.jsonl so load_prompts() doesn't raise
     from reasonbench.models import Prompt
     from reasonbench.taxonomy import FailureType
+
     prompt = Prompt(
         prompt_id="p1",
         failure_type=FailureType.UNSTATED_ASSUMPTION,
@@ -63,6 +65,7 @@ def patch_suite(benchmark_dir, monkeypatch):
 # baseline status
 # ---------------------------------------------------------------------------
 
+
 class TestBaselineStatus:
     def test_status_prints_model_name(self, patch_suite, capsys):
         code = main(["baseline", "status", "--version", "v1"])
@@ -84,24 +87,37 @@ class TestBaselineStatus:
 # baseline capture
 # ---------------------------------------------------------------------------
 
+
 class TestBaselineCapture:
     def _fake_results(self):
         """Two fake EvaluationResults for deterministic scoring."""
         from tests.conftest import make_result
+
         return [make_result(score=3), make_result(score=5)]
 
-    def test_capture_writes_entry(self, patch_suite, benchmark_dir, monkeypatch, capsys):
+    def test_capture_writes_entry(
+        self, patch_suite, benchmark_dir, monkeypatch, capsys
+    ):
         from unittest.mock import patch as mock_patch
+
         fake = self._fake_results()
-        with mock_patch("reasonbench.__main__._make_client"), \
-             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with (
+            mock_patch("reasonbench.__main__._make_client"),
+            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+        ):
             MockPipeline.return_value.run_prompts.return_value = fake
-            code = main([
-                "baseline", "capture",
-                "--version", "v1",
-                "--model", "new-model",
-                "--judge", "judge-model",
-            ])
+            code = main(
+                [
+                    "baseline",
+                    "capture",
+                    "--version",
+                    "v1",
+                    "--model",
+                    "new-model",
+                    "--judge",
+                    "judge-model",
+                ]
+            )
         assert code == 0
         # reload baselines from disk
         baselines_path = benchmark_dir / "v1" / "baselines.json"
@@ -109,19 +125,30 @@ class TestBaselineCapture:
         names = [m["model_name"] for m in data["models"]]
         assert "new-model" in names
 
-    def test_capture_replaces_existing_entry(self, patch_suite, benchmark_dir, monkeypatch):
+    def test_capture_replaces_existing_entry(
+        self, patch_suite, benchmark_dir, monkeypatch
+    ):
         from unittest.mock import patch as mock_patch
+
         fake = self._fake_results()
         # capture for "base-model" which already has an entry
-        with mock_patch("reasonbench.__main__._make_client"), \
-             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with (
+            mock_patch("reasonbench.__main__._make_client"),
+            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+        ):
             MockPipeline.return_value.run_prompts.return_value = fake
-            main([
-                "baseline", "capture",
-                "--version", "v1",
-                "--model", "base-model",
-                "--judge", "judge-model",
-            ])
+            main(
+                [
+                    "baseline",
+                    "capture",
+                    "--version",
+                    "v1",
+                    "--model",
+                    "base-model",
+                    "--judge",
+                    "judge-model",
+                ]
+            )
         data = json.loads(
             (benchmark_dir / "v1" / "baselines.json").read_text(encoding="utf-8")
         )
@@ -129,12 +156,18 @@ class TestBaselineCapture:
         assert sum(1 for m in data["models"] if m["model_name"] == "base-model") == 1
 
     def test_capture_missing_version_returns_1(self, patch_suite, capsys):
-        code = main([
-            "baseline", "capture",
-            "--version", "v99",
-            "--model", "m",
-            "--judge", "j",
-        ])
+        code = main(
+            [
+                "baseline",
+                "capture",
+                "--version",
+                "v99",
+                "--model",
+                "m",
+                "--judge",
+                "j",
+            ]
+        )
         assert code == 1
         assert "not found" in capsys.readouterr().err
 
@@ -143,63 +176,97 @@ class TestBaselineCapture:
 # baseline compare
 # ---------------------------------------------------------------------------
 
+
 class TestBaselineCompare:
     def _fake_results_with_score(self, avg_score: float):
         """Return results whose average score equals avg_score."""
         from tests.conftest import make_result
+
         score_int = round(avg_score)
         return [make_result(score=score_int), make_result(score=score_int)]
 
     def test_compare_exits_zero_within_threshold(self, patch_suite, monkeypatch):
         """4.0 baseline, 3.9 current → round to 4 → delta 0.0, threshold 0.5 → exit 0."""
         from unittest.mock import patch as mock_patch
+
         fake = self._fake_results_with_score(3.9)
-        with mock_patch("reasonbench.__main__._make_client"), \
-             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with (
+            mock_patch("reasonbench.__main__._make_client"),
+            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+        ):
             MockPipeline.return_value.run_prompts.return_value = fake
-            code = main([
-                "baseline", "compare",
-                "--version", "v1",
-                "--model", "base-model",
-                "--judge", "judge-model",
-                "--threshold", "0.5",
-            ])
+            code = main(
+                [
+                    "baseline",
+                    "compare",
+                    "--version",
+                    "v1",
+                    "--model",
+                    "base-model",
+                    "--judge",
+                    "judge-model",
+                    "--threshold",
+                    "0.5",
+                ]
+            )
         assert code == 0
 
     def test_compare_exits_two_on_regression(self, patch_suite, monkeypatch, capsys):
         """4.0 baseline, 1.0 current → delta -3.0, threshold 0.05 → exit 2."""
         from unittest.mock import patch as mock_patch
+
         fake = self._fake_results_with_score(1.0)
-        with mock_patch("reasonbench.__main__._make_client"), \
-             mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with (
+            mock_patch("reasonbench.__main__._make_client"),
+            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+        ):
             MockPipeline.return_value.run_prompts.return_value = fake
-            code = main([
-                "baseline", "compare",
-                "--version", "v1",
-                "--model", "base-model",
-                "--judge", "judge-model",
-                "--threshold", "0.05",
-            ])
+            code = main(
+                [
+                    "baseline",
+                    "compare",
+                    "--version",
+                    "v1",
+                    "--model",
+                    "base-model",
+                    "--judge",
+                    "judge-model",
+                    "--threshold",
+                    "0.05",
+                ]
+            )
         assert code == 2
         assert "REGRESSION" in capsys.readouterr().out
 
     def test_compare_exits_one_on_missing_baseline(self, patch_suite, capsys):
         """No baseline for 'unknown-model' → exit 1."""
-        code = main([
-            "baseline", "compare",
-            "--version", "v1",
-            "--model", "unknown-model",
-            "--judge", "judge-model",
-        ])
+        code = main(
+            [
+                "baseline",
+                "compare",
+                "--version",
+                "v1",
+                "--model",
+                "unknown-model",
+                "--judge",
+                "judge-model",
+            ]
+        )
         assert code == 1
         assert "no baseline" in capsys.readouterr().err.lower()
 
     def test_compare_exits_one_on_missing_version(self, patch_suite, capsys):
-        code = main([
-            "baseline", "compare",
-            "--version", "v99",
-            "--model", "base-model",
-            "--judge", "judge-model",
-        ])
+        code = main(
+            [
+                "baseline",
+                "compare",
+                "--version",
+                "v99",
+                "--model",
+                "base-model",
+                "--judge",
+                "judge-model",
+            ]
+        )
         assert code == 1
         assert "not found" in capsys.readouterr().err

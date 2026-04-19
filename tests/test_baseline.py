@@ -270,3 +270,48 @@ class TestBaselineCompare:
         )
         assert code == 1
         assert "not found" in capsys.readouterr().err
+
+    def test_compare_exits_one_on_pipeline_error(self, patch_suite, capsys):
+        """Unhandled pipeline/client errors map to exit 1, not a traceback."""
+        from unittest.mock import patch as mock_patch
+
+        with (
+            mock_patch("reasonbench.__main__._make_client"),
+            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+        ):
+            MockPipeline.return_value.run_prompts.side_effect = RuntimeError(
+                "anthropic quota exhausted"
+            )
+            code = main(
+                [
+                    "baseline",
+                    "compare",
+                    "--version",
+                    "v1",
+                    "--model",
+                    "base-model",
+                    "--judge",
+                    "judge-model",
+                ]
+            )
+        assert code == 1
+        err = capsys.readouterr().err
+        assert "benchmark run failed" in err
+        assert "anthropic quota exhausted" in err
+
+
+# ---------------------------------------------------------------------------
+# BenchmarkSuite.load_baselines error handling
+# ---------------------------------------------------------------------------
+
+
+class TestLoadBaselinesErrors:
+    def test_malformed_json_raises_with_path(self, benchmark_dir):
+        (benchmark_dir / "v1" / "baselines.json").write_text(
+            "{not valid json", encoding="utf-8"
+        )
+        suite = BenchmarkSuite(benchmarks_dir=benchmark_dir)
+        with pytest.raises(ValueError) as exc:
+            suite.load_baselines("v1")
+        assert "baselines.json" in str(exc.value)
+        assert "malformed" in str(exc.value)

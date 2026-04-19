@@ -338,16 +338,20 @@ def _cmd_baseline_compare(args: argparse.Namespace) -> int:
         )
         return 1
 
-    client = _make_client(args)
-    pipeline = Pipeline(
-        client=client,
-        models=[args.model],
-        judge_model=args.judge,
-        output_path=Path(args.output),
-        seed=42,
-    )
-    results = pipeline.run_prompts(prompts)
-    scores = suite.score_results(results)
+    try:
+        client = _make_client(args)
+        pipeline = Pipeline(
+            client=client,
+            models=[args.model],
+            judge_model=args.judge,
+            output_path=Path(args.output),
+            seed=42,
+        )
+        results = pipeline.run_prompts(prompts)
+        scores = suite.score_results(results)
+    except Exception as e:
+        print(f"Error: benchmark run failed: {e}", file=sys.stderr)
+        return 1
 
     delta = scores["overall_score"] - recorded.overall_score
     fr_delta = scores["failure_rate"] - recorded.failure_rate
@@ -389,18 +393,22 @@ def _cmd_baseline_capture(args: argparse.Namespace) -> int:
         print(f"Error: benchmark {args.version} not found", file=sys.stderr)
         return 1
 
-    client = _make_client(args)
-    pipeline = Pipeline(
-        client=client,
-        models=[args.model],
-        judge_model=args.judge,
-        output_path=Path(args.output),
-        seed=42,
-    )
-    results = pipeline.run_prompts(prompts)
-    scores = suite.score_results(results)
+    try:
+        client = _make_client(args)
+        pipeline = Pipeline(
+            client=client,
+            models=[args.model],
+            judge_model=args.judge,
+            output_path=Path(args.output),
+            seed=42,
+        )
+        results = pipeline.run_prompts(prompts)
+        scores = suite.score_results(results)
+        baselines = suite.load_baselines(args.version)
+    except Exception as e:
+        print(f"Error: baseline capture failed: {e}", file=sys.stderr)
+        return 1
 
-    baselines = suite.load_baselines(args.version)
     entry = ModelBaseline(
         model_name=args.model,
         overall_score=scores["overall_score"],

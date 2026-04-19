@@ -139,12 +139,8 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
             "total": total,
             "avg_score": avg_score,
             "failure_rate": failures / total,
-            "by_category": {
-                k: sum(v) / len(v) for k, v in sorted(by_category.items())
-            },
-            "by_type": {
-                k: sum(v) / len(v) for k, v in sorted(by_type.items())
-            },
+            "by_category": {k: sum(v) / len(v) for k, v in sorted(by_category.items())},
+            "by_type": {k: sum(v) / len(v) for k, v in sorted(by_type.items())},
             "by_severity": dict(sorted(by_severity.items())),
             "score_distribution": dict(sorted(score_dist.items())),
         }

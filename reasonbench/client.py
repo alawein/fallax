@@ -32,9 +32,14 @@ class AnthropicClient:
 
     def complete(self, prompt: str, *, model: str) -> str:
         """Send a prompt and return the text response."""
+        import anthropic
+
         message = self._client.messages.create(
             model=model,
             max_tokens=self._max_tokens,
             messages=[{"role": "user", "content": prompt}],
         )
-        return str(message.content[0].text)
+        block = message.content[0]
+        if isinstance(block, anthropic.types.TextBlock):
+            return block.text
+        return ""

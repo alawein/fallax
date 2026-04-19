@@ -457,16 +457,10 @@ def main(argv: list[str] | None = None) -> int:
     bench_p.add_argument(
         "--list", action="store_true", help="List available benchmark versions"
     )
-    bench_p.add_argument(
-        "--models", nargs="+", default=None, help="Models to evaluate"
-    )
-    bench_p.add_argument(
-        "--judge", default=default_judge or None, help="Judge model"
-    )
+    bench_p.add_argument("--models", nargs="+", default=None, help="Models to evaluate")
+    bench_p.add_argument("--judge", default=default_judge or None, help="Judge model")
     bench_p.add_argument("--output", default="benchmark_results.jsonl")
-    bench_p.add_argument(
-        "--provider", default="anthropic", help="LLM provider"
-    )
+    bench_p.add_argument("--provider", default="anthropic", help="LLM provider")
 
     args = parser.parse_args(argv)
 

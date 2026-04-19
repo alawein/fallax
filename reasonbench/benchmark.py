@@ -120,9 +120,7 @@ class BenchmarkSuite:
                 f.write(p.model_dump_json() + "\n")
 
         failure_types = sorted({p.failure_type.value for p in prompts})
-        categories = sorted(
-            {get_category(p.failure_type).value for p in prompts}
-        )
+        categories = sorted({get_category(p.failure_type).value for p in prompts})
 
         metadata = BenchmarkMetadata(
             version=version,
@@ -173,8 +171,7 @@ class BenchmarkSuite:
             for cat, scores in sorted(by_category.items())
         }
         type_scores = {
-            ft: sum(scores) / len(scores)
-            for ft, scores in sorted(by_type.items())
+            ft: sum(scores) / len(scores) for ft, scores in sorted(by_type.items())
         }
 
         return {

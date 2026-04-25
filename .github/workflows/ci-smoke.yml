@@ -16,6 +16,9 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -24,8 +27,8 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: astral-sh/setup-uv@f3763b49cb0e9cfe1c5ff20f4fd4d12a9e98672a # v6
         with:
           python-version: "3.12"
       - name: Install

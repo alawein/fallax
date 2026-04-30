@@ -1,11 +1,7 @@
 ---
-type: derived
+type: local-claude-config
+generated: false
 source: org/governance-templates
-sync: script
-sla: on-change
-authority: canonical
-audience: [agents, contributors]
-last-verified: 2026-04-16
 ---
 
 # fallax — local Claude bootstrap
@@ -47,3 +43,19 @@ After modifying code, run the relevant verification path before ending the sessi
 - Git configured for LF (not CRLF).
 - Python: use `python` (not `python3`).
 - No credentials in chat; use `gh secret set` or `vercel env add` instead.
+
+## Org Policy Overlay
+
+<!-- Managed by Claude Agent Platform — alawein org policy -->
+<!-- Risk tier: medium | Last updated: 2026-04-29 -->
+
+- **Risk tier:** medium
+- **Default action:** propose — show plan or diff before any write
+- **Approval required for:** commit, push, force-push, CI/CD changes, secrets scans
+- **Block on BLOCKER findings:** no — warn and surface, but don't halt on BLOCKER alone
+- **Review severity floor:** medium — skip LOW findings unless `--min-severity low` is passed
+- **Secrets scan strictness:** standard
+- **Allowed target branches:** `main`, `master`, `feat/*`, `fix/*`, `chore/*`, `docs/*`, `test/*`
+- **Forbidden auto-edit paths:** `.github/`, `**/.env*`, `**/secrets.*`, `**/credentials*`
+- **Default workflow:** `pr-ready`
+- **New-repo behavior:** Extender proposal fires automatically on first session (hook installed)

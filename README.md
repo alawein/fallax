@@ -1,5 +1,20 @@
 # Fallax
 
+## Public value
+
+Fallax is a review-tier research repo until its core purpose, active workflow,
+and publication posture are explicit. If promoted publicly, frame it around a
+clear technical question, the reproducible implementation surface, and the
+evidence it produces.
+
+## Publication boundaries
+
+- Confirm whether this is active research, a prototype, or an archive.
+- Add or verify license and ownership before public promotion.
+- Keep generated outputs, local data, secrets, and unpublished notes out of
+  public examples unless intentionally sanitized.
+- Prefer a small reproducible demo over broad undocumented scope.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 

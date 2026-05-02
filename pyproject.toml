@@ -19,7 +19,7 @@ all-providers = [
 ]
 dashboard = [
     "fastapi>=0.136.1",
-    "uvicorn>=0.34",
+    "uvicorn>=0.46.0",
 ]
 dev = [
     "pytest>=9.0.3",

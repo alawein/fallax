@@ -18,7 +18,7 @@ all-providers = [
     "reasonbench[gemini]",
 ]
 dashboard = [
-    "fastapi>=0.115",
+    "fastapi>=0.136.1",
     "uvicorn>=0.34",
 ]
 dev = [

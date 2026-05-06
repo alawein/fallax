@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-openai = ["openai>=1.0"]
+openai = ["openai>=2.35.0"]
 gemini = ["google-generativeai>=0.8"]
 all-providers = [
     "reasonbench[openai]",

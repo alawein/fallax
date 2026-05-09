@@ -41,7 +41,7 @@ jobs:
         run: uv sync --extra dev --extra dashboard
 
       - name: Run tests with coverage
-        run: uv run pytest --cov=reasonbench --cov=dashboard --cov-report=term-missing --cov-fail-under=90
+        run: uv run pytest --cov=fallax --cov=dashboard --cov-report=term-missing --cov-fail-under=90
 
   lint:
     runs-on: ubuntu-latest
@@ -76,4 +76,4 @@ jobs:
         run: uv sync --extra dev --extra dashboard
 
       - name: Mypy
-        run: uv run mypy reasonbench/ dashboard/
+        run: uv run mypy fallax/ dashboard/

@@ -26,8 +26,8 @@ Planned enhancements beyond the core 5-phase implementation.
 | `OllamaClient` | Local | Llama, Mistral, Qwen via Ollama |
 
 **Key decisions:**
-- Each client lives in its own module (`reasonbench/clients/openai.py`, etc.)
-- `AnthropicClient` moves to `reasonbench/clients/anthropic.py` (re-export from `client.py` for backwards compat)
+- Each client lives in its own module (`fallax/clients/openai.py`, etc.)
+- `AnthropicClient` moves to `fallax/clients/anthropic.py` (re-export from `client.py` for backwards compat)
 - Factory function `create_client(provider, **kwargs) -> LLMClient` for CLI usage
 - CLI `--provider` flag alongside `--models` to select client
 
@@ -53,7 +53,7 @@ Planned enhancements beyond the core 5-phase implementation.
 
 **Key decisions:**
 - Read-only (no writes back to result files)
-- Standalone app, not embedded in the reasonbench package
+- Standalone app, not embedded in the fallax package
 - Lives in `dashboard/` directory
 - Can load any experiment output directory
 
@@ -129,7 +129,7 @@ Planned enhancements beyond the core 5-phase implementation.
 - `benchmarks/v1/prompts.jsonl` — fixed prompt set (100-200 prompts)
 - `benchmarks/v1/baselines.json` — reference scores per model
 - `benchmarks/v1/metadata.json` — version, date, generation parameters, model list
-- CLI command: `reasonbench benchmark --models ... --version v1`
+- CLI command: `fallax benchmark --models ... --version v1`
 
 **Scoring dimensions:**
 - Overall score (0-10 composite)

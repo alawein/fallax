@@ -24,7 +24,7 @@ Shared voice and research-writing contract:
 
 ## Directory structure
 
-- `reasonbench/`: canonical evaluation engine
+- `fallax/`: canonical evaluation engine
 - `benchmarks/`: benchmark definitions and datasets
 - `dashboard/`: visualization and operator-facing results surface
 - `website/`: public-facing project surface
@@ -44,7 +44,7 @@ Shared voice and research-writing contract:
 
 ## Code conventions
 
-- Public Python behavior lives under `reasonbench/`.
+- Public Python behavior lives under `fallax/`.
 - Comments explain benchmark semantics, scoring dimensions, or failure-taxonomy
   logic.
 - Prefer explicit benchmark contracts over convenience wrappers that hide what
@@ -55,11 +55,11 @@ Shared voice and research-writing contract:
 ```bash
 uv sync --all-extras
 python -m pytest tests/
-python -m ruff check reasonbench/ tests/
-python -m mypy reasonbench/
+python -m ruff check fallax/ tests/
+python -m mypy fallax/
 ```
 
-Ruff selects `E, F, I, UP, B, SIM`; line length 88. See `docs/architecture.md` for the `reasonbench/` module layout and key concepts.
+Ruff selects `E, F, I, UP, B, SIM`; line length 88. See `docs/architecture.md` for the `fallax/` module layout and key concepts.
 
 ## Gotchas
 

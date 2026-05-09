@@ -1,4 +1,4 @@
-"""CLI entry point: python -m reasonbench."""
+"""CLI entry point: python -m fallax."""
 
 from __future__ import annotations
 
@@ -457,7 +457,7 @@ def main(argv: list[str] | None = None) -> int:
     default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
 
     parser = argparse.ArgumentParser(
-        prog="reasonbench",
+        prog="fallax",
         description="LLM Adversarial Reasoning Evaluation System",
     )
     subparsers = parser.add_subparsers(dest="command")

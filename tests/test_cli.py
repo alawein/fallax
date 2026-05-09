@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from reasonbench.__main__ import main
+from fallax.__main__ import main
 from tests.conftest import (
     JUDGE_RESPONSES,
     MODEL_RESPONSE_TEXT,
@@ -42,7 +42,7 @@ class TestRunSubcommand:
     def test_run_returns_zero(self, params_dir, tmp_path):
         output = tmp_path / "out.jsonl"
         mock = MockClient(responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT)
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "run",
@@ -108,7 +108,7 @@ class TestEvolveSubcommand:
     def test_evolve_returns_zero(self, results_file, tmp_path):
         output = tmp_path / "evolved.jsonl"
         mock = MockClient(default="A harder evolved prompt.")
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "evolve",
@@ -123,7 +123,7 @@ class TestEvolveSubcommand:
 
     def test_evolve_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="evolved")
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "evolve",
@@ -139,7 +139,7 @@ class TestRepairSubcommand:
     def test_repair_returns_zero(self, results_file, tmp_path):
         output = tmp_path / "repairs.jsonl"
         mock = MockClient(default="I was wrong. The correct answer is X.")
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "repair",
@@ -154,7 +154,7 @@ class TestRepairSubcommand:
 
     def test_repair_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="fixed")
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "repair",
@@ -177,7 +177,7 @@ class TestExperimentSubcommand:
             },
             default=MODEL_RESPONSE_TEXT,
         )
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "experiment",
@@ -212,7 +212,7 @@ class TestExperimentSubcommand:
             },
             default=MODEL_RESPONSE_TEXT,
         )
-        with patch("reasonbench.__main__._make_client", return_value=mock):
+        with patch("fallax.__main__._make_client", return_value=mock):
             code = main(
                 [
                     "experiment",
@@ -264,11 +264,11 @@ class TestBenchmarkSubcommand:
 
     def test_benchmark_list(self, bench_dir):
         with (
-            patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None),
-            patch("reasonbench.benchmark.BenchmarkSuite.versions", return_value=["v1"]),
-            patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta,
+            patch("fallax.benchmark.BenchmarkSuite.__init__", return_value=None),
+            patch("fallax.benchmark.BenchmarkSuite.versions", return_value=["v1"]),
+            patch("fallax.benchmark.BenchmarkSuite.load_metadata") as mock_meta,
         ):
-            from reasonbench.benchmark import BenchmarkMetadata
+            from fallax.benchmark import BenchmarkMetadata
 
             mock_meta.return_value = BenchmarkMetadata(
                 version="v1",
@@ -282,13 +282,13 @@ class TestBenchmarkSubcommand:
         assert code == 0
 
     def test_benchmark_info_no_models(self, bench_dir):
-        from reasonbench.benchmark import BenchmarkBaselines, BenchmarkMetadata
+        from fallax.benchmark import BenchmarkBaselines, BenchmarkMetadata
 
         with (
-            patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None),
-            patch("reasonbench.benchmark.BenchmarkSuite.load_prompts", return_value=[]),
-            patch("reasonbench.benchmark.BenchmarkSuite.load_metadata") as mock_meta,
-            patch("reasonbench.benchmark.BenchmarkSuite.load_baselines") as mock_base,
+            patch("fallax.benchmark.BenchmarkSuite.__init__", return_value=None),
+            patch("fallax.benchmark.BenchmarkSuite.load_prompts", return_value=[]),
+            patch("fallax.benchmark.BenchmarkSuite.load_metadata") as mock_meta,
+            patch("fallax.benchmark.BenchmarkSuite.load_baselines") as mock_base,
         ):
             mock_meta.return_value = BenchmarkMetadata(
                 version="v1",
@@ -304,9 +304,9 @@ class TestBenchmarkSubcommand:
 
     def test_benchmark_not_found(self):
         with (
-            patch("reasonbench.benchmark.BenchmarkSuite.__init__", return_value=None),
+            patch("fallax.benchmark.BenchmarkSuite.__init__", return_value=None),
             patch(
-                "reasonbench.benchmark.BenchmarkSuite.load_prompts",
+                "fallax.benchmark.BenchmarkSuite.load_prompts",
                 side_effect=FileNotFoundError("not found"),
             ),
         ):

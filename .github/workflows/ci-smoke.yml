@@ -34,4 +34,4 @@ jobs:
       - name: Install
         run: uv sync --extra dashboard
       - name: Smoke — baseline status
-        run: uv run python -m reasonbench baseline status --version v1
+        run: uv run python -m fallax baseline status --version v1

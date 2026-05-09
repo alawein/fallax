@@ -9,9 +9,9 @@ sla: none
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add `reasonbench baseline capture|compare|status` subcommands that close the capture → compare → regress-check loop currently missing from the CLI.
+**Goal:** Add `fallax baseline capture|compare|status` subcommands that close the capture → compare → regress-check loop currently missing from the CLI.
 
-**Architecture:** Three new `_cmd_baseline_*` functions in `reasonbench/__main__.py` wired into a nested `baseline` subparser. `ModelBaseline` gains a `captured_at` field. `BenchmarkSuite.save_baselines` already exists and handles all disk I/O. The `ci-smoke.yml` no-op is replaced with a real `baseline status` call.
+**Architecture:** Three new `_cmd_baseline_*` functions in `fallax/__main__.py` wired into a nested `baseline` subparser. `ModelBaseline` gains a `captured_at` field. `BenchmarkSuite.save_baselines` already exists and handles all disk I/O. The `ci-smoke.yml` no-op is replaced with a real `baseline status` call.
 
 **Tech Stack:** Python 3.12+, argparse (nested subparsers), pydantic v2, pytest + `monkeypatch` + `capsys`, `unittest.mock.patch`
 
@@ -21,8 +21,8 @@ sla: none
 
 | Action | Path | What changes |
 |--------|------|--------------|
-| Modify | `reasonbench/benchmark.py` | Add `captured_at: str = ""` field to `ModelBaseline` |
-| Modify | `reasonbench/__main__.py` | Add `_cmd_baseline_capture`, `_cmd_baseline_compare`, `_cmd_baseline_status`; wire nested `baseline` subparser into `main()` |
+| Modify | `fallax/benchmark.py` | Add `captured_at: str = ""` field to `ModelBaseline` |
+| Modify | `fallax/__main__.py` | Add `_cmd_baseline_capture`, `_cmd_baseline_compare`, `_cmd_baseline_status`; wire nested `baseline` subparser into `main()` |
 | Create | `tests/test_baseline.py` | 7 test functions covering all three commands |
 | Modify | `.github/workflows/ci-smoke.yml` | Replace no-op with `baseline status --version v1`; fix branch filter `master`→`main` |
 
@@ -31,7 +31,7 @@ sla: none
 ### Task 1: Add `captured_at` to `ModelBaseline`
 
 **Files:**
-- Modify: `reasonbench/benchmark.py:28-38`
+- Modify: `fallax/benchmark.py:28-38`
 - Test: `tests/test_benchmark.py` — append one test to `TestBenchmarkModels`
 
 - [ ] **Step 1: Write the failing test**
@@ -97,7 +97,7 @@ Expected: all existing tests PASS (adding a field with a default is backward-com
 - [ ] **Step 6: Commit**
 
 ```bash
-git add reasonbench/benchmark.py tests/test_benchmark.py
+git add fallax/benchmark.py tests/test_benchmark.py
 git commit -m "feat(benchmark): add captured_at field to ModelBaseline"
 ```
 
@@ -106,7 +106,7 @@ git commit -m "feat(benchmark): add captured_at field to ModelBaseline"
 ### Task 2: Add `baseline status` command
 
 **Files:**
-- Modify: `reasonbench/__main__.py`
+- Modify: `fallax/__main__.py`
 - Create: `tests/test_baseline.py`
 
 - [ ] **Step 1: Write the failing test**
@@ -123,8 +123,8 @@ import json
 
 import pytest
 
-from reasonbench.__main__ import main
-from reasonbench.benchmark import BenchmarkSuite
+from fallax.__main__ import main
+from fallax.benchmark import BenchmarkSuite
 
 
 # ---------------------------------------------------------------------------
@@ -138,8 +138,8 @@ def benchmark_dir(tmp_path):
     v1.mkdir()
 
     # minimal prompts.jsonl so load_prompts() doesn't raise
-    from reasonbench.models import Prompt
-    from reasonbench.taxonomy import FailureType
+    from fallax.models import Prompt
+    from fallax.taxonomy import FailureType
     prompt = Prompt(
         prompt_id="p1",
         failure_type=FailureType.UNSTATED_ASSUMPTION,
@@ -170,7 +170,7 @@ def benchmark_dir(tmp_path):
 def patch_suite(benchmark_dir, monkeypatch):
     """Patch BenchmarkSuite in __main__ to use benchmark_dir."""
     monkeypatch.setattr(
-        "reasonbench.__main__.BenchmarkSuite",
+        "fallax.__main__.BenchmarkSuite",
         functools.partial(BenchmarkSuite, benchmarks_dir=benchmark_dir),
     )
     return benchmark_dir
@@ -296,7 +296,7 @@ Expected: all existing tests PASS.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add reasonbench/__main__.py tests/test_baseline.py
+git add fallax/__main__.py tests/test_baseline.py
 git commit -m "feat(cli): add baseline status subcommand"
 ```
 
@@ -305,7 +305,7 @@ git commit -m "feat(cli): add baseline status subcommand"
 ### Task 3: Add `baseline capture` command
 
 **Files:**
-- Modify: `reasonbench/__main__.py`
+- Modify: `fallax/__main__.py`
 - Modify: `tests/test_baseline.py`
 
 - [ ] **Step 1: Write the failing tests**
@@ -326,7 +326,7 @@ class TestBaselineCapture:
     def test_capture_writes_entry(self, patch_suite, benchmark_dir, monkeypatch, capsys):
         from unittest.mock import patch as mock_patch
         fake = self._fake_results()
-        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with mock_patch("fallax.__main__.Pipeline") as MockPipeline:
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main([
                 "baseline", "capture",
@@ -345,7 +345,7 @@ class TestBaselineCapture:
         from unittest.mock import patch as mock_patch
         fake = self._fake_results()
         # capture for "base-model" which already has an entry
-        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with mock_patch("fallax.__main__.Pipeline") as MockPipeline:
             MockPipeline.return_value.run_prompts.return_value = fake
             main([
                 "baseline", "capture",
@@ -465,7 +465,7 @@ Expected: all PASS.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add reasonbench/__main__.py tests/test_baseline.py
+git add fallax/__main__.py tests/test_baseline.py
 git commit -m "feat(cli): add baseline capture subcommand"
 ```
 
@@ -474,7 +474,7 @@ git commit -m "feat(cli): add baseline capture subcommand"
 ### Task 4: Add `baseline compare` command
 
 **Files:**
-- Modify: `reasonbench/__main__.py`
+- Modify: `fallax/__main__.py`
 - Modify: `tests/test_baseline.py`
 
 - [ ] **Step 1: Write the failing tests**
@@ -498,7 +498,7 @@ class TestBaselineCompare:
         """4.0 baseline, 3.9 current, threshold 0.05 → no regression → exit 0."""
         from unittest.mock import patch as mock_patch
         fake = self._fake_results_with_score(3.9)
-        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with mock_patch("fallax.__main__.Pipeline") as MockPipeline:
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main([
                 "baseline", "compare",
@@ -513,7 +513,7 @@ class TestBaselineCompare:
         """4.0 baseline, 1.0 current, threshold 0.05 → regression → exit 2."""
         from unittest.mock import patch as mock_patch
         fake = self._fake_results_with_score(1.0)
-        with mock_patch("reasonbench.__main__.Pipeline") as MockPipeline:
+        with mock_patch("fallax.__main__.Pipeline") as MockPipeline:
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main([
                 "baseline", "compare",
@@ -662,7 +662,7 @@ Expected: all PASS.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add reasonbench/__main__.py tests/test_baseline.py
+git add fallax/__main__.py tests/test_baseline.py
 git commit -m "feat(cli): add baseline compare subcommand"
 ```
 
@@ -713,7 +713,7 @@ jobs:
       - name: Install
         run: uv sync --extra dashboard
       - name: Smoke — baseline status
-        run: python -m reasonbench baseline status --version v1
+        run: python -m fallax baseline status --version v1
 ```
 
 - [ ] **Step 2: Verify the file**
@@ -722,7 +722,7 @@ jobs:
 cat C:/Users/mesha/Desktop/Dropbox/GitHub/alawein/fallax/.github/workflows/ci-smoke.yml
 ```
 
-Confirm: `branches: [main]` appears twice (push and pull_request), and `python -m reasonbench baseline status --version v1` is the smoke step.
+Confirm: `branches: [main]` appears twice (push and pull_request), and `python -m fallax baseline status --version v1` is the smoke step.
 
 - [ ] **Step 3: Commit**
 

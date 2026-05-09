@@ -1,7 +1,7 @@
 import pytest
 
-from reasonbench.evaluator import Evaluator
-from reasonbench.models import ValidationResult
+from fallax.evaluator import Evaluator
+from fallax.models import ValidationResult
 from tests.conftest import MockClient
 
 

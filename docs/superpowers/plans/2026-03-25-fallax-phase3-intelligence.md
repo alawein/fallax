@@ -24,8 +24,8 @@ sla: none
 ## File Structure
 
 ```
-reasonbench/
-├── reasonbench/
+fallax/
+├── fallax/
 │   ├── __init__.py           # MODIFY: add Analyzer, FailurePredictor, FailureClusterer
 │   ├── analyzer.py           # NEW: metrics computation + hard case extraction
 │   ├── predictor.py          # NEW: TF-IDF + LogReg failure predictor
@@ -78,13 +78,13 @@ uv sync --dev
 Append to the end of `tests/conftest.py`:
 
 ```python
-from reasonbench.models import (
+from fallax.models import (
     Assumption,
     EvaluationResult,
     ModelResponse,
     ValidationResult,
 )
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.taxonomy import FailureType, Severity
 
 
 def make_result(
@@ -100,7 +100,7 @@ def make_result(
     assumptions: list[Assumption] | None = None,
 ) -> EvaluationResult:
     """Build an EvaluationResult for testing."""
-    from reasonbench.scoring import Scorer
+    from fallax.scoring import Scorer
 
     severity = Scorer.severity(score)
     return EvaluationResult(
@@ -146,7 +146,7 @@ git commit -m "chore: add scikit-learn dependency and make_result test helper"
 ## Task 2: Analyzer
 
 **Files:**
-- Create: `reasonbench/analyzer.py`
+- Create: `fallax/analyzer.py`
 - Create: `tests/test_analyzer.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -156,9 +156,9 @@ Create `tests/test_analyzer.py`:
 ```python
 import pytest
 
-from reasonbench.analyzer import Analyzer
-from reasonbench.models import Assumption
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.analyzer import Analyzer
+from fallax.models import Assumption
+from fallax.taxonomy import FailureType, Severity
 from tests.conftest import make_result
 
 
@@ -286,7 +286,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/analyzer.py`:
+Create `fallax/analyzer.py`:
 
 ```python
 """Analytics engine for evaluation results."""
@@ -391,7 +391,7 @@ Expected: All 13 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/analyzer.py tests/test_analyzer.py
+git add fallax/analyzer.py tests/test_analyzer.py
 git commit -m "feat(analyzer): add metrics computation and hard case extraction"
 ```
 
@@ -400,7 +400,7 @@ git commit -m "feat(analyzer): add metrics computation and hard case extraction"
 ## Task 3: Failure Predictor
 
 **Files:**
-- Create: `reasonbench/predictor.py`
+- Create: `fallax/predictor.py`
 - Create: `tests/test_predictor.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -412,8 +412,8 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.predictor import FailurePredictor
-from reasonbench.taxonomy import FailureType
+from fallax.predictor import FailurePredictor
+from fallax.taxonomy import FailureType
 from tests.conftest import make_result
 
 
@@ -541,7 +541,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/predictor.py`:
+Create `fallax/predictor.py`:
 
 ```python
 """Failure predictor using TF-IDF + logistic regression.
@@ -648,7 +648,7 @@ Expected: All 10 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/predictor.py tests/test_predictor.py
+git add fallax/predictor.py tests/test_predictor.py
 git commit -m "feat(predictor): add TF-IDF + logistic regression failure predictor"
 ```
 
@@ -657,7 +657,7 @@ git commit -m "feat(predictor): add TF-IDF + logistic regression failure predict
 ## Task 4: Failure Clusterer
 
 **Files:**
-- Create: `reasonbench/clusterer.py`
+- Create: `fallax/clusterer.py`
 - Create: `tests/test_clusterer.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -667,8 +667,8 @@ Create `tests/test_clusterer.py`:
 ```python
 import pytest
 
-from reasonbench.clusterer import FailureClusterer
-from reasonbench.taxonomy import FailureType
+from fallax.clusterer import FailureClusterer
+from fallax.taxonomy import FailureType
 from tests.conftest import make_result
 
 
@@ -760,7 +760,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/clusterer.py`:
+Create `fallax/clusterer.py`:
 
 ```python
 """Failure clustering using TF-IDF + k-means on reasoning traces."""
@@ -840,7 +840,7 @@ Expected: All 7 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/clusterer.py tests/test_clusterer.py
+git add fallax/clusterer.py tests/test_clusterer.py
 git commit -m "feat(clusterer): add TF-IDF + k-means reasoning trace clustering"
 ```
 
@@ -849,7 +849,7 @@ git commit -m "feat(clusterer): add TF-IDF + k-means reasoning trace clustering"
 ## Task 5: CLI Restructure with Subcommands
 
 **Files:**
-- Modify: `reasonbench/__main__.py`
+- Modify: `fallax/__main__.py`
 - Modify: `tests/test_cli.py`
 
 - [ ] **Step 1: Write updated CLI tests**
@@ -865,7 +865,7 @@ from unittest.mock import patch
 
 import pytest
 
-from reasonbench.__main__ import main
+from fallax.__main__ import main
 from tests.conftest import (
     JUDGE_RESPONSES,
     MODEL_RESPONSE_TEXT,
@@ -903,7 +903,7 @@ class TestRunSubcommand:
         mock = MockClient(
             responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "run",
                 "--models", "m",
@@ -962,10 +962,10 @@ Expected: FAIL (old CLI doesn't have subcommands)
 
 - [ ] **Step 3: Rewrite __main__.py with subcommands**
 
-Read existing `reasonbench/__main__.py`, then replace entirely with:
+Read existing `fallax/__main__.py`, then replace entirely with:
 
 ```python
-"""CLI entry point: python -m reasonbench."""
+"""CLI entry point: python -m fallax."""
 
 from __future__ import annotations
 
@@ -1096,7 +1096,7 @@ def main(argv: list[str] | None = None) -> int:
     default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
 
     parser = argparse.ArgumentParser(
-        prog="reasonbench",
+        prog="fallax",
         description="LLM Adversarial Reasoning Evaluation System",
     )
     subparsers = parser.add_subparsers(dest="command")
@@ -1176,7 +1176,7 @@ Expected: All 7 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/__main__.py tests/test_cli.py
+git add fallax/__main__.py tests/test_cli.py
 git commit -m "feat(cli): restructure to subcommands (run/analyze/train)"
 ```
 
@@ -1185,11 +1185,11 @@ git commit -m "feat(cli): restructure to subcommands (run/analyze/train)"
 ## Task 6: Public API Update and Full Suite Verification
 
 **Files:**
-- Modify: `reasonbench/__init__.py`
+- Modify: `fallax/__init__.py`
 
 - [ ] **Step 1: Update __init__.py**
 
-Read existing `reasonbench/__init__.py`, then replace with:
+Read existing `fallax/__init__.py`, then replace with:
 
 ```python
 """Fallax — LLM Adversarial Reasoning Evaluation System."""
@@ -1261,7 +1261,7 @@ Expected: All tests PASS (~200 tests)
 - [ ] **Step 3: Commit**
 
 ```bash
-git add reasonbench/__init__.py
+git add fallax/__init__.py
 git commit -m "feat: update public API with Phase 3 exports (Analyzer, Predictor, Clusterer)"
 ```
 
@@ -1279,4 +1279,4 @@ git commit -m "feat: update public API with Phase 3 exports (Analyzer, Predictor
 | 6 | Init Update | 1 (__init__) | 0 |
 | **Total** | | **11 files** | **~37 new tests** |
 
-**Phase 3 delivers:** Analytics engine computing accuracy/failure rates per model and type, disagreement rates, assumption density. Hard case extraction for prompt evolution feed. TF-IDF + logistic regression predictor that filters low-value prompts before expensive LLM evaluation. K-means clustering of reasoning traces to surface model blind spots. CLI subcommands: `reasonbench run`, `reasonbench analyze results.jsonl`, `reasonbench train results.jsonl -o predictor.pkl`.
+**Phase 3 delivers:** Analytics engine computing accuracy/failure rates per model and type, disagreement rates, assumption density. Hard case extraction for prompt evolution feed. TF-IDF + logistic regression predictor that filters low-value prompts before expensive LLM evaluation. K-means clustering of reasoning traces to surface model blind spots. CLI subcommands: `fallax run`, `fallax analyze results.jsonl`, `fallax train results.jsonl -o predictor.pkl`.

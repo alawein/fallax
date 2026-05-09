@@ -3,9 +3,9 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.models import EvaluationResult
-from reasonbench.pipeline import Pipeline
-from reasonbench.taxonomy import Severity
+from fallax.models import EvaluationResult
+from fallax.pipeline import Pipeline
+from fallax.taxonomy import Severity
 from tests.conftest import JUDGE_RESPONSES, MODEL_RESPONSE_TEXT, MockClient
 
 

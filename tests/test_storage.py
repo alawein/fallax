@@ -2,13 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.models import (
+from fallax.models import (
     EvaluationResult,
     ModelResponse,
     ValidationResult,
 )
-from reasonbench.storage import JsonlStore
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.storage import JsonlStore
+from fallax.taxonomy import FailureType, Severity
 
 
 def _make_result(prompt_id: str, score: int) -> EvaluationResult:

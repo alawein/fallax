@@ -6,12 +6,12 @@ import pytest
 from starlette.testclient import TestClient
 
 from dashboard.api import create_app
-from reasonbench.models import (
+from fallax.models import (
     EvaluationResult,
     ModelResponse,
     ValidationResult,
 )
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.taxonomy import FailureType, Severity
 
 
 @pytest.fixture()

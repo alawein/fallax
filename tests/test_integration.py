@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench import (
+from fallax import (
     Assumption,
     EvaluationResult,
     FailureCategory,

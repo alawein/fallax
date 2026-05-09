@@ -1,4 +1,4 @@
-from reasonbench.taxonomy import (
+from fallax.taxonomy import (
     FAILURE_CATEGORY_MAP,
     FailureCategory,
     FailureType,

@@ -13,7 +13,7 @@ last-verified: 2026-04-16
 ## Current state
 
 - `fallax` is a Python-first reasoning-evaluation repo centered on the
-  `reasonbench` package.
+  `fallax` package.
 - The runtime surface includes the evaluation engine, benchmark suites, a
   dashboard, and a small project site.
 - Docs and repo surfaces are now aligned with the benchmark and scoring
@@ -21,7 +21,7 @@ last-verified: 2026-04-16
 
 ## Active boundaries
 
-- `reasonbench/` is the canonical evaluation-engine surface.
+- `fallax/` is the canonical evaluation-engine surface.
 - `benchmarks/` holds reproducibility and regression material.
 - `dashboard/` and `website/` are presentation layers, not the scoring source
   of truth.
@@ -39,5 +39,5 @@ last-verified: 2026-04-16
 ```bash
 pytest tests/
 ruff check .
-mypy reasonbench
+mypy fallax
 ```

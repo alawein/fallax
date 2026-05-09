@@ -6,9 +6,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from reasonbench.client import LLMClient
-from reasonbench.clients import create_client
-from reasonbench.clients.ollama import OllamaClient
+from fallax.client import LLMClient
+from fallax.clients import create_client
+from fallax.clients.ollama import OllamaClient
 
 
 @pytest.fixture()
@@ -22,7 +22,7 @@ def mock_openai_module():
     """Inject a fake openai module into sys.modules."""
     fake = MagicMock()
     with patch.dict(sys.modules, {"openai": fake}):
-        mod = importlib.import_module("reasonbench.clients.openai")
+        mod = importlib.import_module("fallax.clients.openai")
         importlib.reload(mod)
         yield fake, mod
 
@@ -32,7 +32,7 @@ def mock_genai_module():
     """Inject a fake google.generativeai module into sys.modules."""
     fake = MagicMock()
     with patch.dict(sys.modules, {"google": MagicMock(), "google.generativeai": fake}):
-        mod = importlib.import_module("reasonbench.clients.gemini")
+        mod = importlib.import_module("fallax.clients.gemini")
         importlib.reload(mod)
         yield fake, mod
 
@@ -88,7 +88,7 @@ class TestOllamaClient:
         assert isinstance(client, LLMClient)
 
     def test_complete_calls_api(self):
-        with patch("reasonbench.clients.ollama.requests") as mock_requests:
+        with patch("fallax.clients.ollama.requests") as mock_requests:
             mock_response = MagicMock()
             mock_response.json.return_value = {"response": "local model says hi"}
             mock_response.raise_for_status = MagicMock()
@@ -108,7 +108,7 @@ class TestOllamaClient:
 
 class TestCreateClient:
     def test_anthropic_provider(self, mock_api_key):
-        with patch("reasonbench.clients.AnthropicClient"):
+        with patch("fallax.clients.AnthropicClient"):
             client = create_client("anthropic", api_key=mock_api_key)
         assert client is not None
 
@@ -134,6 +134,6 @@ class TestCreateClient:
             create_client("unknown")
 
     def test_case_insensitive(self, mock_api_key):
-        with patch("reasonbench.clients.AnthropicClient"):
+        with patch("fallax.clients.AnthropicClient"):
             client = create_client("Anthropic", api_key=mock_api_key)
         assert client is not None

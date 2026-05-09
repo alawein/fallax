@@ -1,7 +1,7 @@
 import pytest
 
-from reasonbench.scoring import Scorer
-from reasonbench.taxonomy import Severity
+from fallax.scoring import Scorer
+from fallax.taxonomy import Severity
 
 
 class TestComputeScore:

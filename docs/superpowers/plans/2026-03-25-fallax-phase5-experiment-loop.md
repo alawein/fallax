@@ -22,8 +22,8 @@ sla: none
 ## File Structure
 
 ```
-reasonbench/
-├── reasonbench/
+fallax/
+├── fallax/
 │   ├── models.py             # MODIFY: add ExperimentRound
 │   ├── experiment.py         # NEW: multi-round experiment orchestrator
 │   ├── report.py             # NEW: structured report builder
@@ -42,7 +42,7 @@ reasonbench/
 ## Task 1: ExperimentRound Data Model
 
 **Files:**
-- Modify: `reasonbench/models.py`
+- Modify: `fallax/models.py`
 - Modify: `tests/test_models.py`
 
 - [ ] **Step 1: Write failing tests for ExperimentRound**
@@ -50,7 +50,7 @@ reasonbench/
 Append to `tests/test_models.py`:
 
 ```python
-from reasonbench.models import ExperimentRound
+from fallax.models import ExperimentRound
 
 
 class TestExperimentRound:
@@ -104,7 +104,7 @@ Expected: FAIL with `ImportError`
 
 - [ ] **Step 3: Add ExperimentRound to models.py**
 
-Append to the end of `reasonbench/models.py`:
+Append to the end of `fallax/models.py`:
 
 ```python
 
@@ -129,7 +129,7 @@ Expected: All tests PASS (existing 18 + new 3 = 21)
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/models.py tests/test_models.py
+git add fallax/models.py tests/test_models.py
 git commit -m "feat(models): add ExperimentRound data model"
 ```
 
@@ -138,7 +138,7 @@ git commit -m "feat(models): add ExperimentRound data model"
 ## Task 2: Experiment Runner
 
 **Files:**
-- Create: `reasonbench/experiment.py`
+- Create: `fallax/experiment.py`
 - Create: `tests/test_experiment.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -150,8 +150,8 @@ import json
 
 import pytest
 
-from reasonbench.experiment import Experiment
-from reasonbench.models import ExperimentRound, RootCausePattern, RepairResult
+from fallax.experiment import Experiment
+from fallax.models import ExperimentRound, RootCausePattern, RepairResult
 from tests.conftest import JUDGE_RESPONSES, MODEL_RESPONSE_TEXT, MockClient
 
 
@@ -360,7 +360,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/experiment.py`:
+Create `fallax/experiment.py`:
 
 ```python
 """Multi-round experiment orchestrator."""
@@ -551,7 +551,7 @@ Expected: All 10 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/experiment.py tests/test_experiment.py
+git add fallax/experiment.py tests/test_experiment.py
 git commit -m "feat(experiment): add multi-round evaluation loop with evolution"
 ```
 
@@ -560,7 +560,7 @@ git commit -m "feat(experiment): add multi-round evaluation loop with evolution"
 ## Task 3: Report Builder
 
 **Files:**
-- Create: `reasonbench/report.py`
+- Create: `fallax/report.py`
 - Create: `tests/test_report.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -570,8 +570,8 @@ Create `tests/test_report.py`:
 ```python
 import pytest
 
-from reasonbench.models import ExperimentRound, RootCausePattern, RepairResult
-from reasonbench.report import ReportBuilder
+from fallax.models import ExperimentRound, RootCausePattern, RepairResult
+from fallax.report import ReportBuilder
 
 
 @pytest.fixture()
@@ -750,7 +750,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/report.py`:
+Create `fallax/report.py`:
 
 ```python
 """Report builder for experiment results."""
@@ -899,7 +899,7 @@ Expected: All 10 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/report.py tests/test_report.py
+git add fallax/report.py tests/test_report.py
 git commit -m "feat(report): add structured report builder with markdown output"
 ```
 
@@ -908,7 +908,7 @@ git commit -m "feat(report): add structured report builder with markdown output"
 ## Task 4: CLI Experiment Subcommand
 
 **Files:**
-- Modify: `reasonbench/__main__.py`
+- Modify: `fallax/__main__.py`
 - Modify: `tests/test_cli.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -927,7 +927,7 @@ class TestExperimentSubcommand:
             },
             default=MODEL_RESPONSE_TEXT,
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "experiment",
                 "--models", "m",
@@ -953,7 +953,7 @@ class TestExperimentSubcommand:
             },
             default=MODEL_RESPONSE_TEXT,
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "experiment",
                 "--models", "m",
@@ -975,7 +975,7 @@ Expected: FAIL with `SystemExit: 2` (unrecognized subcommand)
 
 - [ ] **Step 3: Add experiment subcommand to __main__.py**
 
-Add this function definition before `main()` in `reasonbench/__main__.py`:
+Add this function definition before `main()` in `fallax/__main__.py`:
 
 ```python
 def _cmd_experiment(args: argparse.Namespace) -> int:
@@ -1060,7 +1060,7 @@ Expected: All 13 tests PASS (11 existing + 2 new)
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/__main__.py tests/test_cli.py
+git add fallax/__main__.py tests/test_cli.py
 git commit -m "feat(cli): add experiment subcommand for multi-round evaluation"
 ```
 
@@ -1069,11 +1069,11 @@ git commit -m "feat(cli): add experiment subcommand for multi-round evaluation"
 ## Task 5: Public API Update and Full Suite
 
 **Files:**
-- Modify: `reasonbench/__init__.py`
+- Modify: `fallax/__init__.py`
 
 - [ ] **Step 1: Update __init__.py**
 
-Add new imports to `reasonbench/__init__.py`:
+Add new imports to `fallax/__init__.py`:
 
 After the `from .evolver import PromptEvolver` line, add:
 ```python
@@ -1109,7 +1109,7 @@ Expected: All tests PASS (~257 tests)
 - [ ] **Step 3: Commit**
 
 ```bash
-git add reasonbench/__init__.py
+git add fallax/__init__.py
 git commit -m "feat: update public API with Phase 5 exports (Experiment, ReportBuilder)"
 ```
 
@@ -1126,4 +1126,4 @@ git commit -m "feat: update public API with Phase 5 exports (Experiment, ReportB
 | 5 | Init update | 1 (__init__) | 0 |
 | **Total** | | **9 files** | **~25 new tests** |
 
-**Phase 5 delivers:** A multi-round experiment orchestrator that chains the full feedback loop (generate → evaluate → analyze → evolve → re-evaluate) with per-round JSONL output, root cause extraction, self-repair testing, and structured reports in JSON and markdown format. CLI: `reasonbench experiment --models m --judge j --evolve-model e --rounds 3 --count 10`.
+**Phase 5 delivers:** A multi-round experiment orchestrator that chains the full feedback loop (generate → evaluate → analyze → evolve → re-evaluate) with per-round JSONL output, root cause extraction, self-repair testing, and structured reports in JSON and markdown format. CLI: `fallax experiment --models m --judge j --evolve-model e --rounds 3 --count 10`.

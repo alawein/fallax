@@ -37,7 +37,7 @@ evidence it produces.
 ## Tech Stack
 
 - **Language:** Python 3.12+
-- **Build:** pyproject.toml (`reasonbench`)
+- **Build:** pyproject.toml (`fallax`)
 - **Testing:** pytest
 - **Linting:** ruff, mypy
 
@@ -62,7 +62,7 @@ pip install -e .[gpu]
 
 # Lint/type
 ruff check .
-mypy reasonbench
+mypy fallax
 ```
 
 ## Make/Task Shortcuts
@@ -78,13 +78,13 @@ make format        # formatters
 
 ```text
 fallax/
-├── reasonbench/     # core evaluation engine
+├── fallax/     # core evaluation engine
 ├── benchmarks/      # performance benchmarks
 ├── dashboard/       # results visualization
 ├── tests/           # pytest suite
 ├── website/         # project site
 ├── docs/            # documentation
-└── pyproject.toml   # package config (reasonbench 0.1.0)
+└── pyproject.toml   # package config (fallax 0.1.0)
 ```
 
 ## Roadmap

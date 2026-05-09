@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import anthropic
 import pytest
 
-from reasonbench.client import AnthropicClient, LLMClient
+from fallax.client import AnthropicClient, LLMClient
 from tests.conftest import MockClient
 
 

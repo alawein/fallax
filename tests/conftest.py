@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from reasonbench.models import (
+from fallax.models import (
     Assumption,
     EvaluationResult,
     ModelResponse,
     ValidationResult,
 )
-from reasonbench.scoring import Scorer
-from reasonbench.taxonomy import FailureType
+from fallax.scoring import Scorer
+from fallax.taxonomy import FailureType
 
 
 class MockClient:

@@ -4,14 +4,14 @@ import json
 
 import pytest
 
-from reasonbench.benchmark import (
+from fallax.benchmark import (
     BenchmarkBaselines,
     BenchmarkMetadata,
     BenchmarkSuite,
     ModelBaseline,
 )
-from reasonbench.models import EvaluationResult, ModelResponse, Prompt, ValidationResult
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.models import EvaluationResult, ModelResponse, Prompt, ValidationResult
+from fallax.taxonomy import FailureType, Severity
 
 
 @pytest.fixture()

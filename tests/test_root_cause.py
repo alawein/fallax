@@ -1,8 +1,8 @@
 import pytest
 
-from reasonbench.models import Assumption, RootCausePattern
-from reasonbench.root_cause import RootCauseExtractor
-from reasonbench.taxonomy import FailureType
+from fallax.models import Assumption, RootCausePattern
+from fallax.root_cause import RootCauseExtractor
+from fallax.taxonomy import FailureType
 from tests.conftest import make_result
 
 

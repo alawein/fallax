@@ -1,7 +1,7 @@
 import pytest
 
-from reasonbench.clusterer import FailureClusterer
-from reasonbench.taxonomy import FailureType
+from fallax.clusterer import FailureClusterer
+from fallax.taxonomy import FailureType
 from tests.conftest import make_result
 
 

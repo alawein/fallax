@@ -1,6 +1,6 @@
 import pytest
 
-from reasonbench.predictor import FailurePredictor
+from fallax.predictor import FailurePredictor
 from tests.conftest import make_result
 
 

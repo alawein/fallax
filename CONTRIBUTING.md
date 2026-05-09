@@ -38,7 +38,7 @@ uv sync --all-extras
 
 - [ ] CI passes (no failing checks)
 - [ ] Tests added or updated for new functionality
-- [ ] `python -m ruff check reasonbench/ tests/ && python -m mypy reasonbench/ && python -m pytest tests/` passes
+- [ ] `python -m ruff check fallax/ tests/ && python -m mypy fallax/ && python -m pytest tests/` passes
 - [ ] `CHANGELOG.md` updated under `[Unreleased]`
 - [ ] No breaking changes without a version bump plan
 

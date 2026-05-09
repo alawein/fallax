@@ -9,7 +9,7 @@ sla: none
 
 ## Components
 
-- `reasonbench/` — core evaluation engine, task loaders, scorers, and configuration.
+- `fallax/` — core evaluation engine, task loaders, scorers, and configuration.
 - `benchmarks/` — curated benchmark bundles with tasks, gold answers, and configs.
 - `dashboard/` — visualization layer for runs and regressions.
 - `website/` — marketing/docs site.
@@ -18,7 +18,7 @@ sla: none
 ## Module layout
 
 ```text
-reasonbench/
+fallax/
   models.py          # Pydantic data models
   templates.py       # Adversarial prompt templates (25 patterns)
   generator.py       # Prompt generation from templates
@@ -60,7 +60,7 @@ reasonbench/
 ## Execution Flow
 
 1. Select benchmark bundle (config).
-2. Load tasks into `reasonbench`.
+2. Load tasks into `fallax`.
 3. Run model adapter to produce responses.
 4. Parse and score responses step-by-step.
 5. Emit results to JSON; dashboard consumes these artifacts.
@@ -68,7 +68,7 @@ reasonbench/
 ## Extensibility
 
 - Add a domain: create config + tasks under `benchmarks/<domain>/`.
-- Add a model: implement adapter conforming to the interface in `reasonbench/models`.
+- Add a model: implement adapter conforming to the interface in `fallax/models`.
 - Add metrics: extend scorer to emit new dimensions; update dashboard schemas accordingly.
 
 ## Reproducibility

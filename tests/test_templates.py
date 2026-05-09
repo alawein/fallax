@@ -1,7 +1,7 @@
 import pytest
 
-from reasonbench.taxonomy import FailureType
-from reasonbench.templates import (
+from fallax.taxonomy import FailureType
+from fallax.templates import (
     DISTRIBUTION,
     TEMPLATES,
     TemplateRegistry,

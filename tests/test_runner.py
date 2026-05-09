@@ -1,5 +1,5 @@
-from reasonbench.models import ModelResponse
-from reasonbench.runner import ModelRunner
+from fallax.models import ModelResponse
+from fallax.runner import ModelRunner
 from tests.conftest import MockClient
 
 

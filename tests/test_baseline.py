@@ -8,8 +8,8 @@ import re
 
 import pytest
 
-from reasonbench.__main__ import main
-from reasonbench.benchmark import BenchmarkSuite
+from fallax.__main__ import main
+from fallax.benchmark import BenchmarkSuite
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -23,8 +23,8 @@ def benchmark_dir(tmp_path):
     v1.mkdir()
 
     # minimal prompts.jsonl so load_prompts() doesn't raise
-    from reasonbench.models import Prompt
-    from reasonbench.taxonomy import FailureType
+    from fallax.models import Prompt
+    from fallax.taxonomy import FailureType
 
     prompt = Prompt(
         prompt_id="p1",
@@ -56,7 +56,7 @@ def benchmark_dir(tmp_path):
 def patch_suite(benchmark_dir, monkeypatch):
     """Patch BenchmarkSuite in __main__ to use benchmark_dir."""
     monkeypatch.setattr(
-        "reasonbench.__main__.BenchmarkSuite",
+        "fallax.__main__.BenchmarkSuite",
         functools.partial(BenchmarkSuite, benchmarks_dir=benchmark_dir),
     )
     return benchmark_dir
@@ -111,8 +111,8 @@ class TestBaselineCapture:
 
         fake = self._fake_results()
         with (
-            mock_patch("reasonbench.__main__._make_client"),
-            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+            mock_patch("fallax.__main__._make_client"),
+            mock_patch("fallax.__main__.Pipeline") as MockPipeline,
         ):
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main(
@@ -148,8 +148,8 @@ class TestBaselineCapture:
         fake = self._fake_results()
         # capture for "base-model" which already has an entry
         with (
-            mock_patch("reasonbench.__main__._make_client"),
-            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+            mock_patch("fallax.__main__._make_client"),
+            mock_patch("fallax.__main__.Pipeline") as MockPipeline,
         ):
             MockPipeline.return_value.run_prompts.return_value = fake
             main(
@@ -210,8 +210,8 @@ class TestBaselineCompare:
 
         fake = self._fake_results_with_score(3.9)
         with (
-            mock_patch("reasonbench.__main__._make_client"),
-            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+            mock_patch("fallax.__main__._make_client"),
+            mock_patch("fallax.__main__.Pipeline") as MockPipeline,
         ):
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main(
@@ -236,8 +236,8 @@ class TestBaselineCompare:
 
         fake = self._fake_results_with_score(1.0)
         with (
-            mock_patch("reasonbench.__main__._make_client"),
-            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+            mock_patch("fallax.__main__._make_client"),
+            mock_patch("fallax.__main__.Pipeline") as MockPipeline,
         ):
             MockPipeline.return_value.run_prompts.return_value = fake
             code = main(
@@ -297,8 +297,8 @@ class TestBaselineCompare:
         from unittest.mock import patch as mock_patch
 
         with (
-            mock_patch("reasonbench.__main__._make_client"),
-            mock_patch("reasonbench.__main__.Pipeline") as MockPipeline,
+            mock_patch("fallax.__main__._make_client"),
+            mock_patch("fallax.__main__.Pipeline") as MockPipeline,
         ):
             MockPipeline.return_value.run_prompts.side_effect = RuntimeError(
                 "anthropic quota exhausted"

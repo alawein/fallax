@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from reasonbench.experiment import Experiment
-from reasonbench.models import ExperimentRound, RepairResult
+from fallax.experiment import Experiment
+from fallax.models import ExperimentRound, RepairResult
 from tests.conftest import JUDGE_RESPONSES, MODEL_RESPONSE_TEXT, MockClient
 
 

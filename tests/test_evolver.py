@@ -1,8 +1,8 @@
 import pytest
 
-from reasonbench.evolver import PromptEvolver
-from reasonbench.models import Assumption, Prompt
-from reasonbench.taxonomy import FailureType
+from fallax.evolver import PromptEvolver
+from fallax.models import Assumption, Prompt
+from fallax.taxonomy import FailureType
 from tests.conftest import MockClient, make_result
 
 

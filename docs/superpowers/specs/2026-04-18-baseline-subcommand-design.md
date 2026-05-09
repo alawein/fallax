@@ -7,7 +7,7 @@ sla: none
 
 # Baseline Subcommand Design
 
-**Goal:** Add a `reasonbench baseline` subcommand group that closes the capture → compare → regress-check loop missing from the existing benchmark CLI.
+**Goal:** Add a `fallax baseline` subcommand group that closes the capture → compare → regress-check loop missing from the existing benchmark CLI.
 
 **Approach:** Option B — new `baseline` subcommand group with three focused commands: `capture`, `compare`, `status`. Each does one thing. No changes to the existing `benchmark` subcommand behavior.
 
@@ -15,10 +15,10 @@ sla: none
 
 ## Commands
 
-### `reasonbench baseline capture`
+### `fallax baseline capture`
 
 ```
-reasonbench baseline capture \
+fallax baseline capture \
   --version v1 \
   --models claude-sonnet-4-6 \
   --judge claude-sonnet-4-6 \
@@ -28,10 +28,10 @@ reasonbench baseline capture \
 
 Runs the benchmark pipeline against `benchmarks/v1/` prompts, scores the results via `BenchmarkSuite.score_results()`, then writes a model entry into `benchmarks/v1/baselines.json`. If an entry for the same `model_name` already exists, it is replaced. Exits 0 on success.
 
-### `reasonbench baseline compare`
+### `fallax baseline compare`
 
 ```
-reasonbench baseline compare \
+fallax baseline compare \
   --version v1 \
   --models claude-sonnet-4-6 \
   --judge claude-sonnet-4-6 \
@@ -47,10 +47,10 @@ Runs the same pipeline and scoring as `capture`. Diffs `overall_score` against t
 
 Default threshold: `0.05` (5 percentage points on `overall_score`).
 
-### `reasonbench baseline status`
+### `fallax baseline status`
 
 ```
-reasonbench baseline status [--version v1]
+fallax baseline status [--version v1]
 ```
 
 Reads `benchmarks/<version>/baselines.json` and prints a formatted table of recorded models, their scores, failure rates, and `captured_at` timestamps. Makes zero API calls. Safe to run in CI with no credentials.
@@ -87,18 +87,18 @@ The `captured_at` field is an ISO 8601 UTC timestamp written at capture time.
 
 | Action | Path | Responsibility |
 |--------|------|----------------|
-| Modify | `reasonbench/benchmark.py` | Add `save_baselines(version, entry)` to `BenchmarkSuite` |
-| Modify | `reasonbench/__main__.py` | Add `_cmd_baseline_capture`, `_cmd_baseline_compare`, `_cmd_baseline_status`; wire into `main()` |
+| Modify | `fallax/benchmark.py` | Add `save_baselines(version, entry)` to `BenchmarkSuite` |
+| Modify | `fallax/__main__.py` | Add `_cmd_baseline_capture`, `_cmd_baseline_compare`, `_cmd_baseline_status`; wire into `main()` |
 | Modify | `tests/test_benchmark.py` | Add 4 new test functions (or new `tests/test_baseline.py` if it keeps the file focused) |
-| Modify | `.github/workflows/ci-smoke.yml` | Replace no-op with `reasonbench baseline status --version v1` |
+| Modify | `.github/workflows/ci-smoke.yml` | Replace no-op with `fallax baseline status --version v1` |
 
-No new files in `reasonbench/` — all logic lives in existing modules.
+No new files in `fallax/` — all logic lives in existing modules.
 
 ---
 
 ## BenchmarkSuite.save_baselines
 
-New method on the existing `BenchmarkSuite` class in `reasonbench/benchmark.py`:
+New method on the existing `BenchmarkSuite` class in `fallax/benchmark.py`:
 
 ```python
 def save_baselines(self, version: str, entry: dict) -> None:
@@ -146,7 +146,7 @@ All tests use `tmp_path` for baselines file writes. No test touches `benchmarks/
 - name: Install
   run: uv sync --extra dashboard
 - name: Smoke — baseline status
-  run: python -m reasonbench baseline status --version v1
+  run: python -m fallax baseline status --version v1
 ```
 
 Trigger: push/PR to `main`. No credentials required.

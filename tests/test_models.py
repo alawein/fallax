@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from reasonbench.models import (
+from fallax.models import (
     Assumption,
     EvaluationResult,
     ExperimentRound,
@@ -12,7 +12,7 @@ from reasonbench.models import (
     RootCausePattern,
     ValidationResult,
 )
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.taxonomy import FailureType, Severity
 
 
 class TestPrompt:

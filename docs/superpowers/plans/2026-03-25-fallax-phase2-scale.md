@@ -11,7 +11,7 @@ sla: none
 
 **Goal:** Build a working end-to-end evaluation pipeline that generates adversarial prompts, runs them against LLMs, validates reasoning with a judge model, scores failures, and stores results as JSONL.
 
-**Architecture:** Protocol-based LLM client enables testability (MockClient) and extensibility (any provider). PromptGenerator draws from JSON parameter banks and renders templates from Phase 1. ModelRunner sends prompts to target models. Evaluator runs the 5-validator pack through a judge LLM and parses structured JSON responses. Pipeline orchestrates the loop. CLI exposes it via `python -m reasonbench`. Model names are never hardcoded — all configurable via CLI args or environment variables. **Note:** In multi-model mode, reasoning validation/scoring reflects the first model's response; disagreement is computed across all models.
+**Architecture:** Protocol-based LLM client enables testability (MockClient) and extensibility (any provider). PromptGenerator draws from JSON parameter banks and renders templates from Phase 1. ModelRunner sends prompts to target models. Evaluator runs the 5-validator pack through a judge LLM and parses structured JSON responses. Pipeline orchestrates the loop. CLI exposes it via `python -m fallax`. Model names are never hardcoded — all configurable via CLI args or environment variables. **Note:** In multi-model mode, reasoning validation/scoring reflects the first model's response; disagreement is computed across all models.
 
 **Tech Stack:** Python 3.12+, Anthropic SDK, Pydantic v2 (Phase 1), pytest, uv
 
@@ -22,8 +22,8 @@ sla: none
 ## File Structure
 
 ```
-reasonbench/
-├── reasonbench/
+fallax/
+├── fallax/
 │   ├── __init__.py           # MODIFY: add new exports
 │   ├── taxonomy.py           # existing (unchanged)
 │   ├── models.py             # existing (unchanged)
@@ -179,7 +179,7 @@ git commit -m "chore: add anthropic SDK dependency and shared test fixtures"
 ## Task 2: LLM Client Protocol and AnthropicClient
 
 **Files:**
-- Create: `reasonbench/client.py`
+- Create: `fallax/client.py`
 - Create: `tests/test_client.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -191,7 +191,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from reasonbench.client import AnthropicClient, LLMClient
+from fallax.client import AnthropicClient, LLMClient
 from tests.conftest import MockClient
 
 
@@ -268,7 +268,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/client.py`:
+Create `fallax/client.py`:
 
 ```python
 """LLM client protocol and implementations."""
@@ -321,7 +321,7 @@ Expected: All 7 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/client.py tests/test_client.py
+git add fallax/client.py tests/test_client.py
 git commit -m "feat(client): add LLMClient protocol and AnthropicClient"
 ```
 
@@ -330,23 +330,23 @@ git commit -m "feat(client): add LLMClient protocol and AnthropicClient"
 ## Task 3: Parameter Banks
 
 **Files:**
-- Create: `reasonbench/data/implicit_assumption_trap.json`
-- Create: `reasonbench/data/contradictory_constraints.json`
-- Create: `reasonbench/data/false_analogy_trap.json`
-- Create: `reasonbench/data/recursive_definition_break.json`
-- Create: `reasonbench/data/multi_step_dependency.json`
-- Create: `reasonbench/data/edge_case_inversion.json`
-- Create: `reasonbench/data/ambiguous_spec_trap.json`
-- Create: `reasonbench/data/overconstrained_optimization.json`
-- Create: `reasonbench/data/hidden_variable_trap.json`
-- Create: `reasonbench/data/self_consistency_trap.json`
+- Create: `fallax/data/implicit_assumption_trap.json`
+- Create: `fallax/data/contradictory_constraints.json`
+- Create: `fallax/data/false_analogy_trap.json`
+- Create: `fallax/data/recursive_definition_break.json`
+- Create: `fallax/data/multi_step_dependency.json`
+- Create: `fallax/data/edge_case_inversion.json`
+- Create: `fallax/data/ambiguous_spec_trap.json`
+- Create: `fallax/data/overconstrained_optimization.json`
+- Create: `fallax/data/hidden_variable_trap.json`
+- Create: `fallax/data/self_consistency_trap.json`
 
 Each file is a JSON array of parameter dictionaries. Keys match the template's `parameters` list exactly. 5 sets per template = 50 total prompt configurations.
 
 - [ ] **Step 1: Create data directory**
 
 ```bash
-mkdir -p reasonbench/data
+mkdir -p fallax/data
 ```
 
 - [ ] **Step 2: Create implicit_assumption_trap.json**
@@ -636,9 +636,9 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.templates import TEMPLATES, TemplateRegistry
+from fallax.templates import TEMPLATES, TemplateRegistry
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "reasonbench" / "data"
+DATA_DIR = Path(__file__).resolve().parent.parent / "fallax" / "data"
 
 
 class TestParameterBanks:
@@ -698,7 +698,7 @@ Expected: All 31 tests PASS (1 completeness + 10 valid JSON + 10 key match + 10 
 - [ ] **Step 14: Commit**
 
 ```bash
-git add reasonbench/data/ tests/test_data.py
+git add fallax/data/ tests/test_data.py
 git commit -m "feat(data): add parameter banks for all 10 template types (50 prompt configs)"
 ```
 
@@ -707,7 +707,7 @@ git commit -m "feat(data): add parameter banks for all 10 template types (50 pro
 ## Task 4: PromptGenerator
 
 **Files:**
-- Create: `reasonbench/generator.py`
+- Create: `fallax/generator.py`
 - Create: `tests/test_generator.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -720,10 +720,10 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.generator import TEMPLATE_DIFFICULTY, PromptGenerator
-from reasonbench.models import Prompt
-from reasonbench.taxonomy import FailureType
-from reasonbench.templates import DISTRIBUTION
+from fallax.generator import TEMPLATE_DIFFICULTY, PromptGenerator
+from fallax.models import Prompt
+from fallax.taxonomy import FailureType
+from fallax.templates import DISTRIBUTION
 
 
 @pytest.fixture()
@@ -806,7 +806,7 @@ class TestPromptGenerator:
 
 class TestTemplateDifficulty:
     def test_covers_all_templates(self):
-        from reasonbench.templates import TEMPLATES
+        from fallax.templates import TEMPLATES
 
         template_ids = {t.template_id for t in TEMPLATES}
         assert set(TEMPLATE_DIFFICULTY.keys()) == template_ids
@@ -823,7 +823,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/generator.py`:
+Create `fallax/generator.py`:
 
 ```python
 """Prompt generator using parameter banks and templates."""
@@ -939,7 +939,7 @@ Expected: All 11 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/generator.py tests/test_generator.py
+git add fallax/generator.py tests/test_generator.py
 git commit -m "feat(generator): add PromptGenerator with parameter bank loading"
 ```
 
@@ -948,7 +948,7 @@ git commit -m "feat(generator): add PromptGenerator with parameter bank loading"
 ## Task 5: ModelRunner
 
 **Files:**
-- Create: `reasonbench/runner.py`
+- Create: `fallax/runner.py`
 - Create: `tests/test_runner.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -958,8 +958,8 @@ Create `tests/test_runner.py`:
 ```python
 import pytest
 
-from reasonbench.models import ModelResponse
-from reasonbench.runner import ModelRunner
+from fallax.models import ModelResponse
+from fallax.runner import ModelRunner
 from tests.conftest import MockClient
 
 
@@ -1031,7 +1031,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/runner.py`:
+Create `fallax/runner.py`:
 
 ```python
 """Model runner for multi-model evaluation."""
@@ -1091,7 +1091,7 @@ Expected: All 8 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/runner.py tests/test_runner.py
+git add fallax/runner.py tests/test_runner.py
 git commit -m "feat(runner): add ModelRunner for multi-model prompt evaluation"
 ```
 
@@ -1100,7 +1100,7 @@ git commit -m "feat(runner): add ModelRunner for multi-model prompt evaluation"
 ## Task 6: Evaluator
 
 **Files:**
-- Create: `reasonbench/evaluator.py`
+- Create: `fallax/evaluator.py`
 - Create: `tests/test_evaluator.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -1110,8 +1110,8 @@ Create `tests/test_evaluator.py`:
 ```python
 import pytest
 
-from reasonbench.evaluator import Evaluator
-from reasonbench.models import Assumption, ValidationResult
+from fallax.evaluator import Evaluator
+from fallax.models import Assumption, ValidationResult
 from tests.conftest import JUDGE_RESPONSES, MockClient
 
 
@@ -1209,7 +1209,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/evaluator.py`:
+Create `fallax/evaluator.py`:
 
 ```python
 """Validator orchestrator — runs 5 validators via judge LLM."""
@@ -1368,7 +1368,7 @@ Expected: All 11 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/evaluator.py tests/test_evaluator.py
+git add fallax/evaluator.py tests/test_evaluator.py
 git commit -m "feat(evaluator): add judge-LLM validator orchestrator with JSON parsing"
 ```
 
@@ -1377,7 +1377,7 @@ git commit -m "feat(evaluator): add judge-LLM validator orchestrator with JSON p
 ## Task 7: Pipeline
 
 **Files:**
-- Create: `reasonbench/pipeline.py`
+- Create: `fallax/pipeline.py`
 - Create: `tests/test_pipeline.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -1390,9 +1390,9 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.models import EvaluationResult
-from reasonbench.pipeline import Pipeline
-from reasonbench.taxonomy import Severity
+from fallax.models import EvaluationResult
+from fallax.pipeline import Pipeline
+from fallax.taxonomy import Severity
 from tests.conftest import JUDGE_RESPONSES, MODEL_RESPONSE_TEXT, MockClient
 
 
@@ -1514,7 +1514,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/pipeline.py`:
+Create `fallax/pipeline.py`:
 
 ```python
 """Main evaluation pipeline."""
@@ -1627,7 +1627,7 @@ Expected: All 5 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/pipeline.py tests/test_pipeline.py
+git add fallax/pipeline.py tests/test_pipeline.py
 git commit -m "feat(pipeline): add main evaluation loop with scoring and storage"
 ```
 
@@ -1636,15 +1636,15 @@ git commit -m "feat(pipeline): add main evaluation loop with scoring and storage
 ## Task 8: CLI Entry Point and Public API Update
 
 **Files:**
-- Create: `reasonbench/__main__.py`
-- Modify: `reasonbench/__init__.py`
+- Create: `fallax/__main__.py`
+- Modify: `fallax/__init__.py`
 
 - [ ] **Step 1: Create CLI entry point**
 
-Create `reasonbench/__main__.py`:
+Create `fallax/__main__.py`:
 
 ```python
-"""CLI entry point: python -m reasonbench."""
+"""CLI entry point: python -m fallax."""
 
 from __future__ import annotations
 
@@ -1661,7 +1661,7 @@ def main(argv: list[str] | None = None) -> int:
     default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
 
     parser = argparse.ArgumentParser(
-        prog="reasonbench",
+        prog="fallax",
         description="LLM Adversarial Reasoning Evaluation System",
     )
     parser.add_argument(
@@ -1751,7 +1751,7 @@ if __name__ == "__main__":
 - [ ] **Step 2: Test CLI argument parsing**
 
 ```bash
-uv run python -m reasonbench --help
+uv run python -m fallax --help
 ```
 Expected: Help text printed with all arguments
 
@@ -1768,7 +1768,7 @@ from unittest.mock import patch
 
 import pytest
 
-from reasonbench.__main__ import main
+from fallax.__main__ import main
 from tests.conftest import JUDGE_RESPONSES, MODEL_RESPONSE_TEXT, MockClient
 
 
@@ -1787,7 +1787,7 @@ class TestCLI:
         mock = MockClient(
             responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "--models", "m",
                 "--judge", "j",
@@ -1804,7 +1804,7 @@ class TestCLI:
         mock = MockClient(
             responses=JUDGE_RESPONSES, default=MODEL_RESPONSE_TEXT
         )
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             main([
                 "--models", "m",
                 "--judge", "j",
@@ -1823,7 +1823,7 @@ class TestCLI:
 
 - [ ] **Step 4: Update __init__.py with new exports**
 
-Read the current `reasonbench/__init__.py`, then replace with:
+Read the current `fallax/__init__.py`, then replace with:
 
 ```python
 """Fallax — LLM Adversarial Reasoning Evaluation System."""
@@ -1889,7 +1889,7 @@ Expected: All tests PASS (Phase 1: 84 + Phase 2: ~87 = ~171 tests)
 - [ ] **Step 6: Commit**
 
 ```bash
-git add reasonbench/__main__.py reasonbench/__init__.py tests/test_cli.py
+git add fallax/__main__.py fallax/__init__.py tests/test_cli.py
 git commit -m "feat: add CLI entry point and update public API with Phase 2 exports"
 ```
 
@@ -1909,4 +1909,4 @@ git commit -m "feat: add CLI entry point and update public API with Phase 2 expo
 | 8 | CLI + Init | 3 (__main__, __init__, test_cli) | 3 |
 | **Total** | | **25 files** | **~76 new tests** |
 
-**Phase 2 delivers:** A working end-to-end pipeline that generates adversarial prompts from 50 parameter configurations across 10 template types, evaluates them against one or more LLMs, validates reasoning through 5 judge-LLM validators, computes composite failure scores, and stores results as JSONL. All model names configured via CLI args or env vars (REASONBENCH_MODEL, REASONBENCH_JUDGE_MODEL). Runnable via `python -m reasonbench --models <model> --judge <judge-model> --count 10`.
+**Phase 2 delivers:** A working end-to-end pipeline that generates adversarial prompts from 50 parameter configurations across 10 template types, evaluates them against one or more LLMs, validates reasoning through 5 judge-LLM validators, computes composite failure scores, and stores results as JSONL. All model names configured via CLI args or env vars (REASONBENCH_MODEL, REASONBENCH_JUDGE_MODEL). Runnable via `python -m fallax --models <model> --judge <judge-model> --count 10`.

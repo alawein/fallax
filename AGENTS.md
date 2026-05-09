@@ -12,11 +12,11 @@ last-verified: 2026-04-16
 
 ## Workspace identity
 
-Fallax is a Python reasoning-evaluation toolkit built around `reasonbench/`.
+Fallax is a Python reasoning-evaluation toolkit built around `fallax/`.
 
 ## Directory structure
 
-- `reasonbench/`: primary source
+- `fallax/`: primary source
 - `benchmarks/`: benchmark definitions and datasets
 - `dashboard/`: results UI surface
 - `tests/`: required verification
@@ -41,6 +41,6 @@ Fallax is a Python reasoning-evaluation toolkit built around `reasonbench/`.
 ```bash
 uv sync --all-extras
 python -m pytest tests/
-python -m ruff check reasonbench/ tests/
-python -m mypy reasonbench/
+python -m ruff check fallax/ tests/
+python -m mypy fallax/
 ```

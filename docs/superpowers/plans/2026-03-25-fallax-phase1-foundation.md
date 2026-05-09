@@ -22,10 +22,10 @@ sla: none
 ## File Structure
 
 ```
-reasonbench/                  # repo root
+fallax/                  # repo root
 ├── .gitignore
 ├── pyproject.toml            # project metadata, deps, tool config
-├── reasonbench/              # package
+├── fallax/              # package
 │   ├── __init__.py           # public API re-exports
 │   ├── taxonomy.py           # FailureCategory, FailureType, Severity enums + category map
 │   ├── models.py             # Pydantic models: Prompt, ModelResponse, ValidationResult, etc.
@@ -45,7 +45,7 @@ reasonbench/                  # repo root
 └── docs/
     └── superpowers/
         └── plans/
-            └── 2026-03-25-reasonbench-phase1-foundation.md  # this file
+            └── 2026-03-25-fallax-phase1-foundation.md  # this file
 ```
 
 **Dependency order:** `taxonomy` → `models` → (`templates`, `validators`, `scoring`, `storage`) → `integration test`
@@ -57,7 +57,7 @@ reasonbench/                  # repo root
 **Files:**
 - Create: `pyproject.toml`
 - Create: `.gitignore`
-- Create: `reasonbench/__init__.py`
+- Create: `fallax/__init__.py`
 - Create: `tests/__init__.py`
 
 - [ ] **Step 1: Initialize git repo**
@@ -85,7 +85,7 @@ build/
 
 ```toml
 [project]
-name = "reasonbench"
+name = "fallax"
 version = "0.1.0"
 description = "LLM Adversarial Reasoning Evaluation System"
 requires-python = ">=3.12"
@@ -104,7 +104,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["reasonbench"]
+packages = ["fallax"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -112,7 +112,7 @@ testpaths = ["tests"]
 
 - [ ] **Step 4: Create empty package and test init files**
 
-Create `reasonbench/__init__.py`:
+Create `fallax/__init__.py`:
 ```python
 """Fallax — LLM Adversarial Reasoning Evaluation System."""
 ```
@@ -133,8 +133,8 @@ Expected: `no tests ran`
 - [ ] **Step 7: Commit scaffolding**
 
 ```bash
-git add .gitignore pyproject.toml reasonbench/__init__.py tests/__init__.py uv.lock
-git commit -m "chore: scaffold reasonbench project with pyproject.toml and uv"
+git add .gitignore pyproject.toml fallax/__init__.py tests/__init__.py uv.lock
+git commit -m "chore: scaffold fallax project with pyproject.toml and uv"
 ```
 
 ---
@@ -142,7 +142,7 @@ git commit -m "chore: scaffold reasonbench project with pyproject.toml and uv"
 ## Task 2: Failure Taxonomy
 
 **Files:**
-- Create: `reasonbench/taxonomy.py`
+- Create: `fallax/taxonomy.py`
 - Create: `tests/test_taxonomy.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -150,7 +150,7 @@ git commit -m "chore: scaffold reasonbench project with pyproject.toml and uv"
 Create `tests/test_taxonomy.py`:
 
 ```python
-from reasonbench.taxonomy import (
+from fallax.taxonomy import (
     FailureCategory,
     FailureType,
     Severity,
@@ -238,11 +238,11 @@ class TestGetCategory:
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `uv run pytest tests/test_taxonomy.py -v`
-Expected: FAIL with `ModuleNotFoundError: No module named 'reasonbench.taxonomy'`
+Expected: FAIL with `ModuleNotFoundError: No module named 'fallax.taxonomy'`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/taxonomy.py`:
+Create `fallax/taxonomy.py`:
 
 ```python
 """Failure taxonomy for adversarial reasoning evaluation.
@@ -316,7 +316,7 @@ Expected: All 11 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/taxonomy.py tests/test_taxonomy.py
+git add fallax/taxonomy.py tests/test_taxonomy.py
 git commit -m "feat(taxonomy): add failure categories, types, severity enums"
 ```
 
@@ -325,7 +325,7 @@ git commit -m "feat(taxonomy): add failure categories, types, severity enums"
 ## Task 3: Data Models
 
 **Files:**
-- Create: `reasonbench/models.py`
+- Create: `fallax/models.py`
 - Create: `tests/test_models.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -338,7 +338,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from reasonbench.models import (
+from fallax.models import (
     Assumption,
     EvaluationResult,
     FailureRecord,
@@ -346,7 +346,7 @@ from reasonbench.models import (
     Prompt,
     ValidationResult,
 )
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.taxonomy import FailureType, Severity
 
 
 class TestPrompt:
@@ -501,7 +501,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/models.py`:
+Create `fallax/models.py`:
 
 ```python
 """Data models for prompts, responses, validation, and evaluation results."""
@@ -584,7 +584,7 @@ Expected: All 12 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/models.py tests/test_models.py
+git add fallax/models.py tests/test_models.py
 git commit -m "feat(models): add Pydantic data models for prompts, responses, validation, scoring"
 ```
 
@@ -593,7 +593,7 @@ git commit -m "feat(models): add Pydantic data models for prompts, responses, va
 ## Task 4: Prompt Templates and Registry
 
 **Files:**
-- Create: `reasonbench/templates.py`
+- Create: `fallax/templates.py`
 - Create: `tests/test_templates.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -603,8 +603,8 @@ Create `tests/test_templates.py`:
 ```python
 import pytest
 
-from reasonbench.taxonomy import FailureType
-from reasonbench.templates import (
+from fallax.taxonomy import FailureType
+from fallax.templates import (
     DISTRIBUTION,
     TEMPLATES,
     PromptTemplate,
@@ -698,7 +698,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/templates.py`:
+Create `fallax/templates.py`:
 
 ```python
 """Adversarial prompt templates and registry."""
@@ -906,7 +906,7 @@ Expected: All 13 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/templates.py tests/test_templates.py
+git add fallax/templates.py tests/test_templates.py
 git commit -m "feat(templates): add 10 adversarial prompt templates with registry"
 ```
 
@@ -915,7 +915,7 @@ git commit -m "feat(templates): add 10 adversarial prompt templates with registr
 ## Task 5: Validator Prompt Pack
 
 **Files:**
-- Create: `reasonbench/validators.py`
+- Create: `fallax/validators.py`
 - Create: `tests/test_validators.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -923,7 +923,7 @@ git commit -m "feat(templates): add 10 adversarial prompt templates with registr
 Create `tests/test_validators.py`:
 
 ```python
-from reasonbench.validators import ValidatorPack
+from fallax.validators import ValidatorPack
 
 
 class TestReasoningCritic:
@@ -1032,7 +1032,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/validators.py`:
+Create `fallax/validators.py`:
 
 ```python
 """Validator prompt pack — 5 validators for reasoning evaluation."""
@@ -1113,7 +1113,7 @@ Expected: All 14 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/validators.py tests/test_validators.py
+git add fallax/validators.py tests/test_validators.py
 git commit -m "feat(validators): add 5-validator prompt pack for reasoning evaluation"
 ```
 
@@ -1122,7 +1122,7 @@ git commit -m "feat(validators): add 5-validator prompt pack for reasoning evalu
 ## Task 6: Scoring Engine
 
 **Files:**
-- Create: `reasonbench/scoring.py`
+- Create: `fallax/scoring.py`
 - Create: `tests/test_scoring.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -1132,8 +1132,8 @@ Create `tests/test_scoring.py`:
 ```python
 import pytest
 
-from reasonbench.scoring import Scorer
-from reasonbench.taxonomy import Severity
+from fallax.scoring import Scorer
+from fallax.taxonomy import Severity
 
 
 class TestComputeScore:
@@ -1264,7 +1264,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/scoring.py`:
+Create `fallax/scoring.py`:
 
 ```python
 """Scoring engine for evaluation results."""
@@ -1331,7 +1331,7 @@ Expected: All 14 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/scoring.py tests/test_scoring.py
+git add fallax/scoring.py tests/test_scoring.py
 git commit -m "feat(scoring): add composite score, severity mapping, and hardness computation"
 ```
 
@@ -1340,7 +1340,7 @@ git commit -m "feat(scoring): add composite score, severity mapping, and hardnes
 ## Task 7: JSONL Storage
 
 **Files:**
-- Create: `reasonbench/storage.py`
+- Create: `fallax/storage.py`
 - Create: `tests/test_storage.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -1352,13 +1352,13 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.models import (
+from fallax.models import (
     EvaluationResult,
     ModelResponse,
     ValidationResult,
 )
-from reasonbench.storage import JsonlStore
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.storage import JsonlStore
+from fallax.taxonomy import FailureType, Severity
 
 
 def _make_result(prompt_id: str, score: int) -> EvaluationResult:
@@ -1438,7 +1438,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/storage.py`:
+Create `fallax/storage.py`:
 
 ```python
 """JSONL storage for evaluation results."""
@@ -1499,7 +1499,7 @@ Expected: All 7 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/storage.py tests/test_storage.py
+git add fallax/storage.py tests/test_storage.py
 git commit -m "feat(storage): add JSONL append-only store for evaluation results"
 ```
 
@@ -1508,7 +1508,7 @@ git commit -m "feat(storage): add JSONL append-only store for evaluation results
 ## Task 8: Package Init and Integration Test
 
 **Files:**
-- Modify: `reasonbench/__init__.py`
+- Modify: `fallax/__init__.py`
 - Create: `tests/test_integration.py`
 
 - [ ] **Step 1: Write failing integration test**
@@ -1522,7 +1522,7 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench import (
+from fallax import (
     Assumption,
     EvaluationResult,
     FailureType,
@@ -1660,7 +1660,7 @@ Expected: FAIL with `ImportError` (package init doesn't re-export yet)
 
 - [ ] **Step 3: Update package __init__.py with public API**
 
-Modify `reasonbench/__init__.py`:
+Modify `fallax/__init__.py`:
 
 ```python
 """Fallax — LLM Adversarial Reasoning Evaluation System."""
@@ -1718,7 +1718,7 @@ Expected: All tests PASS (taxonomy: 11, models: 12, templates: 13, validators: 1
 - [ ] **Step 6: Commit**
 
 ```bash
-git add reasonbench/__init__.py tests/test_integration.py
+git add fallax/__init__.py tests/test_integration.py
 git commit -m "feat: wire up public API and add end-to-end integration test"
 ```
 

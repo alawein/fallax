@@ -1,8 +1,8 @@
 import pytest
 
-from reasonbench.analyzer import Analyzer
-from reasonbench.models import Assumption
-from reasonbench.taxonomy import FailureType, Severity
+from fallax.analyzer import Analyzer
+from fallax.models import Assumption
+from fallax.taxonomy import FailureType, Severity
 from tests.conftest import make_result
 
 

@@ -1,7 +1,7 @@
 import pytest
 
-from reasonbench.models import ExperimentRound, RepairResult, RootCausePattern
-from reasonbench.report import ReportBuilder
+from fallax.models import ExperimentRound, RepairResult, RootCausePattern
+from fallax.report import ReportBuilder
 
 
 @pytest.fixture()

@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from reasonbench.templates import TEMPLATES, TemplateRegistry
+from fallax.templates import TEMPLATES, TemplateRegistry
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "reasonbench" / "data"
+DATA_DIR = Path(__file__).resolve().parent.parent / "fallax" / "data"
 
 
 class TestParameterBanks:

@@ -10,7 +10,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from reasonbench.models import EvaluationResult
+from fallax.models import EvaluationResult
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -116,7 +116,7 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
                 "score_distribution": {},
             }
 
-        from reasonbench.taxonomy import get_category
+        from fallax.taxonomy import get_category
 
         total = len(all_results)
         avg_score = sum(r.score for r in all_results) / total

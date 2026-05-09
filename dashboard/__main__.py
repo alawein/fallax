@@ -8,7 +8,7 @@ from pathlib import Path
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog="reasonbench-dashboard",
+        prog="fallax-dashboard",
         description="Launch the Fallax experiment dashboard",
     )
     parser.add_argument(

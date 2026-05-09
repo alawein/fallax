@@ -22,8 +22,8 @@ sla: none
 ## File Structure
 
 ```
-reasonbench/
-├── reasonbench/
+fallax/
+├── fallax/
 │   ├── models.py             # MODIFY: add RepairResult, RootCausePattern
 │   ├── evolver.py            # NEW: LLM-driven prompt evolution
 │   ├── repair.py             # NEW: self-repair testing
@@ -44,7 +44,7 @@ reasonbench/
 ## Task 1: New Data Models
 
 **Files:**
-- Modify: `reasonbench/models.py`
+- Modify: `fallax/models.py`
 - Modify: `tests/test_models.py`
 
 - [ ] **Step 1: Write failing tests for new models**
@@ -52,7 +52,7 @@ reasonbench/
 Append to `tests/test_models.py`:
 
 ```python
-from reasonbench.models import RepairResult, RootCausePattern
+from fallax.models import RepairResult, RootCausePattern
 
 
 class TestRepairResult:
@@ -123,7 +123,7 @@ Expected: FAIL with `ImportError`
 
 - [ ] **Step 3: Add models to models.py**
 
-Append to the end of `reasonbench/models.py`:
+Append to the end of `fallax/models.py`:
 
 ```python
 
@@ -157,7 +157,7 @@ Expected: All tests PASS (existing 13 + new 5 = 18)
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/models.py tests/test_models.py
+git add fallax/models.py tests/test_models.py
 git commit -m "feat(models): add RepairResult and RootCausePattern data models"
 ```
 
@@ -166,7 +166,7 @@ git commit -m "feat(models): add RepairResult and RootCausePattern data models"
 ## Task 2: Prompt Evolver
 
 **Files:**
-- Create: `reasonbench/evolver.py`
+- Create: `fallax/evolver.py`
 - Create: `tests/test_evolver.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -176,9 +176,9 @@ Create `tests/test_evolver.py`:
 ```python
 import pytest
 
-from reasonbench.evolver import PromptEvolver
-from reasonbench.models import Assumption, Prompt
-from reasonbench.taxonomy import FailureType
+from fallax.evolver import PromptEvolver
+from fallax.models import Assumption, Prompt
+from fallax.taxonomy import FailureType
 from tests.conftest import MockClient, make_result
 
 
@@ -272,7 +272,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/evolver.py`:
+Create `fallax/evolver.py`:
 
 ```python
 """Prompt evolution — generates harder variants of high-scoring failures."""
@@ -356,7 +356,7 @@ Expected: All 11 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/evolver.py tests/test_evolver.py
+git add fallax/evolver.py tests/test_evolver.py
 git commit -m "feat(evolver): add LLM-driven prompt evolution for hard cases"
 ```
 
@@ -365,7 +365,7 @@ git commit -m "feat(evolver): add LLM-driven prompt evolution for hard cases"
 ## Task 3: Self-Repair Tester
 
 **Files:**
-- Create: `reasonbench/repair.py`
+- Create: `fallax/repair.py`
 - Create: `tests/test_repair.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -375,9 +375,9 @@ Create `tests/test_repair.py`:
 ```python
 import pytest
 
-from reasonbench.models import RepairResult
-from reasonbench.repair import SelfRepairTester
-from reasonbench.taxonomy import FailureType
+from fallax.models import RepairResult
+from fallax.repair import SelfRepairTester
+from fallax.taxonomy import FailureType
 from tests.conftest import MockClient, make_result
 
 
@@ -476,7 +476,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/repair.py`:
+Create `fallax/repair.py`:
 
 ```python
 """Self-repair testing — checks if models can fix their own reasoning failures."""
@@ -541,7 +541,7 @@ Expected: All 9 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/repair.py tests/test_repair.py
+git add fallax/repair.py tests/test_repair.py
 git commit -m "feat(repair): add self-repair tester for model recovery tracking"
 ```
 
@@ -550,7 +550,7 @@ git commit -m "feat(repair): add self-repair tester for model recovery tracking"
 ## Task 4: Root Cause Extractor
 
 **Files:**
-- Create: `reasonbench/root_cause.py`
+- Create: `fallax/root_cause.py`
 - Create: `tests/test_root_cause.py`
 
 - [ ] **Step 1: Write failing tests**
@@ -560,9 +560,9 @@ Create `tests/test_root_cause.py`:
 ```python
 import pytest
 
-from reasonbench.models import Assumption, RootCausePattern
-from reasonbench.root_cause import RootCauseExtractor
-from reasonbench.taxonomy import FailureType
+from fallax.models import Assumption, RootCausePattern
+from fallax.root_cause import RootCauseExtractor
+from fallax.taxonomy import FailureType
 from tests.conftest import make_result
 
 
@@ -707,7 +707,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Write implementation**
 
-Create `reasonbench/root_cause.py`:
+Create `fallax/root_cause.py`:
 
 ```python
 """Root cause extraction — mines recurring failure patterns from results."""
@@ -784,7 +784,7 @@ Expected: All 11 tests PASS
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/root_cause.py tests/test_root_cause.py
+git add fallax/root_cause.py tests/test_root_cause.py
 git commit -m "feat(root_cause): add failure pattern extraction from unjustified assumptions"
 ```
 
@@ -793,7 +793,7 @@ git commit -m "feat(root_cause): add failure pattern extraction from unjustified
 ## Task 5: CLI Update with evolve/repair Subcommands
 
 **Files:**
-- Modify: `reasonbench/__main__.py`
+- Modify: `fallax/__main__.py`
 - Modify: `tests/test_cli.py`
 
 - [ ] **Step 1: Write new CLI tests**
@@ -805,7 +805,7 @@ class TestEvolveSubcommand:
     def test_evolve_returns_zero(self, results_file, tmp_path):
         output = tmp_path / "evolved.jsonl"
         mock = MockClient(default="A harder evolved prompt.")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "evolve", str(results_file),
                 "--model", "m",
@@ -815,7 +815,7 @@ class TestEvolveSubcommand:
 
     def test_evolve_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="evolved")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "evolve", str(tmp_path / "nonexistent.jsonl"),
                 "--model", "m",
@@ -827,7 +827,7 @@ class TestRepairSubcommand:
     def test_repair_returns_zero(self, results_file, tmp_path):
         output = tmp_path / "repairs.jsonl"
         mock = MockClient(default="I was wrong. The correct answer is X.")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "repair", str(results_file),
                 "--model", "m",
@@ -837,7 +837,7 @@ class TestRepairSubcommand:
 
     def test_repair_missing_file_returns_error(self, tmp_path):
         mock = MockClient(default="fixed")
-        with patch("reasonbench.__main__.AnthropicClient", return_value=mock):
+        with patch("fallax.__main__.AnthropicClient", return_value=mock):
             code = main([
                 "repair", str(tmp_path / "nonexistent.jsonl"),
                 "--model", "m",
@@ -852,7 +852,7 @@ Expected: FAIL
 
 - [ ] **Step 3: Add evolve/repair subcommands to __main__.py**
 
-Read existing `reasonbench/__main__.py`. Add two new command functions and subparsers. Append the following function definitions before `main()`:
+Read existing `fallax/__main__.py`. Add two new command functions and subparsers. Append the following function definitions before `main()`:
 
 ```python
 def _cmd_evolve(args: argparse.Namespace) -> int:
@@ -985,7 +985,7 @@ Expected: All 11 tests PASS (7 existing + 4 new)
 - [ ] **Step 5: Commit**
 
 ```bash
-git add reasonbench/__main__.py tests/test_cli.py
+git add fallax/__main__.py tests/test_cli.py
 git commit -m "feat(cli): add evolve and repair subcommands"
 ```
 
@@ -994,11 +994,11 @@ git commit -m "feat(cli): add evolve and repair subcommands"
 ## Task 6: Public API Update and Full Suite
 
 **Files:**
-- Modify: `reasonbench/__init__.py`
+- Modify: `fallax/__init__.py`
 
 - [ ] **Step 1: Update __init__.py**
 
-Read existing `reasonbench/__init__.py`, then replace with:
+Read existing `fallax/__init__.py`, then replace with:
 
 ```python
 """Fallax — LLM Adversarial Reasoning Evaluation System."""
@@ -1080,7 +1080,7 @@ Expected: All tests PASS (~230 tests)
 - [ ] **Step 3: Commit**
 
 ```bash
-git add reasonbench/__init__.py
+git add fallax/__init__.py
 git commit -m "feat: update public API with Phase 4 exports (Evolver, Repair, RootCause)"
 ```
 
@@ -1098,4 +1098,4 @@ git commit -m "feat: update public API with Phase 4 exports (Evolver, Repair, Ro
 | 6 | Init Update | 1 (__init__) | 0 |
 | **Total** | | **11 files** | **~40 new tests** |
 
-**Phase 4 delivers:** LLM-driven prompt evolution that takes hard cases (score >= 6) and generates harder variants. Self-repair testing that gives models a second chance and tracks recovery. Root cause extraction that mines unjustified assumptions into ranked patterns with model/failure-type breakdowns. CLI subcommands: `reasonbench evolve results.jsonl --model <m>`, `reasonbench repair results.jsonl --model <m>`.
+**Phase 4 delivers:** LLM-driven prompt evolution that takes hard cases (score >= 6) and generates harder variants. Self-repair testing that gives models a second chance and tracks recovery. Root cause extraction that mines unjustified assumptions into ranked patterns with model/failure-type breakdowns. CLI subcommands: `fallax evolve results.jsonl --model <m>`, `fallax repair results.jsonl --model <m>`.

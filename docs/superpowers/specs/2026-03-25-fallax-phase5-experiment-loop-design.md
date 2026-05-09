@@ -26,7 +26,7 @@ Two new modules, one new data model, one new CLI subcommand.
 
 ### Data Model: `ExperimentRound`
 
-Added to `reasonbench/models.py`:
+Added to `fallax/models.py`:
 
 ```python
 class ExperimentRound(BaseModel):
@@ -121,7 +121,7 @@ class ReportBuilder:
 ### CLI: `experiment` subcommand
 
 ```
-reasonbench experiment \
+fallax experiment \
     --models m1 m2 \
     --judge j \
     --evolve-model e \
@@ -188,4 +188,4 @@ Round N:            │              Pipeline → Analyzer             │
 - All tests use `MockClient` — no real API calls
 - `Experiment` tests create a mock client that returns predictable responses, run 2 rounds, and assert round metadata and file outputs
 - `ReportBuilder` tests use hand-crafted experiment data dicts, asserting report structure and markdown output
-- CLI test uses `patch("reasonbench.__main__.AnthropicClient")` pattern established in Phases 2-4
+- CLI test uses `patch("fallax.__main__.AnthropicClient")` pattern established in Phases 2-4

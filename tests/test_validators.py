@@ -1,4 +1,4 @@
-from reasonbench.validators import ValidatorPack
+from fallax.validators import ValidatorPack
 
 
 class TestReasoningCritic:

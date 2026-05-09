@@ -1,7 +1,7 @@
 import pytest
 
-from reasonbench.models import RepairResult
-from reasonbench.repair import SelfRepairTester
+from fallax.models import RepairResult
+from fallax.repair import SelfRepairTester
 from tests.conftest import MockClient, make_result
 
 

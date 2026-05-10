@@ -4,7 +4,7 @@ name: fallax
 type: library
 runtime: python
 tier: tier-3
-deploy: none
+deploy: vercel
 owner: alawein
 team: alawein-core
 oncall: "@alawein"

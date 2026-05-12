@@ -124,7 +124,36 @@ footer{padding:1.75rem 0}
       </button>
     </section>
 
-    <!-- results, taxonomy, quickstart go here -->
+    <section class="section">
+      <div class="section-label">Benchmark v1 Results</div>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Overall Score</th>
+            <th>Failure Rate</th>
+            <th>Captured</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>claude-sonnet-4-6</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>gpt-4o-mini</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="pending-note">Baselines pending &mdash; run <code>fallax baseline capture --version v1</code> to populate.</p>
+    </section>
+
+    <!-- taxonomy, quickstart go here -->
   </div>
 </main>
 

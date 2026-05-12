@@ -106,7 +106,25 @@ footer{padding:1.75rem 0}
 
 <main>
   <div class="wrap">
-    <!-- sections go here -->
+    <section class="hero">
+      <div class="eyebrow">LLM Reasoning Benchmark</div>
+      <h1>Adversarial Reasoning<br>Evaluation for LLMs</h1>
+      <p class="hero-desc">Fallax surfaces failure modes that single-turn benchmarks miss. Step-level correctness scoring across 25 adversarial prompt templates &mdash; not just final-answer accuracy.</p>
+      <div class="meta-row">
+        <div class="meta-item"><span>25</span> templates</div>
+        <div class="meta-item"><span>100</span> benchmark prompts</div>
+        <div class="meta-item"><span>6</span> failure categories</div>
+        <div class="meta-item"><span>Python 3.12+</span></div>
+        <div class="meta-item"><span>MIT</span></div>
+      </div>
+      <button class="cmd" id="install-cmd" onclick="copyInstall()">
+        <span class="prompt">$</span>
+        <span>uv sync &amp;&amp; uv run python -m fallax --help</span>
+        <span class="copy-hint" id="copy-hint">click to copy</span>
+      </button>
+    </section>
+
+    <!-- results, taxonomy, quickstart go here -->
   </div>
 </main>
 

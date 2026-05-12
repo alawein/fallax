@@ -153,7 +153,37 @@ footer{padding:1.75rem 0}
       <p class="pending-note">Baselines pending &mdash; run <code>fallax baseline capture --version v1</code> to populate.</p>
     </section>
 
-    <!-- taxonomy, quickstart go here -->
+    <section class="section">
+      <div class="section-label">Failure Taxonomy</div>
+      <div class="taxonomy-grid">
+        <div class="tax-item">
+          <div class="tax-name">logic_error</div>
+          <div class="tax-types">contradiction &middot; invalid_inference</div>
+        </div>
+        <div class="tax-item">
+          <div class="tax-name">assumption_error</div>
+          <div class="tax-types">unstated_assumption &middot; unjustified_assumption</div>
+        </div>
+        <div class="tax-item">
+          <div class="tax-name">constraint_violation</div>
+          <div class="tax-types">ignored_constraint &middot; partial_satisfaction</div>
+        </div>
+        <div class="tax-item">
+          <div class="tax-name">generalization_error</div>
+          <div class="tax-types">overgeneralization &middot; pattern_misapplication</div>
+        </div>
+        <div class="tax-item">
+          <div class="tax-name">ambiguity_failure</div>
+          <div class="tax-types">ambiguity_failure</div>
+        </div>
+        <div class="tax-item">
+          <div class="tax-name">multi_step_break</div>
+          <div class="tax-types">multi_step_break</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- quickstart goes here -->
   </div>
 </main>
 

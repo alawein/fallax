@@ -1,102 +1,104 @@
 # Fallax
 
-## Public value
-
-Fallax is a review-tier research repo until its core purpose, active workflow,
-and publication posture are explicit. If promoted publicly, frame it around a
-clear technical question, the reproducible implementation surface, and the
-evidence it produces.
-
-## Publication boundaries
-
-- Confirm whether this is active research, a prototype, or an archive.
-- Add or verify license and ownership before public promotion.
-- Keep generated outputs, local data, secrets, and unpublished notes out of
-  public examples unless intentionally sanitized.
-- Prefer a small reproducible demo over broad undocumented scope.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
 
-**Fallax** evaluates language models on structured, multi-step reasoning tasks — logical deduction, mathematical proof, causal inference, and compositional planning. It surfaces failure modes that single-turn benchmarks miss.
+**Fallax** evaluates language models on structured, multi-step reasoning tasks — logical deduction, mathematical proof, causal inference, and compositional planning. It surfaces failure modes that single-turn benchmarks miss by measuring step-level correctness, not just final answers.
+
+## Benchmark v1 Results
+
+100 curated adversarial prompts across 25 reasoning failure templates.
+
+| Model | Overall Score | Failure Rate |
+|---|---|---|
+| claude-sonnet-4-6 | — | — |
+| gpt-4o-mini | — | — |
+
+Baselines pending — run `fallax baseline capture --version v1 --model <model> --judge <judge>` to populate. See `benchmarks/v1/` for the frozen prompt set and metadata.
 
 ## Why Fallax
 
 - Measures step-level correctness, not just final answers.
-- Configurable domains and task packs to mirror real workloads.
-- Reproducible harness with dashboards for regression tracking.
+- 25 adversarial templates across 6 failure categories (logic errors, assumption errors, constraint violations, generalization errors, ambiguity failures, multi-step breaks).
+- Reproducible harness: seed-fixed prompt generation, versioned benchmark sets, deterministic scoring.
+- Multi-provider: Anthropic, OpenAI, Gemini, and local models via Ollama.
 
 ## Features
 
 - **Multi-step evaluation** — Tasks requiring chained reasoning, not pattern matching
-- **Structured scoring** — Step-level correctness, not just final-answer accuracy
-- **Extensible harness** — Add new reasoning domains via config
-- **Dashboard** — Visual results explorer
-- **Benchmarks** — Performance regression tracking
+- **Structured scoring** — 6-dimensional step-level correctness (not final-answer accuracy)
+- **Failure taxonomy** — 6 categories, 10 types, 4 severity levels
+- **Extensible harness** — Add reasoning domains via config
+- **Benchmark versioning** — Immutable prompt sets for reproducible cross-model comparison
+- **Baseline tracking** — Capture, compare, and regress-check model scores over time
+
+## Providers
+
+| Provider | Extra | Env var |
+|---|---|---|
+| Anthropic (default) | `uv sync` | `ANTHROPIC_API_KEY` |
+| OpenAI | `uv sync --extra openai` | `OPENAI_API_KEY` |
+| Google Gemini | `uv sync --extra gemini` | `GOOGLE_API_KEY` |
+| Ollama (local) | `uv sync` (uses `requests`) | none — needs Ollama running |
 
 ## Tech Stack
 
 - **Language:** Python 3.12+
-- **Build:** pyproject.toml (`fallax`)
-- **Testing:** pytest
+- **Build:** `pyproject.toml` (`fallax 0.1.0`)
+- **Testing:** pytest (372 tests)
 - **Linting:** ruff, mypy
 
 ## Quick Start
 
 ```bash
-python -m venv .venv && .venv\Scripts\activate   # Windows
-pip install -e .
-pytest tests/
-```
+# Install
+uv sync                         # core + dev deps
+uv sync --extra openai          # add OpenAI provider
+uv sync --extra dashboard       # add dashboard server
 
-### Alternative installs
+# Run tests
+uv run pytest tests/ -q
 
-```bash
-# Using uv
-uv venv
-uv pip install -e .
-uv run pytest tests/
+# Evaluate a model
+uv run python -m fallax run \
+  --models claude-sonnet-4-6 \
+  --judge claude-haiku-4-5-20251001 \
+  --output results.jsonl
 
-# Optional GPU extras (if available)
-pip install -e .[gpu]
+# Benchmark against v1
+uv run python -m fallax baseline capture \
+  --version v1 \
+  --model claude-sonnet-4-6 \
+  --judge claude-haiku-4-5-20251001
 
-# Lint/type
-ruff check .
-mypy fallax
-```
+# Compare against baseline
+uv run python -m fallax baseline compare \
+  --version v1 \
+  --model claude-sonnet-4-6 \
+  --judge claude-haiku-4-5-20251001
 
-## Make/Task Shortcuts
-
-```bash
-make test          # fast suite
-make test-all      # full suite
-make lint          # ruff + mypy
-make format        # formatters
+# Analyze results
+uv run python -m fallax analyze results.jsonl
 ```
 
 ## Project Structure
 
 ```text
 fallax/
-├── fallax/     # core evaluation engine
-├── benchmarks/      # performance benchmarks
-├── dashboard/       # results visualization
-├── tests/           # pytest suite
+├── fallax/          # core evaluation engine (taxonomy, templates, scoring, pipeline)
+├── fallax/clients/  # provider-specific LLM clients (anthropic, openai, gemini, ollama)
+├── benchmarks/v1/   # frozen benchmark: prompts.jsonl, baselines.json, metadata.json
+├── dashboard/       # FastAPI results explorer
+├── tests/           # 372-test pytest suite
 ├── website/         # project site
-├── docs/            # documentation
-└── pyproject.toml   # package config (fallax 0.1.0)
+└── pyproject.toml   # package config
 ```
 
 ## Roadmap
 
-- **Near term:** deterministic scoring fixtures, dataset versioning, richer domain configs
-- **Mid term:** new benchmarks (causal graphs, program synthesis), reproducibility dashboard
-
-## TODO
-
-- [ ] Publish task schema examples in `docs/`
-- [ ] Add seed-based determinism toggle for all evaluators
-- [ ] Benchmark harness against public LLM baselines
+- v1.1: Capture baselines for claude-sonnet-4-6 and gpt-4o-mini; tag v1.0.0
+- v1.2: Reproducibility dashboard (web UI for visualizing experiment results)
+- v2.0: Causal graph and program synthesis reasoning domains
 
 ## License
 
@@ -104,7 +106,7 @@ fallax/
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Keep tests green and run ruff/mypy before submitting.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Run `uv run pytest tests/ -q` and `uv run ruff check fallax/ tests/` before submitting.
 
 ## Ownership
 

@@ -3,67 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <title>Fallax — Multi-Step Reasoning Evaluation for LLMs</title>
 <meta name="description" content="Benchmark suite for evaluating language models on structured, multi-step reasoning tasks — surfacing failure modes that single-turn benchmarks miss.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fallax.online/">
+<meta property="og:title" content="Fallax — Multi-Step Reasoning Evaluation for LLMs">
+<meta property="og:description" content="Benchmark suite for evaluating language models on structured, multi-step reasoning tasks — surfacing failure modes that single-turn benchmarks miss.">
+<meta property="og:image" content="https://fallax.online/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fallax — Multi-Step Reasoning Evaluation for LLMs">
+<meta name="twitter:description" content="Benchmark suite for evaluating language models on structured, multi-step reasoning tasks — surfacing failure modes that single-turn benchmarks miss.">
+<meta name="twitter:image" content="https://fallax.online/og-image.png">
+<link rel="canonical" href="https://fallax.online/">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a1a;color:#e0e0e0;line-height:1.6}a{color:#a78bfa;text-decoration:none}a:hover{color:#c4b5fd}.container{max-width:960px;margin:0 auto;padding:0 1.5rem}header{padding:1rem 0;border-bottom:1px solid #1e1e3a;position:sticky;top:0;background:#0a0a1aee;backdrop-filter:blur(8px);z-index:10}header .container{display:flex;justify-content:space-between;align-items:center}header nav a{margin-left:1.5rem;font-size:.9rem;color:#aaa}header nav a:hover{color:#fff}.badge{display:inline-block;padding:.15rem .5rem;font-size:.75rem;border-radius:4px;background:#1e1e3a;color:#a78bfa;border:1px solid #2e2e4a}.hero{padding:5rem 0 4rem;text-align:center}.hero h1{font-size:3rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#6366f1);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem}.hero .subtitle{font-size:1.05rem;color:#888;margin-bottom:.5rem;letter-spacing:.04em;text-transform:uppercase}.hero p{font-size:1.2rem;color:#999;max-width:640px;margin:0 auto 2rem}.btn{display:inline-block;padding:.7rem 1.8rem;border-radius:8px;font-weight:600;font-size:.95rem;transition:all .2s}.btn-primary{background:#6366f1;color:#fff}.btn-primary:hover{background:#7c3aed;color:#fff}.btn-outline{border:1px solid #333;color:#ccc;margin-left:.75rem}.btn-outline:hover{border-color:#6366f1;color:#fff}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1.5rem;padding:2rem 0 3rem;border-bottom:1px solid #1e1e3a}.stat{text-align:center}.stat .num{font-size:2rem;font-weight:800;color:#a78bfa}.stat .label{font-size:.85rem;color:#888}.section{padding:3rem 0;border-top:1px solid #1e1e3a}.section h2{text-align:center;font-size:1.8rem;margin-bottom:2rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}.card{background:#111128;border:1px solid #1e1e3a;border-radius:12px;padding:1.5rem}.card h3{color:#c4b5fd;margin-bottom:.5rem;font-size:1.1rem}.card p{color:#999;font-size:.9rem}pre{background:#111128;border:1px solid #1e1e3a;border-radius:8px;padding:1.2rem;overflow-x:auto;font-size:.85rem;color:#c4b5fd;max-width:600px;margin:0 auto}footer{padding:2rem 0;border-top:1px solid #1e1e3a;text-align:center;color:#666;font-size:.85rem}@media(max-width:600px){.hero h1{font-size:2rem}.hero p{font-size:1rem}.stats{grid-template-columns:repeat(2,1fr)}header .container{flex-direction:column;gap:.75rem}header nav a{margin:0 .5rem}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--bg2:#111;
+  --border:#1e1e1e;--border2:#2a2a2a;
+  --t1:#e8e8e8;--t2:#888;--t3:#555;--t4:#333;
+  --font:'Courier New',Courier,monospace;
+  --max:640px
+}
+html{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:14px;line-height:1.6}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 1.5rem}
+
+/* header */
+header{position:sticky;top:0;z-index:10;background:rgba(10,10,10,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:.75rem 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:.85rem;font-weight:700;color:var(--t1);text-decoration:none}
+nav{display:flex;gap:1.5rem;align-items:center}
+nav a{font-size:.75rem;color:var(--t3);text-decoration:none;transition:color .15s}
+nav a:hover{color:var(--t2)}
+.tag{font-size:.65rem;color:var(--t4);border:1px solid var(--border2);padding:.1rem .4rem}
+
+/* hero */
+.hero{padding:4rem 0 2.5rem;border-bottom:1px solid var(--border)}
+.eyebrow{font-size:.7rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;margin-bottom:.75rem}
+h1{font-size:1.75rem;font-weight:700;color:var(--t1);line-height:1.2;margin-bottom:.75rem}
+.hero-desc{font-size:.85rem;color:var(--t2);line-height:1.7;max-width:520px;margin-bottom:1.5rem}
+.meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.meta-item{font-size:.72rem;color:var(--t3)}
+.meta-item span{color:var(--t2)}
+.cmd{display:flex;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border2);padding:.6rem 1rem;font-size:.8rem;color:var(--t2);cursor:pointer;transition:border-color .15s;width:100%;font-family:var(--font);text-align:left}
+.cmd:hover{border-color:#3a3a3a}
+.prompt{color:var(--t4)}
+.copy-hint{margin-left:auto;font-size:.65rem;color:var(--t4)}
+
+/* sections */
+.section{padding:2.5rem 0;border-bottom:1px solid var(--border)}
+.section-label{font-size:.65rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* results table */
+.results-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.results-table th{text-align:left;color:var(--t3);font-weight:400;font-size:.65rem;letter-spacing:.08em;padding:0 0 .6rem;border-bottom:1px solid var(--border2)}
+.results-table th:not(:first-child){text-align:right}
+.results-table td{padding:.55rem 0;border-bottom:1px solid var(--border);color:var(--t2)}
+.results-table td:not(:first-child){text-align:right;color:var(--t3)}
+.results-table td:first-child{color:var(--t1);font-size:.8rem}
+.pending-note{font-size:.68rem;color:var(--t4);margin-top:.75rem;font-style:italic}
+
+/* taxonomy */
+.taxonomy-grid{display:grid;grid-template-columns:1fr 1fr}
+.tax-item{padding:.7rem 0;border-bottom:1px solid var(--border);font-size:.78rem}
+.tax-item:nth-child(odd){padding-right:1.5rem;border-right:1px solid var(--border)}
+.tax-item:nth-child(even){padding-left:1.5rem}
+.tax-name{color:var(--t2);margin-bottom:.2rem}
+.tax-types{font-size:.65rem;color:var(--t4);line-height:1.6}
+
+/* code block */
+.code-block{background:var(--bg2);border:1px solid var(--border2);padding:1.25rem;font-size:.78rem;color:var(--t2);overflow-x:auto;line-height:1.8;white-space:pre}
+.comment{color:var(--t4)}
+
+/* footer */
+footer{padding:1.75rem 0}
+.footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.footer-left{font-size:.72rem;color:var(--t3)}
+.footer-links{display:flex;gap:1rem}
+.footer-links a{font-size:.72rem;color:var(--t4);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--t3)}
+
+/* mobile */
+@media(max-width:600px){h1{font-size:1.3rem}.meta-row{gap:.75rem}nav{gap:1rem}}
 </style>
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://fallax.online/" />
-    <meta property="og:title" content="Fallax — Multi-Step Reasoning Evaluation for LLMs" />
-    <meta property="og:description" content="Benchmark suite for evaluating language models on structured, multi-step reasoning tasks — surfacing failure modes that single-turn benchmarks miss." />
-    <meta property="og:image" content="https://fallax.online/og-image.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Fallax — Multi-Step Reasoning Evaluation for LLMs" />
-    <meta name="twitter:description" content="Benchmark suite for evaluating language models on structured, multi-step reasoning tasks — surfacing failure modes that single-turn benchmarks miss." />
-    <meta name="twitter:image" content="https://fallax.online/og-image.png" />
-    <link rel="canonical" href="https://fallax.online/" />
 </head>
 <body>
-<header><div class="container"><strong>Fallax</strong><nav><a href="https://github.com/alawein/fallax">GitHub</a><a href="https://github.com/alawein/fallax#installation">Docs</a><span class="badge">MIT</span></nav></div></header>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/">fallax</a>
+    <nav>
+      <a href="https://github.com/alawein/fallax#installation">docs</a>
+      <a href="https://github.com/alawein/fallax">github</a>
+      <span class="tag">MIT</span>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section class="hero"><div class="container">
-<div class="subtitle">LLM Evaluation</div>
-<h1>Fallax</h1>
-<p>Multi-step reasoning evaluation and benchmark suite for language models. Surfaces failure modes that single-turn benchmarks miss.</p>
-<a href="https://github.com/alawein/fallax" class="btn btn-primary">View on GitHub</a><a href="https://github.com/alawein/fallax#installation" class="btn btn-outline">Get Started</a>
-</div></section>
-<div class="container">
-<div class="stats">
-<div class="stat"><div class="num">25</div><div class="label">Evaluation Templates</div></div>
-<div class="stat"><div class="num">100</div><div class="label">Benchmark Prompts</div></div>
-<div class="stat"><div class="num">4</div><div class="label">Reasoning Domains</div></div>
-<div class="stat"><div class="num">Python</div><div class="label">3.10+</div></div>
-</div>
-<section class="section"><h2>Evaluation Domains</h2><div class="grid">
-<div class="card"><h3>Logical Deduction</h3><p>Chained inference tasks requiring models to maintain and apply intermediate conclusions across multiple reasoning steps.</p></div>
-<div class="card"><h3>Mathematical Proof</h3><p>Step-by-step proof tasks that score each derivation step independently, revealing where reasoning breaks down.</p></div>
-<div class="card"><h3>Causal Inference</h3><p>Counterfactual and interventional reasoning tasks designed to distinguish causal from correlational thinking.</p></div>
-<div class="card"><h3>Compositional Planning</h3><p>Tasks requiring multi-stage planning where later steps depend on earlier choices — exposing lookahead failures.</p></div>
-</div></section>
-<section class="section"><h2>Quick Start</h2>
-<pre><code>pip install -e .
-
-from fallax import Benchmark, Scorer
-
-bench = Benchmark.load("logical_deduction")
-scorer = Scorer(model="gpt-4o")
-results = scorer.score(bench)
-print(results.step_accuracy)</code></pre>
-</section>
-</div>
+  <div class="wrap">
+    <!-- sections go here -->
+  </div>
 </main>
-<footer><div class="container">Fallax &mdash; <a href="https://github.com/alawein/fallax">github.com/alawein/fallax</a> &mdash; MIT License &mdash; <a href="mailto:contact@meshal.ai">contact@meshal.ai</a></div>
-<p style="margin-top:0.5rem;font-size:0.8rem;color:#666">
-  <a href="https://github.com/alawein">GitHub</a> &middot;
-  <a href="https://www.linkedin.com/in/alawein/">LinkedIn</a> &middot;
-  <a href="https://meshal.ai/">meshal.ai</a> &middot;
-  <a href="https://kohyr.com/">Kohyr</a>
-</p>
+
+<footer>
+  <!-- added in Task 6 -->
 </footer>
+
 </body>
 </html>

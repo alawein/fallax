@@ -220,5 +220,13 @@ uv run python -m fallax analyze results.jsonl</div>
   </div>
 </footer>
 
+<script>
+function copyInstall(){
+  navigator.clipboard.writeText('uv sync && uv run python -m fallax --help');
+  var h=document.getElementById('copy-hint');
+  h.textContent='copied!';
+  setTimeout(function(){h.textContent='click to copy'},1500);
+}
+</script>
 </body>
 </html>

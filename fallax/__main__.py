@@ -453,8 +453,8 @@ def _cmd_baseline_status(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     """Fallax CLI entry point."""
-    default_model = os.environ.get("REASONBENCH_MODEL", "")
-    default_judge = os.environ.get("REASONBENCH_JUDGE_MODEL", "")
+    default_model = os.environ.get("FALLAX_MODEL", "")
+    default_judge = os.environ.get("FALLAX_JUDGE_MODEL", "")
 
     parser = argparse.ArgumentParser(
         prog="fallax",
@@ -469,13 +469,13 @@ def main(argv: list[str] | None = None) -> int:
         nargs="+",
         required=not bool(default_model),
         default=[default_model] if default_model else None,
-        help="Models to evaluate (or set REASONBENCH_MODEL env var)",
+        help="Models to evaluate (or set FALLAX_MODEL env var)",
     )
     run_p.add_argument(
         "--judge",
         required=not bool(default_judge),
         default=default_judge or None,
-        help="Judge model (or set REASONBENCH_JUDGE_MODEL env var)",
+        help="Judge model (or set FALLAX_JUDGE_MODEL env var)",
     )
     run_p.add_argument("--count", type=int, default=10)
     run_p.add_argument("--output", default="results.jsonl")
@@ -610,7 +610,7 @@ def main(argv: list[str] | None = None) -> int:
         "--judge",
         required=not bool(default_judge),
         default=default_judge or None,
-        help="Judge model (or set REASONBENCH_JUDGE_MODEL)",
+        help="Judge model (or set FALLAX_JUDGE_MODEL)",
     )
     cap_p.add_argument("--output", default="baseline_run.jsonl")
     cap_p.add_argument("--provider", default="anthropic", help="LLM provider")

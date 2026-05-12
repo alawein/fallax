@@ -183,7 +183,26 @@ footer{padding:1.75rem 0}
       </div>
     </section>
 
-    <!-- quickstart goes here -->
+    <section class="section">
+      <div class="section-label">Quick Start</div>
+      <div class="code-block"><span class="comment"># install</span>
+uv sync
+
+<span class="comment"># run evaluation</span>
+uv run python -m fallax run \
+  --models claude-sonnet-4-6 \
+  --judge claude-haiku-4-5-20251001 \
+  --output results.jsonl
+
+<span class="comment"># benchmark against v1</span>
+uv run python -m fallax baseline capture \
+  --version v1 \
+  --model claude-sonnet-4-6 \
+  --judge claude-haiku-4-5-20251001
+
+<span class="comment"># analyze results</span>
+uv run python -m fallax analyze results.jsonl</div>
+    </section>
   </div>
 </main>
 

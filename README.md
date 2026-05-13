@@ -38,8 +38,11 @@ Baselines pending; run `fallax baseline capture --version v1 --model <model> --j
 |---|---|---|
 | Anthropic (default) | `uv sync` | `ANTHROPIC_API_KEY` |
 | OpenAI | `uv sync --extra openai` | `OPENAI_API_KEY` |
+| OpenRouter | `uv sync --extra openai` | `OPENROUTER_API_KEY` |
 | Google Gemini | `uv sync --extra gemini` | `GOOGLE_API_KEY` |
 | Ollama (local) | `uv sync` (uses `requests`) | none, needs Ollama running |
+
+OpenRouter is an OpenAI-API-compatible gateway: one key unlocks Claude, GPT, Gemini, and many open-weight models. Use provider-prefixed model slugs, for example `--provider openrouter --model anthropic/claude-sonnet-4.6 --judge anthropic/claude-haiku-4.5`. Baselines captured through a gateway record the resolved model identifier in `served_model` for provenance; direct-provider baselines record the same string as `model_name`.
 
 ## Tech Stack
 

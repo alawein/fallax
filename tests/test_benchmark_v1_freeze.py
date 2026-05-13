@@ -33,7 +33,10 @@ def test_prompt_count_matches_metadata(metadata: dict, prompts: list[dict]) -> N
 
 
 def test_prompts_sha256_matches_metadata(metadata: dict) -> None:
-    raw = (V1_DIR / "prompts.jsonl").read_bytes()
+    # Normalize CRLF -> LF before hashing so the test is stable on Windows
+    # working trees that Dropbox or an editor flipped, even though
+    # .gitattributes guarantees the index itself is LF.
+    raw = (V1_DIR / "prompts.jsonl").read_bytes().replace(b"\r\n", b"\n")
     actual = hashlib.sha256(raw).hexdigest()
     assert actual == metadata["prompts_sha256"], (
         "prompts.jsonl changed; if intentional, bump the benchmark version "
@@ -56,3 +59,33 @@ def test_every_category_appears(metadata: dict, prompts: list[dict]) -> None:
         seen.add(get_category(ft).value)
     missing = set(metadata["categories"]) - seen
     assert not missing, f"categories missing from v1 prompts: {missing}"
+
+
+def test_template_count_matches_metadata(metadata: dict, prompts: list[dict]) -> None:
+    """Metadata claims 25 templates; the prompts must actually use 25 distinct ones.
+
+    Without this, a metadata-only edit could silently change the claimed
+    template count while the prompts file still uses the old set.
+    """
+    declared = metadata["generation_params"]["templates"]
+    distinct = {p["template_id"] for p in prompts}
+    assert len(distinct) == declared == 25, (
+        f"metadata declares {declared} templates; prompts use {len(distinct)} distinct"
+    )
+
+
+def test_no_single_failure_type_dominates(prompts: list[dict]) -> None:
+    """Distribution is metadata-declared as 'weighted'; cap at 25% to guard against collapse.
+
+    25% is roughly 2.5x the uniform share (10%) over 10 failure_types. A
+    future regeneration that collapses to a near-single-type set would
+    invalidate per-category comparability claims; this test catches that.
+    """
+    from collections import Counter
+
+    counts = Counter(p["failure_type"] for p in prompts)
+    top_type, top_count = counts.most_common(1)[0]
+    share = top_count / len(prompts)
+    assert share <= 0.25, (
+        f"failure_type {top_type!r} dominates v1: {top_count}/{len(prompts)} = {share:.0%}"
+    )

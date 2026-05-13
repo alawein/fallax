@@ -37,7 +37,7 @@ Planned enhancements beyond the core 5-phase implementation.
 
 ## Phase 7: Dashboard UI
 
-**Goal:** Web interface to visualize experiment reports — score trends, failure clusters, root cause patterns.
+**Goal:** Web interface to visualize experiment reports: score trends, failure clusters, root cause patterns.
 
 **Approach:** Lightweight read-only dashboard that consumes the JSON/JSONL output files already produced by the experiment loop.
 
@@ -45,11 +45,11 @@ Planned enhancements beyond the core 5-phase implementation.
 - **Backend:** FastAPI serving experiment data from JSONL/JSON files
 - **Frontend:** React + Recharts (or similar) for interactive charts
 - **Views:**
-  - Experiment overview — rounds table, score/failure trend lines
-  - Failure explorer — filterable table of `EvaluationResult` records
-  - Cluster visualization — 2D scatter plot of reasoning trace clusters (from `FailureClusterer`)
-  - Root cause patterns — bar chart of top patterns by frequency
-  - Model comparison — side-by-side accuracy across models
+  - Experiment overview: rounds table, score/failure trend lines
+  - Failure explorer: filterable table of `EvaluationResult` records
+  - Cluster visualization: 2D scatter plot of reasoning trace clusters (from `FailureClusterer`)
+  - Root cause patterns: bar chart of top patterns by frequency
+  - Model comparison: side-by-side accuracy across models
 
 **Key decisions:**
 - Read-only (no writes back to result files)
@@ -112,7 +112,7 @@ Planned enhancements beyond the core 5-phase implementation.
 - Each new template gets 5 parameter sets in `data/params/`
 - Update `DISTRIBUTION` weights to keep the mix balanced
 - New templates must target existing `FailureType` values (no taxonomy changes)
-- Add templates incrementally — each batch is independently testable
+- Add templates incrementally; each batch is independently testable
 
 ---
 
@@ -126,9 +126,9 @@ Planned enhancements beyond the core 5-phase implementation.
 - Freeze the selected set as a versioned benchmark
 
 **Deliverables:**
-- `benchmarks/v1/prompts.jsonl` — fixed prompt set (100-200 prompts)
-- `benchmarks/v1/baselines.json` — reference scores per model
-- `benchmarks/v1/metadata.json` — version, date, generation parameters, model list
+- `benchmarks/v1/prompts.jsonl`: fixed prompt set (100-200 prompts)
+- `benchmarks/v1/baselines.json`: reference scores per model
+- `benchmarks/v1/metadata.json`: version, date, generation parameters, model list
 - CLI command: `fallax benchmark --models ... --version v1`
 
 **Scoring dimensions:**
@@ -160,8 +160,8 @@ Phase 8 (CI/CD) ──> Phase 6 (Multi-Provider) ──> Phase 9 (Templates)
                                               Phase 7 (Dashboard)
 ```
 
-1. **Phase 8 (CI/CD)** — first, to protect all subsequent work with automated testing
-2. **Phase 6 (Multi-Provider)** — enables cross-model evaluation
-3. **Phase 9 (Templates)** — expands adversarial coverage
-4. **Phase 10 (Benchmark)** — requires multi-provider + expanded templates
-5. **Phase 7 (Dashboard)** — last, as it consumes data from all other phases
+1. **Phase 8 (CI/CD):** first, to protect all subsequent work with automated testing
+2. **Phase 6 (Multi-Provider):** enables cross-model evaluation
+3. **Phase 9 (Templates):** expands adversarial coverage
+4. **Phase 10 (Benchmark):** requires multi-provider + expanded templates
+5. **Phase 7 (Dashboard):** last, as it consumes data from all other phases

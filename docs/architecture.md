@@ -9,11 +9,11 @@ sla: none
 
 ## Components
 
-- `fallax/` — core evaluation engine, task loaders, scorers, and configuration.
-- `benchmarks/` — curated benchmark bundles with tasks, gold answers, and configs.
-- `dashboard/` — visualization layer for runs and regressions.
-- `website/` — marketing/docs site.
-- `tests/` — pytest suites (unit + integration).
+- `fallax/`: core evaluation engine, task loaders, scorers, and configuration.
+- `benchmarks/`: curated benchmark bundles with tasks, gold answers, and configs.
+- `dashboard/`: visualization layer for runs and regressions.
+- `website/`: marketing/docs site.
+- `tests/`: pytest suites (unit + integration).
 
 ## Module layout
 
@@ -45,17 +45,17 @@ fallax/
 
 ## Key concepts
 
-- **Templates** — adversarial reasoning patterns (syllogistic, temporal, modal, etc.).
-- **Evolution** — templates mutate via LLM-driven rewriting for diversity.
-- **Scoring** — 6-dimensional evaluation (logical validity, premise accuracy, and related axes).
-- **Clustering** — groups failure modes via scikit-learn for pattern detection.
-- **Benchmarks** — versioned datasets under `benchmarks/` for reproducibility.
+- **Templates:** adversarial reasoning patterns (syllogistic, temporal, modal, etc.).
+- **Evolution:** templates mutate via LLM-driven rewriting for diversity.
+- **Scoring:** 6-dimensional evaluation (logical validity, premise accuracy, and related axes).
+- **Clustering:** groups failure modes via scikit-learn for pattern detection.
+- **Benchmarks:** versioned datasets under `benchmarks/` for reproducibility.
 
 ## Data Model
 
-- **Task** — multi-step prompt/instruction with expected intermediate states.
-- **Run** — model invocation with recorded responses and parsed steps.
-- **Score** — structured scoring record (step correctness, final correctness, metadata).
+- **Task:** multi-step prompt/instruction with expected intermediate states.
+- **Run:** model invocation with recorded responses and parsed steps.
+- **Score:** structured scoring record (step correctness, final correctness, metadata).
 
 ## Execution Flow
 

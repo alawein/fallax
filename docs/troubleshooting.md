@@ -4,7 +4,7 @@ owner: platform-engineering
 last-reviewed: 2026-03-31
 ---
 
-# Troubleshooting — fallax
+# Troubleshooting · fallax
 
 > TODO: Document known failure modes, diagnostic steps, and common fixes.
 

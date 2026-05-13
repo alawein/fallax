@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
 
-**Fallax** evaluates language models on structured, multi-step reasoning tasks — logical deduction, mathematical proof, causal inference, and compositional planning. It surfaces failure modes that single-turn benchmarks miss by measuring step-level correctness, not just final answers.
+**Fallax** evaluates language models on structured, multi-step reasoning tasks: logical deduction, mathematical proof, causal inference, and compositional planning. It surfaces failure modes that single-turn benchmarks miss by measuring step-level correctness, not just final answers.
 
 ## Benchmark v1 Results
 
@@ -11,10 +11,10 @@
 
 | Model | Overall Score | Failure Rate |
 |---|---|---|
-| claude-sonnet-4-6 | — | — |
-| gpt-4o-mini | — | — |
+| claude-sonnet-4-6 | pending | pending |
+| gpt-4o-mini | pending | pending |
 
-Baselines pending — run `fallax baseline capture --version v1 --model <model> --judge <judge>` to populate. See `benchmarks/v1/` for the frozen prompt set and metadata.
+Baselines pending; run `fallax baseline capture --version v1 --model <model> --judge <judge>` to populate. See `benchmarks/v1/` for the frozen prompt set and metadata.
 
 ## Why Fallax
 
@@ -25,12 +25,12 @@ Baselines pending — run `fallax baseline capture --version v1 --model <model> 
 
 ## Features
 
-- **Multi-step evaluation** — Tasks requiring chained reasoning, not pattern matching
-- **Structured scoring** — 6-dimensional step-level correctness (not final-answer accuracy)
-- **Failure taxonomy** — 6 categories, 10 types, 4 severity levels
-- **Extensible harness** — Add reasoning domains via config
-- **Benchmark versioning** — Immutable prompt sets for reproducible cross-model comparison
-- **Baseline tracking** — Capture, compare, and regress-check model scores over time
+- **Multi-step evaluation:** tasks requiring chained reasoning, not pattern matching
+- **Structured scoring:** 6-dimensional step-level correctness (not final-answer accuracy)
+- **Failure taxonomy:** 6 categories, 10 types, 4 severity levels
+- **Extensible harness:** add reasoning domains via config
+- **Benchmark versioning:** immutable prompt sets for reproducible cross-model comparison
+- **Baseline tracking:** capture, compare, and regress-check model scores over time
 
 ## Providers
 
@@ -39,7 +39,7 @@ Baselines pending — run `fallax baseline capture --version v1 --model <model> 
 | Anthropic (default) | `uv sync` | `ANTHROPIC_API_KEY` |
 | OpenAI | `uv sync --extra openai` | `OPENAI_API_KEY` |
 | Google Gemini | `uv sync --extra gemini` | `GOOGLE_API_KEY` |
-| Ollama (local) | `uv sync` (uses `requests`) | none — needs Ollama running |
+| Ollama (local) | `uv sync` (uses `requests`) | none, needs Ollama running |
 
 ## Tech Stack
 

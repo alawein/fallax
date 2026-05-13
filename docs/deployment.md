@@ -4,7 +4,7 @@ owner: platform-engineering
 last-reviewed: 2026-03-31
 ---
 
-# Deployment and Release — fallax
+# Deployment and Release · fallax
 
 > TODO: Document deployment process, release strategy, and rollback procedures.
 

@@ -142,6 +142,35 @@ class TestBenchmarkSuite:
         loaded = suite.load_baselines("v1")
         assert loaded.models[0].model_name == "new-model"
 
+    def test_baseline_records_served_model_and_provider(self, suite, benchmark_dir):
+        new_baselines = BenchmarkBaselines(
+            version="v1",
+            models=[
+                ModelBaseline(
+                    model_name="anthropic/claude-sonnet-4.6",
+                    overall_score=4.2,
+                    failure_rate=0.5,
+                    served_model="claude-sonnet-4-6-20251022",
+                    provider="openrouter",
+                )
+            ],
+        )
+        suite.save_baselines(new_baselines)
+        loaded = suite.load_baselines("v1")
+        assert loaded.models[0].served_model == "claude-sonnet-4-6-20251022"
+        assert loaded.models[0].provider == "openrouter"
+
+    def test_baseline_legacy_load_without_served_model(self, suite, benchmark_dir):
+        """Older baselines.json without served_model/provider must still load."""
+        (benchmark_dir / "v1" / "baselines.json").write_text(
+            '{"version": "v1", "models": ['
+            '{"model_name": "old-baseline", "overall_score": 3.0, "failure_rate": 0.4}'
+            "]}"
+        )
+        loaded = suite.load_baselines("v1")
+        assert loaded.models[0].served_model is None
+        assert loaded.models[0].provider is None
+
     def test_create_version(self, suite, benchmark_dir):
         prompts = [
             Prompt(

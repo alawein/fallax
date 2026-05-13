@@ -49,14 +49,28 @@ class TestOpenAIClient:
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = "hello"
+        mock_response.model = "gpt-4o-2024-08-06"
         fake.OpenAI.return_value.chat.completions.create.return_value = mock_response
         result = client.complete("prompt", model="gpt-4o")
         assert result == "hello"
+        assert client.served_model == "gpt-4o-2024-08-06"
 
     def test_max_tokens_configurable(self, mock_openai_module, mock_api_key):
         _fake, mod = mock_openai_module
         client = mod.OpenAIClient(api_key=mock_api_key, max_tokens=1024)
         assert client._max_tokens == 1024
+
+    def test_base_url_passed_to_sdk(self, mock_openai_module, mock_api_key):
+        fake, mod = mock_openai_module
+        mod.OpenAIClient(api_key=mock_api_key, base_url="https://example.test/v1")
+        fake.OpenAI.assert_called_with(
+            api_key=mock_api_key, base_url="https://example.test/v1"
+        )
+
+    def test_served_model_starts_none(self, mock_openai_module, mock_api_key):
+        _fake, mod = mock_openai_module
+        client = mod.OpenAIClient(api_key=mock_api_key)
+        assert client.served_model is None
 
 
 class TestGeminiClient:
@@ -137,3 +151,32 @@ class TestCreateClient:
         with patch("fallax.clients.AnthropicClient"):
             client = create_client("Anthropic", api_key=mock_api_key)
         assert client is not None
+
+    def test_openrouter_uses_openrouter_base_url(
+        self, mock_openai_module, mock_api_key
+    ):
+        fake, _mod = mock_openai_module
+        create_client("openrouter", api_key=mock_api_key)
+        fake.OpenAI.assert_called_with(
+            api_key=mock_api_key, base_url="https://openrouter.ai/api/v1"
+        )
+
+    def test_openrouter_reads_openrouter_api_key_env(
+        self, mock_openai_module, monkeypatch
+    ):
+        fake, _mod = mock_openai_module
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test")
+        monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        create_client("openrouter")
+        fake.OpenAI.assert_called_with(
+            api_key="sk-or-test", base_url="https://openrouter.ai/api/v1"
+        )
+
+    def test_openrouter_custom_base_url(self, mock_openai_module, mock_api_key):
+        fake, _mod = mock_openai_module
+        create_client(
+            "openrouter", api_key=mock_api_key, base_url="https://proxy.test/v1"
+        )
+        fake.OpenAI.assert_called_with(
+            api_key=mock_api_key, base_url="https://proxy.test/v1"
+        )

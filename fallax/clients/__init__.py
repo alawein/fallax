@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import os
+
 from ..client import AnthropicClient, LLMClient
+
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
 def create_client(
@@ -15,10 +19,10 @@ def create_client(
     """Create an LLM client for the given provider.
 
     Args:
-        provider: One of 'anthropic', 'openai', 'gemini', 'ollama'.
+        provider: One of 'anthropic', 'openai', 'openrouter', 'gemini', 'ollama'.
         api_key: API key (not needed for ollama).
         max_tokens: Maximum tokens in response.
-        base_url: Custom API base URL (ollama only).
+        base_url: Custom API base URL (ollama and openrouter).
     """
     name = provider.lower()
     if name == "anthropic":
@@ -26,7 +30,19 @@ def create_client(
     if name == "openai":
         from .openai import OpenAIClient
 
-        return OpenAIClient(api_key=api_key, max_tokens=max_tokens)
+        return OpenAIClient(api_key=api_key, max_tokens=max_tokens, base_url=base_url)
+    if name == "openrouter":
+        # OpenRouter is OpenAI-API-compatible. Use the OpenAI client with the
+        # OpenRouter base URL; model slugs take the form '<provider>/<model>'
+        # (e.g. 'anthropic/claude-sonnet-4.6', 'openai/gpt-4o-mini').
+        from .openai import OpenAIClient
+
+        key = api_key or os.environ.get("OPENROUTER_API_KEY")
+        return OpenAIClient(
+            api_key=key,
+            max_tokens=max_tokens,
+            base_url=base_url or OPENROUTER_BASE_URL,
+        )
     if name == "gemini":
         from .gemini import GeminiClient
 

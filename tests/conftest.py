@@ -25,9 +25,11 @@ class MockClient:
         self._responses = responses or {}
         self._default = default
         self.calls: list[tuple[str, str]] = []
+        self.served_model: str | None = None
 
     def complete(self, prompt: str, *, model: str) -> str:
         self.calls.append((prompt, model))
+        self.served_model = model
         for keyword, response in self._responses.items():
             if keyword in prompt:
                 return response

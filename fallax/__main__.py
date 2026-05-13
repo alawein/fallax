@@ -410,6 +410,8 @@ def _cmd_baseline_capture(args: argparse.Namespace) -> int:
         print(f"Error: baseline capture failed: {e}", file=sys.stderr)
         return 1
 
+    raw_served = getattr(client, "served_model", None)
+    served_model = raw_served if isinstance(raw_served, str) else None
     entry = ModelBaseline(
         model_name=args.model,
         overall_score=scores["overall_score"],
@@ -417,12 +419,16 @@ def _cmd_baseline_capture(args: argparse.Namespace) -> int:
         category_scores=scores["category_scores"],
         type_scores=scores["type_scores"],
         captured_at=datetime.now(UTC).isoformat(),
+        served_model=served_model,
+        provider=getattr(args, "provider", None),
     )
     baselines.models = [m for m in baselines.models if m.model_name != args.model]
     baselines.models.append(entry)
     path = suite.save_baselines(baselines)
 
     print(f"\nBaseline captured ({args.version} / {args.model})")
+    if entry.served_model and entry.served_model != args.model:
+        print(f"  Served model:   {entry.served_model}")
     print(f"  Overall score:  {scores['overall_score']:.2f}")
     print(f"  Failure rate:   {scores['failure_rate']:.1%}")
     print(f"  Prompts scored: {scores['total']}")
@@ -484,7 +490,7 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument(
         "--provider",
         default="anthropic",
-        help="LLM provider: anthropic, openai, gemini, ollama",
+        help="LLM provider: anthropic, openai, openrouter, gemini, ollama",
     )
     run_p.add_argument("--verbose", "-v", action="store_true")
 

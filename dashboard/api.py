@@ -173,9 +173,12 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
         return sorted(model_stats.values(), key=lambda x: x["model"])
 
     def _experiment_dir(name: str) -> Path:
-        base: Path = app.state.data_dir
-        exp_dir = base / name
-        if not exp_dir.is_dir():
+        base: Path = app.state.data_dir.resolve()
+        try:
+            exp_dir = (base / name).resolve()
+        except (OSError, ValueError):
+            raise HTTPException(404, f"Experiment {name!r} not found") from None
+        if not exp_dir.is_relative_to(base) or not exp_dir.is_dir():
             raise HTTPException(404, f"Experiment {name!r} not found")
         return exp_dir
 

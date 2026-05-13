@@ -1,0 +1,8 @@
+# Repo enforces LF line endings (per .editorconfig).
+# Without this file, Windows + Dropbox can rewrite tracked files as CRLF,
+# breaking byte-stable benchmark contracts (sha256 in metadata.json).
+* text=auto eol=lf
+
+# Benchmark prompts are sha256-pinned in metadata.json. Force LF storage
+# so the recorded hash is stable across platforms and clones.
+benchmarks/**/*.jsonl text eol=lf

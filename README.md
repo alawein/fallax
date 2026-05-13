@@ -45,7 +45,7 @@ Baselines pending; run `fallax baseline capture --version v1 --model <model> --j
 
 - **Language:** Python 3.12+
 - **Build:** `pyproject.toml` (`fallax 0.1.0`)
-- **Testing:** pytest (372 tests)
+- **Testing:** pytest
 - **Linting:** ruff, mypy
 
 ## Quick Start

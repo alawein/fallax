@@ -8,7 +8,7 @@ audience: [ai-agents, contributors]
 last-verified: 2026-04-16
 ---
 
-# CLAUDE.md — Fallax
+# CLAUDE.md · Fallax
 
 ## Workspace identity
 
@@ -63,7 +63,7 @@ Ruff selects `E, F, I, UP, B, SIM`; line length 88. See `docs/architecture.md` f
 
 ## Gotchas
 
-- Provider API keys must be set as environment variables (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc.) — never commit or paste into chat.
+- Provider API keys must be set as environment variables (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc.); never commit or paste into chat.
 - The `all-providers` extra installs all LLM client dependencies; individual provider extras are also available.
 - Dashboard requires the `dashboard` extra (`uv sync --extra dashboard`).
-- `.coverage` and `.benchmarks/` are generated artifacts — keep them out of commits.
+- `.coverage` and `.benchmarks/` are generated artifacts; keep them out of commits.

@@ -8,7 +8,7 @@ audience: [agents, contributors, maintainers]
 last-verified: 2026-04-16
 ---
 
-# AGENTS — Fallax
+# AGENTS · Fallax
 
 ## Workspace identity
 

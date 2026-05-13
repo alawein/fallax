@@ -453,7 +453,7 @@ requires-dist = [
     { name = "anthropic", specifier = ">=0.97.0,<1" },
     { name = "fallax", extras = ["gemini"], marker = "extra == 'all-providers'" },
     { name = "fallax", extras = ["openai"], marker = "extra == 'all-providers'" },
-    { name = "fastapi", marker = "extra == 'dashboard'", specifier = ">=0.136.1" },
+    { name = "fastapi", marker = "extra == 'dashboard'", specifier = ">=0.136.1,<1" },
     { name = "google-generativeai", marker = "extra == 'gemini'", specifier = ">=0.8,<1" },
     { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.28" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.20.2" },
@@ -467,7 +467,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.8.0,<2" },
     { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.33.0.20260503" },
     { name = "urllib3", marker = "extra == 'dev'", specifier = ">=2.7.0" },
-    { name = "uvicorn", marker = "extra == 'dashboard'", specifier = ">=0.46.0" },
+    { name = "uvicorn", marker = "extra == 'dashboard'", specifier = ">=0.46.0,<1" },
 ]
 provides-extras = ["openai", "gemini", "all-providers", "dashboard", "dev"]
 

@@ -18,9 +18,13 @@ all-providers = [
     "fallax[gemini]",
 ]
 dashboard = [
-    "fastapi>=0.136.1",
-    "uvicorn>=0.46.0",
+    "fastapi>=0.136.1,<1",
+    "uvicorn>=0.46.0,<1",
 ]
+# Dev/CI deps are intentionally unbounded above; they affect CI not runtime,
+# and Dependabot keeps them current. Bumping a dev tool past a breaking
+# major fails CI loudly; bumping a runtime dep can corrupt prod silently,
+# which is why runtime deps above all carry upper bounds.
 dev = [
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",

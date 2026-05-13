@@ -1,4 +1,65 @@
 {
   "version": "v1",
-  "models": []
+  "models": [
+    {
+      "model_name": "anthropic/claude-sonnet-4.6",
+      "overall_score": 6.77,
+      "failure_rate": 0.82,
+      "category_scores": {
+        "ambiguity_failure": 7.75,
+        "assumption_error": 7.782608695652174,
+        "constraint_violation": 6.894736842105263,
+        "generalization_error": 7.0,
+        "logic_error": 4.8,
+        "multi_step_break": 6.909090909090909
+      },
+      "type_scores": {
+        "ambiguity_failure": 7.75,
+        "contradiction": 4.909090909090909,
+        "ignored_constraint": 6.181818181818182,
+        "invalid_inference": 4.666666666666667,
+        "multi_step_break": 6.909090909090909,
+        "overgeneralization": 6.545454545454546,
+        "partial_satisfaction": 7.875,
+        "pattern_misapplication": 7.625,
+        "unjustified_assumption": 9.133333333333333,
+        "unstated_assumption": 5.25
+      },
+      "assumption_density": 0.0,
+      "runs": 1,
+      "captured_at": "2026-05-13T06:18:14.185487+00:00",
+      "served_model": "anthropic/claude-4.5-haiku-20251001",
+      "provider": "openrouter"
+    },
+    {
+      "model_name": "openai/gpt-4o-mini",
+      "overall_score": 8.14,
+      "failure_rate": 0.91,
+      "category_scores": {
+        "ambiguity_failure": 9.0,
+        "assumption_error": 8.304347826086957,
+        "constraint_violation": 10.473684210526315,
+        "generalization_error": 7.894736842105263,
+        "logic_error": 5.85,
+        "multi_step_break": 7.7272727272727275
+      },
+      "type_scores": {
+        "ambiguity_failure": 9.0,
+        "contradiction": 6.2727272727272725,
+        "ignored_constraint": 11.272727272727273,
+        "invalid_inference": 5.333333333333333,
+        "multi_step_break": 7.7272727272727275,
+        "overgeneralization": 6.636363636363637,
+        "partial_satisfaction": 9.375,
+        "pattern_misapplication": 9.625,
+        "unjustified_assumption": 8.133333333333333,
+        "unstated_assumption": 8.625
+      },
+      "assumption_density": 0.0,
+      "runs": 1,
+      "captured_at": "2026-05-13T05:39:25.544425+00:00",
+      "served_model": "anthropic/claude-4.5-haiku-20251001",
+      "provider": "openrouter"
+    }
+  ]
 }

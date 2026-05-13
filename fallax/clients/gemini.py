@@ -19,6 +19,7 @@ class GeminiClient:
         if key:
             genai.configure(api_key=key)
         self._max_tokens = max_tokens
+        self.served_model: str | None = None
 
     def complete(self, prompt: str, *, model: str) -> str:
         """Send a prompt and return the text response."""
@@ -29,4 +30,7 @@ class GeminiClient:
                 max_output_tokens=self._max_tokens,
             ),
         )
+        # Gemini's response does not echo the model; the SDK normalizes the
+        # requested name (e.g. strips a 'models/' prefix), so record that.
+        self.served_model = gen_model.model_name
         return str(response.text)

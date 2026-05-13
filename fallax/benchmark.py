@@ -37,6 +37,13 @@ class ModelBaseline(BaseModel):
     assumption_density: float = 0.0
     runs: int = Field(ge=1, default=1)
     captured_at: str | None = None
+    # The model identifier the provider returned. For direct providers this
+    # is the same as `model_name`; for OpenAI-compatible gateways like
+    # OpenRouter it may be the gateway's resolution (e.g. requesting
+    # 'anthropic/claude-sonnet-4.6' may resolve to a dated variant). None
+    # for baselines captured before this field was introduced.
+    served_model: str | None = None
+    provider: str | None = None
 
 
 class BenchmarkBaselines(BaseModel):

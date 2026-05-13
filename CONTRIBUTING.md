@@ -21,11 +21,11 @@ uv sync --all-extras
 
 ## Development Workflow
 
-1. Branch off `master` using prefix: `feat/`, `fix/`, `docs/`, `chore/`, `test/`
+1. Branch off `main` using prefix: `feat/`, `fix/`, `docs/`, `chore/`, `test/`
 2. Make your changes; keep PRs focused on a single concern
 3. Run `python -m pytest tests/` to validate your changes before committing
 4. Commit using [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): subject`
-5. Open a Pull Request to `master`
+5. Open a Pull Request to `main`
 
 ## Code Standards
 

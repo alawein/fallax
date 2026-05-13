@@ -5,6 +5,8 @@ dist/
 build/
 .venv/
 *.jsonl
+# Frozen benchmark prompt sets ARE tracked; only experiment outputs are ignored.
+!benchmarks/**/*.jsonl
 .pytest_cache/
 .ruff_cache/
 .coverage

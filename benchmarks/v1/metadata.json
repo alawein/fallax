@@ -3,7 +3,7 @@
   "created": "2026-03-26T00:36:51.683270+00:00",
   "description": "Fallax v1 benchmark: 100 curated adversarial reasoning prompts across 25 templates",
   "prompt_count": 100,
-  "prompts_sha256": "44e2bd6e5026ab3912122a5ceae68b4251f130d136d52b765fbbddb107042fde",
+  "prompts_sha256": "58abd983000e4fc9ea30b906cb86fceea719552511046c57560931a0c4d1e8ab",
   "failure_types": [
     "ambiguity_failure",
     "contradiction",

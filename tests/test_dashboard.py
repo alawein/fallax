@@ -192,3 +192,25 @@ class TestModelComparison:
     def test_not_found(self, client):
         resp = client.get("/api/experiments/nonexistent/models")
         assert resp.status_code == 404
+
+
+class TestPathTraversal:
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "../etc",
+            "..%2F..%2Fetc",
+            "..\\..\\windows",
+            "/etc/passwd",
+            "test_experiment/../..",
+        ],
+    )
+    def test_traversal_rejected(self, client, name):
+        for path in (
+            f"/api/experiments/{name}/report",
+            f"/api/experiments/{name}/results",
+            f"/api/experiments/{name}/summary",
+            f"/api/experiments/{name}/models",
+        ):
+            resp = client.get(path)
+            assert resp.status_code in (404, 405), (path, resp.status_code)

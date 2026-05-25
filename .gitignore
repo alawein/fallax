@@ -36,3 +36,6 @@ htmlcov/
 .claude/backups/
 .claude/proposals/
 .claude/state.json
+
+# superpowers agent state
+.superpowers/

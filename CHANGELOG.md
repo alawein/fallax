@@ -11,6 +11,13 @@ All notable changes to **Fallax** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Fixed
+
+- `served_model` provenance: the field currently records the last model the client called (the
+  judge) rather than the model under test. `model_name` remains authoritative meanwhile.
+
 ## [1.0.0] — 2026-05-11
 
 ### Added
@@ -22,7 +29,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - **Experiment loop** — Multi-round `Experiment` orchestrator with structured reporting.
 - **Analytics and intelligence** — `Analyzer`, `FailurePredictor`, `FailureClusterer`, `RootCauseExtractor`, and `SelfRepairTester` modules.
 - **372 tests** across all components (up from 72 in Phase 1).
-
-## [Unreleased]
-
-- Initial public release

@@ -6,8 +6,6 @@ last-reviewed: 2026-03-31
 
 # Troubleshooting · fallax
 
-> TODO: Document known failure modes, diagnostic steps, and common fixes.
-
 ## Common Issues
 
 ### `git status` shows many files modified right after a clone or pull

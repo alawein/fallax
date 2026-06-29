@@ -1,7 +1,7 @@
 # Fallax
 
 Status:      active
-Category:    tooling
+Category:    research
 Owner:       alawein
 Visibility:  private
 Purpose:     LLM adversarial reasoning evaluation system and benchmarking surface.

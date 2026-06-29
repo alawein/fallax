@@ -1,7 +1,7 @@
 # Fallax
 
 Status:      active
-Category:    tooling
+Category:    research
 Owner:       alawein
 Visibility:  private
 Purpose:     LLM adversarial reasoning evaluation system and benchmarking surface.
@@ -69,7 +69,7 @@ fallax/
 └── docs/                # architecture, deployment, roadmap
 ```
 
-See [docs/architecture.md](docs/architecture.md) for module boundaries and data flow.
+See [docs/architecture/topology.md](docs/architecture/topology.md) for on-disk layout and [docs/architecture.md](docs/architecture.md) for module boundaries and data flow.
 
 ## Docs map
 

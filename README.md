@@ -1,19 +1,25 @@
 # Fallax
 
 Status:      active
-Category:    research
+Category:    lab
 Owner:       alawein
-Visibility:  private
-Purpose:     LLM adversarial reasoning evaluation system and benchmarking surface.
+Visibility:  public
+Purpose:     LLM adversarial reasoning evaluation harness; live at https://fallax.online.
 Next action: continue
 
 ## Purpose
 
-Fallax evaluates language models on structured, multi-step reasoning tasks:
-logical deduction, mathematical proof, causal inference, and compositional planning.
-It scores step-level correctness (not final-answer accuracy) across 25 adversarial
-templates in six failure categories. Internal research and model-comparison workflows
-consume the harness, frozen benchmark sets, and baseline capture tooling.
+Fallax is a CLI harness that scores language models on step-level reasoning
+correctness, not final-answer accuracy, across 25 adversarial templates in six
+failure categories. It is for researchers comparing reasoning-failure modes
+across model releases. Unlike accuracy-only benchmarks, its judge model scores
+each intermediate step and classifies the failure by type. It does not measure
+general model capability or replace task-specific evaluation suites.
+
+- Lifecycle: active
+- Verification date: 2026-08-28
+- Scope: CLI evaluation harness, versioned benchmark prompts, and baseline capture/compare tooling
+- Live: https://fallax.online
 
 ## Install
 
@@ -30,6 +36,13 @@ Provider API keys: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, 
 `GOOGLE_API_KEY` as needed. Ollama runs locally with no key.
 
 ## Commands
+
+Verified on 2026-08-28 from the repo root: `pip install -e .` exit 0,
+`python -m fallax --help` exit 0, `python -m pytest -q` exit 0 (400 passed, 1
+skipped, no coverage gate). The `run`, `baseline capture`, `baseline compare`,
+and `analyze` commands below need a provider API key; they were not run in
+this pass, and their flags are checked against `python -m fallax <subcommand>
+--help`.
 
 ```bash
 uv run pytest tests/ -q
@@ -81,12 +94,12 @@ See [docs/architecture/topology.md](docs/architecture/topology.md) for on-disk l
 ## Consumers
 
 - Internal model evaluation and regression checks before release
-- Alembiq and portfolio research workflows comparing reasoning failure modes
+- Used by the alawein research workflows through the CLI
 - Benchmark v1 baselines referenced in cross-model comparison reports
 
 ## Release and versioning
 
 - Version source: `pyproject.toml` (`fallax 0.1.0`)
-- Publish mode: private GitHub repo; PyPI publish not configured
+- Publish mode: public GitHub repo; PyPI publish not configured
 - Benchmark sets are versioned under `benchmarks/v1/`; prompt changes require a new version directory
 - Changelog: [CHANGELOG.md](CHANGELOG.md)

@@ -5,6 +5,7 @@ Category:    lab
 Owner:       alawein
 Visibility:  public
 Purpose:     LLM adversarial reasoning evaluation harness; live at https://fallax.online.
+Next action: continue
 
 ## Purpose
 

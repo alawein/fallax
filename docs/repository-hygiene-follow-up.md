@@ -1,3 +1,10 @@
+---
+type: canonical
+source: none
+sync: none
+sla: none
+---
+
 # Repository hygiene follow-up
 
 The repository intentionally keeps historical planning and editor/tooling

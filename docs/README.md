@@ -5,6 +5,7 @@ the forward-looking plans that shape the evaluation engine.
 
 ## Start here
 
+- [architecture/topology.md](architecture/topology.md) for the on-disk layout (fallax/, benchmarks/, dashboard/).
 - [architecture.md](architecture.md) for the evaluation-engine layout.
 - [roadmap.md](roadmap.md) for the near-term product and research direction.
 - `superpowers/` for active plans and specs.

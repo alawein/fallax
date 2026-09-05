@@ -59,5 +59,12 @@ It does not require any deployment infrastructure.
 ## Versioning
 
 Fallax follows [Semantic Versioning](https://semver.org/). The current package
-version is in `pyproject.toml`. Releases are tagged in git; there is no
-release pipeline or package registry publication at this time.
+version is `0.1.0` in `pyproject.toml`; treat the project as pre-1.0 until a
+release is deliberately prepared. There is no release pipeline, package
+registry publication, or GitHub Release at this time.
+
+A historical annotated Git tag,
+[`v1.0.0`](https://github.com/alawein/fallax/tree/v1.0.0), exists but is not a
+GitHub Release and does not represent the current package version. Any future
+release should reconcile that tag, the package version, its notes, and the
+known `served_model` provenance limitation before publication.

@@ -1,6 +1,9 @@
 """Tests for CLI subcommands."""
 
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 from unittest.mock import patch
 
@@ -62,6 +65,33 @@ class TestRunSubcommand:
             )
         assert code == 0
         assert output.exists()
+
+
+class TestOfflineDemo:
+    def test_offline_analysis_fixture_runs_without_provider_credentials(self):
+        repo_root = Path(__file__).resolve().parents[1]
+        fixture = repo_root / "examples" / "fixtures" / "offline-results.jsonl"
+        env = os.environ.copy()
+        for name in (
+            "ANTHROPIC_API_KEY",
+            "OPENAI_API_KEY",
+            "OPENROUTER_API_KEY",
+            "GOOGLE_API_KEY",
+        ):
+            env.pop(name, None)
+
+        completed = subprocess.run(
+            [sys.executable, "-m", "fallax", "analyze", str(fixture)],
+            cwd=repo_root,
+            env=env,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        assert completed.returncode == 0, completed.stderr
+        assert "Fallax Analysis (2 results)" in completed.stdout
+        assert "offline-demo-model" in completed.stdout
 
 
 class TestAnalyzeSubcommand:

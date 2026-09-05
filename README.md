@@ -37,12 +37,24 @@ Provider API keys: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, 
 
 ## Commands
 
-Verified on 2026-08-28 from the repo root: `pip install -e .` exit 0,
-`python -m fallax --help` exit 0, `python -m pytest -q` exit 0 (400 passed, 1
-skipped, no coverage gate). The `run`, `baseline capture`, `baseline compare`,
-and `analyze` commands below need a provider API key; they were not run in
-this pass, and their flags are checked against `python -m fallax <subcommand>
---help`.
+The commands below are run from the repository root. Validate the current
+checkout with `uv run pytest -q`; test totals intentionally are not recorded
+here because they change as coverage grows. `run`, `baseline capture`, and
+`baseline compare` need a provider API key. `analyze` can run entirely offline
+against the committed demonstration fixture.
+
+### Offline end-to-end demonstration
+
+No credentials or network access are needed to read and analyze the committed
+example results:
+
+```bash
+uv run python -m fallax analyze examples/fixtures/offline-results.jsonl
+```
+
+The command exercises Fallax's JSONL loading, result validation, and analysis
+reporting. The fixture is intentionally small and illustrative; it is not a
+benchmark result or a model-quality claim.
 
 ```bash
 uv run pytest tests/ -q
@@ -99,7 +111,12 @@ See [docs/architecture/topology.md](docs/architecture/topology.md) for on-disk l
 
 ## Release and versioning
 
-- Version source: `pyproject.toml` (`fallax 0.1.0`)
-- Publish mode: public GitHub repo; PyPI publish not configured
-- Benchmark sets are versioned under `benchmarks/v1/`; prompt changes require a new version directory
-- Changelog: [CHANGELOG.md](CHANGELOG.md)
+- Current package version: `0.1.0` in `pyproject.toml`; this is a pre-1.0 package state.
+- Publish mode: public GitHub repository; no PyPI publication or GitHub Release is currently published.
+- Historical tag: [`v1.0.0`](https://github.com/alawein/fallax/tree/v1.0.0) is an annotated Git tag, not a current GitHub Release. It predates current `main`; do not infer package or release status from the tag alone.
+- Benchmark sets are versioned under `benchmarks/v1/`; prompt changes require a new version directory.
+- Citation metadata: [CITATION.cff](CITATION.cff).
+- Changelog: [CHANGELOG.md](CHANGELOG.md).
+
+Before publishing a release, reconcile the package version, release notes, and
+the historical tag's documented `served_model` provenance limitation.

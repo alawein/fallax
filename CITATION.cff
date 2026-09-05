@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use Fallax, please cite it using this metadata."
+title: "Fallax"
+version: "0.1.0"
+authors:
+  - family-names: "Alawein"
+    given-names: "Meshal"
+repository-code: "https://github.com/alawein/fallax"
+license: "MIT"

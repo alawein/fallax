@@ -1,122 +1,136 @@
 # Fallax
 
-Status:      active
-Category:    lab
-Owner:       alawein
-Visibility:  public
-Purpose:     LLM adversarial reasoning evaluation harness; live at https://fallax.online.
-Next action: continue
+> Inspect reasoning steps across a fixed prompt taxonomy and keep records for
+> comparing model releases.
 
-## Purpose
+## What Fallax measures
 
-Fallax is a CLI harness that scores language models on step-level reasoning
-correctness, not final-answer accuracy, across 25 adversarial templates in six
-failure categories. It is for researchers comparing reasoning-failure modes
-across model releases. Unlike accuracy-only benchmarks, its judge model scores
-each intermediate step and classifies the failure by type. It does not measure
-general model capability or replace task-specific evaluation suites.
+Fallax evaluates intermediate reasoning as well as the final answer. Benchmark
+v1 fixes 100 prompts from 25 adversarial templates, covering 10 failure types in
+six broad categories. Each run stores judge assessments of answer correctness,
+flawed steps, assumptions, and counterfactual validity. Its composite score also
+uses answer-string disagreement.
 
-- Lifecycle: active
-- Verification date: 2026-08-28
-- Scope: CLI evaluation harness, versioned benchmark prompts, and baseline capture/compare tooling
-- Live: https://fallax.online
+This is not another leaderboard. Scores depend on the benchmark, provider, and
+judge model. They show how a model fails on this prompt set; they do not rank
+general model capability.
 
-## Install
+Fallax is for ML researchers and engineers comparing reasoning failures across
+model releases. It is maintained by Meshal Alawein.
+
+## Run it
+
+Python 3.12 or newer and [uv](https://docs.astral.sh/uv/) are required.
 
 ```bash
 git clone https://github.com/alawein/fallax.git
 cd fallax
-uv sync                         # core + dev deps
-uv sync --extra openai          # OpenAI or OpenRouter provider
-uv sync --extra gemini          # Google Gemini provider
-uv sync --extra dashboard       # FastAPI results explorer
+uv sync
+uv run python -m fallax baseline status --version v1
 ```
 
-Provider API keys: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, or
-`GOOGLE_API_KEY` as needed. Ollama runs locally with no key.
+The last command reads the recorded v1 baselines without calling a model
+provider. It prints one row each for `anthropic/claude-sonnet-4.6` and
+`openai/gpt-4o-mini`.
 
-## Commands
+## What it is
 
-The commands below are run from the repository root. Validate the current
-checkout with `uv run pytest -q`; test totals intentionally are not recorded
-here because they change as coverage grows. `run`, `baseline capture`, and
-`baseline compare` need a provider API key. `analyze` can run entirely offline
-against the committed demonstration fixture.
+Fallax is a Python CLI for adversarial reasoning evaluation. It generates or
+loads prompts, runs supported model providers, asks a judge model to apply five
+validators, and writes structured results for analysis and comparison.
 
-### Offline end-to-end demonstration
+Providers include Anthropic, OpenAI, OpenRouter, Gemini, and Ollama. Remote
+providers require their API key in the environment; Ollama runs locally.
 
-No credentials or network access are needed to read and analyze the committed
-example results:
+## What it is not
+
+Fallax does not measure general model capability, prove that a model's reasoning
+is faithful, or remove judge-model bias. A score is meaningful only with its
+benchmark version, provider, served model, and judge provenance.
+
+## Run an evaluation
+
+### Analyze the offline example
 
 ```bash
 uv run python -m fallax analyze examples/fixtures/offline-results.jsonl
 ```
 
-The command exercises Fallax's JSONL loading, result validation, and analysis
-reporting. The fixture is intentionally small and illustrative; it is not a
-benchmark result or a model-quality claim.
+This command reads and analyzes the committed demonstration fixture without
+credentials or network access. It exercises JSONL loading, result validation,
+and analysis reporting. The fixture is illustrative, not a benchmark result or
+a model-quality claim.
+
+### Run a provider benchmark
+
+
+Install the provider extra you need, then name both the evaluated model and the
+judge:
 
 ```bash
-uv run pytest tests/ -q
-uv run ruff check fallax/ tests/
-
-uv run python -m fallax run \
-  --models claude-sonnet-4-6 \
-  --judge claude-haiku-4-5-20251001 \
-  --output results.jsonl
-
-uv run python -m fallax baseline capture \
+uv sync --extra openai
+uv run python -m fallax benchmark \
   --version v1 \
-  --model claude-sonnet-4-6 \
-  --judge claude-haiku-4-5-20251001
-
-uv run python -m fallax baseline compare \
-  --version v1 \
-  --model claude-sonnet-4-6 \
-  --judge claude-haiku-4-5-20251001
-
-uv run python -m fallax analyze results.jsonl
+  --models openai/gpt-4o-mini \
+  --judge anthropic/claude-4.5-haiku-20251001 \
+  --provider openrouter \
+  --output benchmark_results.jsonl
 ```
 
-Benchmark v1 holds 100 curated prompts in `benchmarks/v1/`; baseline scores live in
-`benchmarks/v1/baselines.json`.
+This example requires `OPENROUTER_API_KEY`. For another provider, set its matching
+environment variable before the run:
+`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, or
+`GOOGLE_API_KEY`.
 
-## Architecture
+## Benchmark versions
 
-```
-fallax/
-├── fallax/              # evaluation engine (taxonomy, templates, scoring, pipeline)
-│   └── clients/         # Anthropic, OpenAI, Gemini, Ollama adapters
-├── benchmarks/v1/       # frozen prompts, baselines, metadata
-├── dashboard/           # FastAPI results explorer
-├── tests/               # pytest suite
-├── website/             # project site
-└── docs/                # architecture, deployment, roadmap
-```
+| Version | Prompts | Templates | Failure types | Categories | Prompt digest |
+| --- | ---: | ---: | ---: | ---: | --- |
+| v1 | 100 | 25 | 10 | 6 | `58abd983...d1e8ab` |
 
-See [docs/architecture/topology.md](docs/architecture/topology.md) for on-disk layout and [docs/architecture.md](docs/architecture.md) for module boundaries and data flow.
+`benchmarks/v1/metadata.json` records seed 42 and the full SHA-256 digest.
+Changes to a frozen prompt set require a new version directory.
+
+## Baseline provenance
+
+The repository records one v1 run for each of two evaluated models. Both were
+captured through OpenRouter and judged by
+`anthropic/claude-4.5-haiku-20251001` on 2026-05-13. The stored composite score
+is a failure-severity score, so higher values mean a more severe failure.
+
+| Evaluated model | Composite score | Failure rate |
+| --- | ---: | ---: |
+| `anthropic/claude-sonnet-4.6` | 6.77 | 82% |
+| `openai/gpt-4o-mini` | 8.14 | 91% |
+
+These are recorded baselines, not a current model comparison. Re-run the same
+benchmark with explicit provider and served-model provenance before drawing a
+new conclusion.
+
+## Reproducibility
+
+Benchmark metadata stores the prompt count, generation parameters, failure
+taxonomy, and prompt-file digest. Baselines store the evaluated model, served
+judge model, provider, capture time, category scores, and failure-type scores.
+
+Run `uv run pytest --cov=fallax --cov=dashboard --cov-fail-under=90` to
+check the current checkout. A local test run does not constitute a new provider
+evaluation.
+
+The package version is `0.1.0` in `pyproject.toml`, a pre-1.0 package state.
+The historical `v1.0.0` Git tag does not determine the current package version or
+GitHub Release status. See the [deployment notes](docs/deployment.md) before
+publishing a release and preserve the documented `served_model` provenance limits.
 
 ## Docs map
 
-- [docs/README.md](docs/README.md)
-- [docs/architecture.md](docs/architecture.md)
-- [SSOT.md](SSOT.md)
-- [LESSONS.md](LESSONS.md)
+- [Architecture](docs/architecture.md)
+- [Repository topology](docs/architecture/topology.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Citation metadata](CITATION.cff)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
 
-## Consumers
+## License
 
-- Internal model evaluation and regression checks before release
-- Used by the alawein research workflows through the CLI
-- Benchmark v1 baselines referenced in cross-model comparison reports
-
-## Release and versioning
-
-- Current package version: `0.1.0` in `pyproject.toml`; this is a pre-1.0 package state.
-- Publish mode: public GitHub repository; no PyPI publication or GitHub Release is currently published.
-- Historical tag: [`v1.0.0`](https://github.com/alawein/fallax/tree/v1.0.0) is an annotated Git tag, not a current GitHub Release. It predates current `main`; do not infer package or release status from the tag alone.
-- Benchmark sets are versioned under `benchmarks/v1/`; prompt changes require a new version directory.
-- Citation metadata: [CITATION.cff](CITATION.cff).
-- Changelog: [CHANGELOG.md](CHANGELOG.md).
-
-Before publishing a release, reconcile the package version, release notes, and
-the historical tag's documented `served_model` provenance limitation.
+Fallax is maintained by Meshal Alawein and released under the [MIT License](LICENSE).

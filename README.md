@@ -3,7 +3,7 @@
 > Inspect reasoning steps across a fixed prompt taxonomy and keep records for
 > comparing model releases.
 
-## What Fallax measures
+## Purpose
 
 Fallax evaluates intermediate reasoning as well as the final answer. Benchmark
 v1 fixes 100 prompts from 25 adversarial templates, covering 10 failure types in
@@ -18,7 +18,22 @@ general model capability.
 Fallax is for ML researchers and engineers comparing reasoning failures across
 model releases. It is maintained by Meshal Alawein.
 
-## Run it
+### What it is
+
+Fallax is a Python CLI for adversarial reasoning evaluation. It generates or
+loads prompts, runs supported model providers, asks a judge model to apply five
+validators, and writes structured results for analysis and comparison.
+
+Providers include Anthropic, OpenAI, OpenRouter, Gemini, and Ollama. Remote
+providers require their API key in the environment; Ollama runs locally.
+
+### What it is not
+
+Fallax does not measure general model capability, prove that a model's reasoning
+is faithful, or remove judge-model bias. A score is meaningful only with its
+benchmark version, provider, served model, and judge provenance.
+
+## Install
 
 Python 3.12 or newer and [uv](https://docs.astral.sh/uv/) are required.
 
@@ -33,22 +48,7 @@ The last command reads the recorded v1 baselines without calling a model
 provider. It prints one row each for `anthropic/claude-sonnet-4.6` and
 `openai/gpt-4o-mini`.
 
-## What it is
-
-Fallax is a Python CLI for adversarial reasoning evaluation. It generates or
-loads prompts, runs supported model providers, asks a judge model to apply five
-validators, and writes structured results for analysis and comparison.
-
-Providers include Anthropic, OpenAI, OpenRouter, Gemini, and Ollama. Remote
-providers require their API key in the environment; Ollama runs locally.
-
-## What it is not
-
-Fallax does not measure general model capability, prove that a model's reasoning
-is faithful, or remove judge-model bias. A score is meaningful only with its
-benchmark version, provider, served model, and judge provenance.
-
-## Run an evaluation
+## Commands
 
 ### Analyze the offline example
 
@@ -62,7 +62,6 @@ and analysis reporting. The fixture is illustrative, not a benchmark result or
 a model-quality claim.
 
 ### Run a provider benchmark
-
 
 Install the provider extra you need, then name both the evaluated model and the
 judge:
@@ -107,6 +106,12 @@ These are recorded baselines, not a current model comparison. Re-run the same
 benchmark with explicit provider and served-model provenance before drawing a
 new conclusion.
 
+## Architecture
+
+See [docs/architecture.md](docs/architecture.md) for module boundaries and data
+flow, and [docs/architecture/topology.md](docs/architecture/topology.md) for
+on-disk layout.
+
 ## Reproducibility
 
 Benchmark metadata stores the prompt count, generation parameters, failure
@@ -117,10 +122,21 @@ Run `uv run pytest --cov=fallax --cov=dashboard --cov-fail-under=90` to
 check the current checkout. A local test run does not constitute a new provider
 evaluation.
 
-The package version is `0.1.0` in `pyproject.toml`, a pre-1.0 package state.
-The historical `v1.0.0` Git tag does not determine the current package version or
-GitHub Release status. See the [deployment notes](docs/deployment.md) before
-publishing a release and preserve the documented `served_model` provenance limits.
+## Consumers
+
+Used by ML researchers and engineers comparing reasoning failures across model
+releases via the CLI.
+
+## Release and versioning
+
+- Version source: `pyproject.toml` (`fallax` 0.1.0, pre-1.0 package state)
+- The historical `v1.0.0` git tag does not determine the current package version
+  or GitHub Release status; see [docs/deployment.md](docs/deployment.md) before
+  publishing a release, and preserve the documented `served_model` provenance
+  limits.
+- Benchmark sets are versioned under `benchmarks/v1/`; changes to a frozen
+  prompt set require a new version directory.
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Docs map
 

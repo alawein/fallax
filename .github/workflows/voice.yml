@@ -17,20 +17,8 @@ name: voice
 on:
   push:
     branches: [main]
-    paths:
-      - '**/*.md'
-      - '**/*.html'
-      - '**/*.tex'
-      - '**/*.mdx'
-      - '.github/workflows/voice.yml'
   pull_request:
     branches: [main]
-    paths:
-      - '**/*.md'
-      - '**/*.html'
-      - '**/*.tex'
-      - '**/*.mdx'
-      - '.github/workflows/voice.yml'
 
 permissions:
   contents: read

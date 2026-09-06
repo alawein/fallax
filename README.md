@@ -1,5 +1,12 @@
 # Fallax
 
+Status:      active
+Category:    lab
+Owner:       alawein
+Visibility:  public
+Purpose:     LLM adversarial reasoning evaluation system and benchmarking surface.
+Next action: continue
+
 > Inspect reasoning steps across a fixed prompt taxonomy and keep records for
 > comparing model releases.
 

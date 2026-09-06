@@ -1,27 +1,12 @@
 ---
-type: canonical
-source: none
-sync: none
-sla: none
+description: Point Cursor at the repo universal agent instructions
+globs:
+alwaysApply: true
 ---
 
-# Cursor Rules for fallax
+# Cursor rules
 
-You are working in fallax.
+Applies to: this repository.
 
-## Key Files
-
-- Config: [CLAUDE.md](../CLAUDE.md), [AGENTS.md](../AGENTS.md)
-- Guidelines: [GUIDELINES.md](../.claude/GUIDELINES.md)
-
-## Work Style
-
-- Execute incrementally. Small, complete changes.
-- Read governance docs before structural changes.
-- No cross-project file access.
-
-## Do Not
-
-- Commit unverified changes
-- Scope creep (refuse multi-file changes for single-sentence tasks)
-- Assume file existence; verify first
+Universal agent rules and coding defaults live in [AGENTS.md](../AGENTS.md).
+Do not fork policy here. Keep this file as a short pointer only.
